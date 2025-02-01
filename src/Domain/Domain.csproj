@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <RootNamespace>Itishnik.Domain</RootNamespace>
+        <AssemblyName>Itishnik.Domain</AssemblyName>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="MediatR"/>
+    </ItemGroup>
+
+</Project>
