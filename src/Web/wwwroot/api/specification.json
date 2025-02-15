@@ -6,9 +6,9 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/auth/register": {
+    "/api/account/register": {
       "post": {
-        "operationId": "PostApiAuthRegister",
+        "operationId": "PostApiAccountRegister",
         "requestBody": {
           "x-name": "registration",
           "content": {
@@ -38,9 +38,9 @@
         }
       }
     },
-    "/api/auth/login": {
+    "/api/account/login": {
       "post": {
-        "operationId": "PostApiAuthLogin",
+        "operationId": "PostApiAccountLogin",
         "parameters": [
           {
             "name": "useCookies",
@@ -87,9 +87,9 @@
         }
       }
     },
-    "/api/auth/refresh": {
+    "/api/account/refresh": {
       "post": {
-        "operationId": "PostApiAuthRefresh",
+        "operationId": "PostApiAccountRefresh",
         "requestBody": {
           "x-name": "refreshRequest",
           "content": {
@@ -116,9 +116,9 @@
         }
       }
     },
-    "/api/auth/confirmEmail": {
+    "/api/account/confirmEmail": {
       "get": {
-        "operationId": "GetApiAuthConfirmEmail",
+        "operationId": "GetApiAccountConfirmEmail",
         "parameters": [
           {
             "name": "userId",
@@ -157,9 +157,9 @@
         }
       }
     },
-    "/api/auth/resendConfirmationEmail": {
+    "/api/account/resendConfirmationEmail": {
       "post": {
-        "operationId": "PostApiAuthResendConfirmationEmail",
+        "operationId": "PostApiAccountResendConfirmationEmail",
         "requestBody": {
           "x-name": "resendRequest",
           "content": {
@@ -179,9 +179,9 @@
         }
       }
     },
-    "/api/auth/forgotPassword": {
+    "/api/account/forgotPassword": {
       "post": {
-        "operationId": "PostApiAuthForgotPassword",
+        "operationId": "PostApiAccountForgotPassword",
         "requestBody": {
           "x-name": "resetRequest",
           "content": {
@@ -211,9 +211,9 @@
         }
       }
     },
-    "/api/auth/resetPassword": {
+    "/api/account/resetPassword": {
       "post": {
-        "operationId": "PostApiAuthResetPassword",
+        "operationId": "PostApiAccountResetPassword",
         "requestBody": {
           "x-name": "resetRequest",
           "content": {
@@ -243,9 +243,9 @@
         }
       }
     },
-    "/api/auth/manage/2fa": {
+    "/api/account/manage/2fa": {
       "post": {
-        "operationId": "PostApiAuthManage2fa",
+        "operationId": "PostApiAccountManage2fa",
         "requestBody": {
           "x-name": "tfaRequest",
           "content": {
@@ -285,9 +285,9 @@
         }
       }
     },
-    "/api/auth/manage/info": {
+    "/api/account/manage/info": {
       "get": {
-        "operationId": "GetApiAuthManageInfo",
+        "operationId": "GetApiAccountManageInfo",
         "responses": {
           "200": {
             "description": "",
@@ -315,7 +315,7 @@
         }
       },
       "post": {
-        "operationId": "PostApiAuthManageInfo",
+        "operationId": "PostApiAccountManageInfo",
         "requestBody": {
           "x-name": "infoRequest",
           "content": {
