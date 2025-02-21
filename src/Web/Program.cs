@@ -1,5 +1,4 @@
 using Itishnik.Infrastructure.Data;
-using Itishnik.Infrastructure.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,8 +39,6 @@ app.UseSwaggerUi(settings =>
     settings.DocumentPath = "/api/specification.json";
 });
 
-app.MapGroup("api/account").MapIdentityApi<ApplicationUser>();
-// app.MapIdentityApi<ApplicationUser>();
 app.MapRazorPages();
 app.MapFallbackToFile("index.html");
 app.UseExceptionHandler(options => { });
