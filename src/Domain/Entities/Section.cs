@@ -3,28 +3,40 @@ namespace Itishnik.Domain.Entities;
 public class Section
 {
     private readonly string _name = null!;
-    private bool _isPublic;
     private readonly List<Problem> _problems = [];
     private readonly List<int> _weights = [];
+    private bool _isPublic;
 
     public Section(
         string name,
         Course course, 
         List<Problem> problems,
         List<int> weights,
-
-    bool isPublic=false)
+        bool publicate=false
+    )
     {
         Name = name;
         Course = course;
+        if (problems.Count > 10)
+        {
+            throw new ArgumentException("Количество заданий не должно превышать 10");
+        }
         if (problems.Count != weights.Count)
         {
             throw new ArgumentException("Количество заданий должно совпадать с количеством весовых значений");
         }
-        for (int problemWeightIndex = 0; problemWeightIndex < problems.Count; problemWeightIndex++)
+        foreach (var problem in problems)
         {
-            _problems.Add(problems[problemWeightIndex]);
-            _weights.Add(weights[problemWeightIndex]);
+            _problems.Add(problem);
+        }
+        foreach (var weight in weights)
+        {
+            _weights.Add(weight);
+        }
+
+        if (publicate)
+        {
+            Publicate();
         }
     }
     
@@ -35,7 +47,67 @@ public class Section
 
     public IEnumerable<Problem> Problems => _problems;
 
-    public void AddProblem(Problem problem) => _problems.Add(problem);
+    public void AddProblem(Problem problem, int weight=-1)
+    {
+        _problems.Add(problem);
+        switch (weight)
+        {
+            case 0:
+                throw new ArgumentException("Вес не должен быть нулевым");
+            case -1:
+                _weights.Add(10 - _weights.Sum());
+                break;
+            default:
+                _weights.Add(weight);
+                break;
+        }
+    }
+
+    private void Publicate()
+    {
+        if (_isPublic)
+        {
+            return;
+        }
+    
+        if (_problems.Count == 0)
+        {
+            throw new InvalidOperationException("Невозможно опубликовать пустой блок задач");
+        }
+    
+        if (_weights.Sum() > 10)
+        {
+            throw new InvalidOperationException("Сумма весов должна равняться 10");
+        }
+    
+        _isPublic = true;
+    }
+
+    private void Hide()
+    {
+        if (!_isPublic)
+        {
+            return;
+        }
+
+        _isPublic = false;
+    }
+
+    public bool IsPublic
+    {
+        get => _isPublic;
+        set
+        {
+            if (value)
+            {
+                Publicate();
+            }
+            else
+            {
+                Hide();
+            }
+        }
+    }
     
     public string Name
     {
@@ -49,27 +121,5 @@ public class Section
         }
     }
 
-    public bool IsPublic
-    {
-        get => _isPublic;
-        set
-        {
-            switch (value)
-            {
-                case false:
-                    _isPublic = value;
-                    return;
-                case true:
-                    if (_problems.Count == 0)
-                    {
-                        throw new InvalidOperationException("Нельзя публиковать блок без задач");
-                    }
-
-                    _isPublic = true;
-                    break;
-            }
-        }
-    }
-    
     public string? Description { get; private set; }
 }
