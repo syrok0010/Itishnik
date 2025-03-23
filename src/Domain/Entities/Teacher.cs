@@ -1,7 +1,9 @@
+using Itishnik.Infrastructure.Identity;
+
 namespace Itishnik.Domain.Entities;
 
-public class Teacher(string name, string surname, string patronymic, string email, string password)
-    : User(name, surname, patronymic, email, password)
+public class Teacher(string name, string surname, string patronymic)
+    : User(name, surname, patronymic)
 {
     private readonly HashSet<Course> _courses = [];
 

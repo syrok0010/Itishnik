@@ -16,11 +16,7 @@ public class File
         get => _path;
         set
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentException("Путь до файла не может быть пустым");
-            }
-
+            var check = new FileInfo(value);
             _path = value;
         }
     }

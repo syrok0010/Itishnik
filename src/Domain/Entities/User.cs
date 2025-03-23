@@ -1,54 +1,19 @@
-using System.Text.RegularExpressions;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace Itishnik.Domain.Entities;
+namespace Itishnik.Infrastructure.Identity;
 
-public partial class User
+public class User : IdentityUser
 {
     private string _name = null!;
     private string _surname = null!;
     private string _patronymic = null!;
-    private string _email = null!;
-    private string _password = null!;
     
-    private User() {}
-
-    protected User(string name, string surname, string patronymic, string email, string password)
+    
+    protected User(string name, string surname, string patronymic)
     {
         Name = name;
         Surname = surname;
         Patronymic = patronymic;
-        Email = email;
-        Password = password;
-    }
-    
-    public Guid Id { get; private init; }
-    public string Email
-    {
-        get => _email;
-        set
-        {
-            var mask = EmailRegex();
-            if (!mask.IsMatch(value))
-            {
-                throw new FormatException("Некорректный формат электронной почты");
-            }
-
-            _email = value;
-        }
-    }
-
-    public string Password
-    {
-        get => _password;
-        set
-        {
-            if (value.Length is < 8 or > 20)
-            {
-                throw new ArgumentException("Длина пароля должна быть от 8 до 20 символов");
-            }
-
-            _password = value;
-        }
     }
     
     public string Name
@@ -56,15 +21,7 @@ public partial class User
         get => _name;
         set
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentException("Пустое имя");
-            }
-            if (value.Any(x => !char.IsLetter(x)))
-            {
-                throw new ArgumentException("Имя должно содержать только буквы");
-            }
-            
+            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(Name));
             _name = value;
         }
     }
@@ -74,38 +31,17 @@ public partial class User
         get => _surname;
         set
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentException("Пустая фамилия");
-            }
-            if (value.Any(x => !char.IsLetter(x)))
-            {
-                throw new ArgumentException("Фамилия должна содержать только буквы");
-            }
-            
+            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(Surname));
             _surname = value;
         }
     }
-
     public string Patronymic
     {
         get => _patronymic;
         set
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                _patronymic = "-";
-                return;
-            }
-            if (value.Any(x => !char.IsLetter(x) && x != ' '))
-            {
-                throw new ArgumentException("Отчество должно содержать только буквы и пробелы");
-            }
-            
+            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(Patronymic));
             _patronymic = value;
         }
     }
-
-    [GeneratedRegex("([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\\.[a-zA-Z0-9_-]+)")]
-    private static partial Regex EmailRegex(); 
 }

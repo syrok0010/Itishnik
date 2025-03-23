@@ -1,3 +1,5 @@
+using Itishnik.Infrastructure.Identity;
+
 namespace Itishnik.Domain.Entities;
 
 public class Student : User
@@ -5,7 +7,7 @@ public class Student : User
     private string _educationalProgram = null!;
     private int _educationStartYear;
     private int _groupNumber;
-    private readonly HashSet<EvaluationForCourse> _evaluationsForCourses = [];
+    private readonly HashSet<GradedCourse> _evaluationsForCourses = [];
 
 
     public Student(
@@ -14,30 +16,26 @@ public class Student : User
         string patronymic,
         string educationalProgram,
         int groupNumber,
-        int educationStartYear,
-        string email,
-        string password) : base(name, surname, patronymic, email, password)
+        int educationStartYear) : base(name, surname, patronymic)
     {
         EducationStartYear = educationStartYear;
         EducationalProgram = educationalProgram;
         GroupNumber = groupNumber;
     }
 
-    private IEnumerable<EvaluationForCourse> EvaluationsForCourses => _evaluationsForCourses;
+    private IEnumerable<GradedCourse> EvaluationsForCourses => _evaluationsForCourses;
 
-    public void AddCourseEvaluation(EvaluationForCourse evaluationForCourse) =>
-        _evaluationsForCourses.Add(evaluationForCourse);
-    
+    public void AddCourseEvaluation(GradedCourse gradedCourse)
+    {
+        _evaluationsForCourses.Add(gradedCourse);
+    }
+
     public string EducationalProgram
     {
         get => _educationalProgram;
         set
         {
-            if (string.IsNullOrEmpty(value))
-            {
-                throw new ArgumentException("Пустое название образовательной программы");
-            }
-
+            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(EducationalProgram));
             _educationalProgram = value;
         }
     }
@@ -66,11 +64,7 @@ public class Student : User
         get => _groupNumber;
         set
         {
-            if (value <= 0)
-            {
-                throw new ArgumentException("Номер группы должен быть положительным числом");
-            }
-
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(value, nameof(GroupNumber));
             _groupNumber = value;
         }
     }

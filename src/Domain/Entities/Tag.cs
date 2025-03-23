@@ -2,12 +2,12 @@ namespace Itishnik.Domain.Entities;
 
 public class Tag
 {
-    public Tag(string topic)
+    public Tag(string text)
     {
-        Topic = topic;
+        Text = text;
     }
     
     public Guid Id { get; private init; }
 
-    public string Topic { get; private set; }
+    public string Text { get; private set; }
 }

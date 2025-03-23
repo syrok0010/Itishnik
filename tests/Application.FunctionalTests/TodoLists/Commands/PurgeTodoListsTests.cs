@@ -3,6 +3,7 @@ using Itishnik.Application.Common.Security;
 using Itishnik.Application.TodoLists.Commands.CreateTodoList;
 using Itishnik.Application.TodoLists.Commands.PurgeTodoLists;
 using Itishnik.Domain.Entities;
+using Task = System.Threading.Tasks.Task;
 
 namespace Itishnik.Application.FunctionalTests.TodoLists.Commands;
 
