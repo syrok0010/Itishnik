@@ -6,7 +6,8 @@
         <SpaProxyLaunchCommand>npm start</SpaProxyLaunchCommand>
         <RootNamespace>Itishnik.Web</RootNamespace>
         <AssemblyName>Itishnik.Web</AssemblyName>
-    </PropertyGroup>
+        <UserSecretsId>81744c32-1809-46a8-b3c9-24fa16eb28ec</UserSecretsId>
+  </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Application\Application.csproj"/>
