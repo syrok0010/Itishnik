@@ -3,7 +3,9 @@ using Itishnik.Domain.Constants;
 using Itishnik.Infrastructure.Data;
 using Itishnik.Infrastructure.Data.Interceptors;
 using Itishnik.Infrastructure.Identity;
+using Itishnik.Infrastructure.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Configuration;
@@ -32,6 +34,7 @@ public static class DependencyInjection
         builder.Services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 
         builder.Services.AddScoped<ApplicationDbContextInitialiser>();
+        builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
         builder.Services
             .AddIdentity<ApplicationUser, IdentityRole>(options =>
