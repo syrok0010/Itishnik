@@ -32,7 +32,7 @@ public class Course
     
     public void DeleteTaskBlock(TaskBlock taskBlock)
     {
-        if (taskBlock.IsPublic())
+        if (taskBlock.IsPublic)
         {
             throw new InvalidOperationException("Опубликованный блок задач не может быть удален");
         }

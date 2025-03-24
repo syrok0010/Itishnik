@@ -20,21 +20,24 @@ public class Task
         _isPublic = false;
         if (publish)
         {
-            Publish();
+            IsPublic = true;
         }
     }
 
-    void Publish()
+    public bool IsPublic
     {
-        if (_isPublic)
+        get => _isPublic;
+        set
         {
-            throw new InvalidOperationException("Задача уже опубликована");
+            _isPublic = _isPublic switch
+            {
+                true when value => throw new InvalidOperationException("Задача уже опубликована"),
+                true when !value => throw new InvalidOperationException("Невозможно скрыть опубликованную задачу"),
+                false when !value => throw new InvalidOperationException("Задача не опубликована"),
+                _ => true
+            };
         }
-
-        _isPublic = true;
     }
-
-    public bool IsPublic() => _isPublic;
     
     public Guid Id { get; private init; }
 
@@ -59,8 +62,6 @@ public class Task
             _description = value;
         }
     }
-    
-    public Guid TaskSolutionId { get; private init; }
     public void AddNewVersion(Task task) => _newVersions.Add(task);
     public void AddTag(Tag tag) => _tags.Add(tag);
     

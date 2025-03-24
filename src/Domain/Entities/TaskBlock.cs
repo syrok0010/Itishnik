@@ -3,7 +3,7 @@ namespace Itishnik.Domain.Entities;
 public class TaskBlock
 {
     private string _name = null!;
-    private readonly List<Task> _problems = [];
+    private readonly List<Task> _tasks = [];
     private readonly List<int> _weights = [];
     private readonly HashSet<File> _files = [];
     private bool _isPublic;
@@ -19,17 +19,17 @@ public class TaskBlock
     public Course Course { get; private init; }
     public Guid CourseId { get; private init; }
 
-    public IEnumerable<Task> Problems => _problems;
+    public IEnumerable<Task> Tasks => _tasks;
     public IEnumerable<File> Files => _files;
     
     public DateTime StartTime { get; set; }
     public DateTime EndTime { get; set; }
-    public TimeSpan TimeGate { get; set; }
+    public TimeSpan TimeAllowed { get; set; }
 
     public void AddProblem(Task task, int weight=0)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(weight, nameof(weight));
-        _problems.Add(task);
+        _tasks.Add(task);
         _weights.Add(weight);
     }
 
@@ -53,27 +53,33 @@ public class TaskBlock
         _files.Add(file);
     }
 
-    private void Publish()
+    public bool IsPublic
     {
-        if (_isPublic)
+        get => _isPublic;
+        set
         {
-            return;
-        }
-    
-        if (_problems.Count == 0)
-        {
-            throw new InvalidOperationException("Невозможно опубликовать пустой блок задач");
-        }
-    
-        if (_weights.Sum() != 10)
-        {
-            throw new InvalidOperationException("Сумма весов должна равняться 10");
-        }
-    
-        _isPublic = true;
-    }
+            switch (_isPublic)
+            {
+                case true when value:
+                    throw new InvalidOperationException("Блок задач уже опубликован");
+                case true when !value:
+                    throw new InvalidOperationException("Невозможно скрыть опубликованный блок задач");
+                case false when !value:
+                    throw new InvalidOperationException("Блок задач не опубликован");
+            }
 
-    public bool IsPublic() => _isPublic;
+            if (_tasks.Count == 0)
+            {
+                throw new InvalidOperationException("Невозможно опубликовать пустой блок задач");
+            }
+    
+            if (_weights.Sum() != 10)
+            {
+                throw new InvalidOperationException("Сумма весов должна равняться 10");
+            }
+            _isPublic = true;
+        }
+    }
     
     public string Name
     {

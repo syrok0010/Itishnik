@@ -6,10 +6,9 @@ public class User : IdentityUser
 {
     private string _name = null!;
     private string _surname = null!;
-    private string _patronymic = null!;
     
     
-    protected User(string name, string surname, string patronymic)
+    protected User(string name, string surname, string? patronymic=null)
     {
         Name = name;
         Surname = surname;
@@ -35,13 +34,5 @@ public class User : IdentityUser
             _surname = value;
         }
     }
-    public string Patronymic
-    {
-        get => _patronymic;
-        set
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(Patronymic));
-            _patronymic = value;
-        }
-    }
+    public string? Patronymic { get; set; }
 }

@@ -7,13 +7,13 @@ public class Student : User
     private string _educationalProgram = null!;
     private int _educationStartYear;
     private int _groupNumber;
-    private readonly HashSet<GradedCourse> _evaluationsForCourses = [];
+    private readonly HashSet<GradedCourse> _gradedCourses = [];
 
 
     public Student(
         string name,
         string surname,
-        string patronymic,
+        string? patronymic,
         string educationalProgram,
         int groupNumber,
         int educationStartYear) : base(name, surname, patronymic)
@@ -23,11 +23,11 @@ public class Student : User
         GroupNumber = groupNumber;
     }
 
-    private IEnumerable<GradedCourse> EvaluationsForCourses => _evaluationsForCourses;
+    private IEnumerable<GradedCourse> GradedCourses => _gradedCourses;
 
-    public void AddCourseEvaluation(GradedCourse gradedCourse)
+    public void AddGradedCourse(GradedCourse gradedCourse)
     {
-        _evaluationsForCourses.Add(gradedCourse);
+        _gradedCourses.Add(gradedCourse);
     }
 
     public string EducationalProgram

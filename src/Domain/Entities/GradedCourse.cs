@@ -2,18 +2,13 @@ namespace Itishnik.Domain.Entities;
 
 public class GradedCourse
 {
-    private int _evaluation;
-    private readonly HashSet<GradedTaskBlock> _evaluationsForSections = [];
+    private int _grade;
+    private readonly HashSet<GradedTaskBlock> _gradedTaskBlocks = [];
 
-    public GradedCourse(
-        Course course,
-        Student student,
-        int evaluation
-    )
+    public GradedCourse(Course course, Student student)
     {
         Course = course;
         Student = student;
-        Evaluation = evaluation;
     }
     
     public Guid Id { get; private init; }
@@ -24,23 +19,23 @@ public class GradedCourse
     public Student Student { get; private init; }
     public Guid StudentId { get; private init; }
 
-    public IEnumerable<GradedTaskBlock> EvaluationsForSections => _evaluationsForSections;
+    public IEnumerable<GradedTaskBlock> GradedTaskBlocks => _gradedTaskBlocks;
 
-    public void AddEvaluationForSection(GradedTaskBlock gradedTaskBlock)
+    public void AddGradedTaskBlock(GradedTaskBlock gradedTaskBlock)
     {
-        _evaluationsForSections.Add(gradedTaskBlock);
+        _gradedTaskBlocks.Add(gradedTaskBlock);
     }
 
-    public int Evaluation
+    public int Grade
     {
-        get => _evaluation;
+        get => _grade;
         set
         {
             if (value is < 0 or > 10)
             {
-                throw new ArgumentOutOfRangeException(nameof(Evaluation), "Оценка должна быть в диапазоне от 0 до 10 включительно");
+                throw new ArgumentOutOfRangeException(nameof(Grade), "Оценка должна быть в диапазоне от 0 до 10 включительно");
             }
-            _evaluation = value;
+            _grade = value;
         }
     }
 }
