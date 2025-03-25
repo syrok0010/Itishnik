@@ -6,7 +6,7 @@ public class GradedTaskBlock
     private string? _feedback;
     private readonly HashSet<Solution> _solutions = [];
 
-    public GradedTaskBlock(Student student, TaskBlock taskBlock, string? feedback=null)
+    public GradedTaskBlock(Student student, TaskBlock taskBlock, string? feedback = null)
     {
         Feedback = feedback;
         Student = student;

@@ -12,10 +12,7 @@ public class Course
     public Teacher Teacher { get; set; }
     public Guid TeacherId { get; private set; }
 
-    public Course(
-        string name,
-        string description,
-        Teacher teacher)
+    public Course(string name, string description, Teacher teacher)
     {
         Name = name;
         Description = description;

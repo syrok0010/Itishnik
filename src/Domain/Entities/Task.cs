@@ -8,12 +8,7 @@ public class Task
     private readonly HashSet<Task> _newVersions = [];
     private readonly HashSet<Tag> _tags = [];
 
-    public Task(
-        string name,
-        string description,
-        Solution solution,
-        bool publish=false
-    )
+    public Task(string name, string description, bool publish = false)
     {
         Name = name;
         Description = description;

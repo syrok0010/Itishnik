@@ -26,7 +26,7 @@ public class TaskBlock
     public DateTime EndTime { get; set; }
     public TimeSpan TimeAllowed { get; set; }
 
-    public void AddProblem(Task task, int weight=0)
+    public void AddTask(Task task, int weight=0)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(weight, nameof(weight));
         _tasks.Add(task);
