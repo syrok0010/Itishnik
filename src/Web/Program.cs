@@ -1,4 +1,6 @@
 using Itishnik.Infrastructure.Data;
+using Itishnik.Infrastructure.Identity;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

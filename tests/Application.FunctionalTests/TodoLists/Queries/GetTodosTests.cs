@@ -1,6 +1,7 @@
 ﻿using Itishnik.Application.TodoLists.Queries.GetTodos;
 using Itishnik.Domain.Entities;
 using Itishnik.Domain.ValueObjects;
+using Task = System.Threading.Tasks.Task;
 
 namespace Itishnik.Application.FunctionalTests.TodoLists.Queries;
 
