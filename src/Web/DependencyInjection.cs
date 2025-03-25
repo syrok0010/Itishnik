@@ -21,7 +21,18 @@ public static class DependencyInjection
 
         builder.Services.AddExceptionHandler<CustomExceptionHandler>();
 
-        builder.Services.AddRazorPages();
+        builder.Services.AddRazorPages()
+            .AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AuthorizeFolder("/Account");  // Защита /Account
+                options.Conventions.AllowAnonymousToPage("/Account/Login");
+                options.Conventions.AllowAnonymousToPage("/Account/Logout");
+                options.Conventions.AllowAnonymousToPage("/Account/ForgotPassword");
+                options.Conventions.AllowAnonymousToPage("/Account/ForgotPasswordConfirmation");
+                options.Conventions.AllowAnonymousToPage("/Account/ResetPassword");
+                options.Conventions.AllowAnonymousToPage("/Account/ResetPasswordConfirmation");
+                options.Conventions.AllowAnonymousToPage("/Account/ConfirmEmail");
+            });
 
         // Customise default API behaviour
         builder.Services.Configure<ApiBehaviorOptions>(options =>
