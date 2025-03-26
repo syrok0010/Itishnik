@@ -1,6 +1,4 @@
 using Itishnik.Infrastructure.Data;
-using Itishnik.Infrastructure.Identity;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,6 +46,4 @@ app.MapEndpoints();
 
 app.Run();
 
-public partial class Program
-{
-}
+public partial class Program;
