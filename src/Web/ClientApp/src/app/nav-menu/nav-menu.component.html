@@ -1,43 +1,24 @@
-<header>
-  <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-    <div class="container">
-      <a class="navbar-brand" [routerLink]="['/']">Itishnik.Web</a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target=".navbar-collapse"
-        aria-label="Toggle navigation"
-        [attr.aria-expanded]="isExpanded"
-        (click)="toggle()"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="navbar-collapse collapse d-sm-inline-flex justify-content-end"
-           [ngClass]="{ show: isExpanded }">
-        <ul class="navbar-nav flex-grow">
-          <li class="nav-item"
-              [routerLinkActive]="['link-active']"
-              [routerLinkActiveOptions]="{ exact: true }">
-            <a class="nav-link text-dark" [routerLink]="['/']">Home</a>
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/counter']">Counter</a>
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/fetch-data']">Fetch data</a>
-          </li>
-          <li class="nav-item" [routerLinkActive]="['link-active']">
-            <a class="nav-link text-dark" [routerLink]="['/todo']">Todo</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="/api" target="_blank">API</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="/Identity/Account/Manage">Account</a>
-          </li>
-        </ul>
-      </div>
+<header class="flex w-full bg-white justify-center">
+  <nav class="flex justify-between w-full max-w-screen-2xl items-center">
+    <div class="flex h-full gap-x-6 py-4">
+      <a class="text-lg font-medium">
+        Лого
+      </a>
+      <a class="text-lg font-medium" routerLink="/teacher/courses">
+        Курсы
+      </a>
+      <a class="text-lg font-medium" routerLink="/teacher/tasks">
+        Задания
+      </a>
+      <a class="text-lg font-medium" routerLink="/teacher/students">
+        Студенты
+      </a>
     </div>
+      <a class="text-lg font-medium" routerLink="/profile">
+        Пупкин И.И.
+        <tui-icon
+          icon="@tui.circle-user-round"
+        />
+      </a>
   </nav>
 </header>

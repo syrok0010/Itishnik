@@ -1,4 +1,4 @@
-using Itishnik.Application.Common.Models;
+﻿using Itishnik.Application.Common.Models;
 using Itishnik.Application.Courses;
 using Itishnik.Application.Courses.Commands.CreateCourse;
 using Itishnik.Application.Courses.Queries.GetCourseById;
