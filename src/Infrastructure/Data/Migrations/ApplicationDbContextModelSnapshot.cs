@@ -110,7 +110,6 @@ namespace Itishnik.Infrastructure.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Name")
@@ -225,8 +224,8 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
+                        .HasMaxLength(10000)
+                        .HasColumnType("character varying(10000)");
 
                     b.HasKey("Id");
 
@@ -263,8 +262,8 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
+                        .HasMaxLength(5000)
+                        .HasColumnType("character varying(5000)");
 
                     b.Property<bool>("IsPublic")
                         .HasColumnType("boolean");
@@ -274,7 +273,7 @@ namespace Itishnik.Infrastructure.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)");
 
-                    b.Property<Guid>("RightSolutionId")
+                    b.Property<Guid?>("RightSolutionId")
                         .HasColumnType("uuid");
 
                     b.Property<Guid?>("TaskBlockId")

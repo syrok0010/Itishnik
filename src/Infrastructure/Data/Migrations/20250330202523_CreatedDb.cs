@@ -196,7 +196,7 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     TeacherId = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Description = table.Column<string>(type: "text", nullable: false)
+                    Description = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -309,10 +309,10 @@ namespace Itishnik.Infrastructure.Data.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     TeacherId = table.Column<Guid>(type: "uuid", nullable: false),
-                    RightSolutionId = table.Column<Guid>(type: "uuid", nullable: false),
+                    RightSolutionId = table.Column<Guid>(type: "uuid", nullable: true),
                     IsPublic = table.Column<bool>(type: "boolean", nullable: false),
                     Name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    Description = table.Column<string>(type: "character varying(1000)", maxLength: 1000, nullable: false),
+                    Description = table.Column<string>(type: "character varying(5000)", maxLength: 5000, nullable: false),
                     TaskBlockId = table.Column<Guid>(type: "uuid", nullable: true),
                     TaskId = table.Column<Guid>(type: "uuid", nullable: true)
                 },
@@ -399,7 +399,7 @@ namespace Itishnik.Infrastructure.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Text = table.Column<string>(type: "character varying(2000)", maxLength: 2000, nullable: false),
+                    Text = table.Column<string>(type: "character varying(10000)", maxLength: 10000, nullable: false),
                     TaskId = table.Column<Guid>(type: "uuid", nullable: false),
                     StudentId = table.Column<Guid>(type: "uuid", nullable: false),
                     Grade = table.Column<int>(type: "integer", nullable: false),
