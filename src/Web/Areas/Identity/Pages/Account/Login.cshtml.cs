@@ -3,11 +3,13 @@
 #nullable disable
 
 using System.ComponentModel.DataAnnotations;
+using Itishnik.Domain.Entities;
 using Itishnik.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Task = System.Threading.Tasks.Task;
 
 namespace Itishnik.Web.Areas.Identity.Pages.Account
 {

@@ -5,6 +5,8 @@ public class GradedTaskBlock
     private int _grade;
     private string? _feedback;
     private readonly HashSet<Solution> _solutions = [];
+    
+    private GradedTaskBlock() {}
 
     public GradedTaskBlock(Student student, TaskBlock taskBlock, string? feedback = null)
     {
@@ -14,11 +16,11 @@ public class GradedTaskBlock
     }
 
     public Guid Id { get; private init; }
-    
-    public Student Student { get; private init; }
+
+    public Student Student { get; private init; } = null!;
     public Guid StudentId { get; private init; }
-    
-    public TaskBlock TaskBlock { get; private init; }
+
+    public TaskBlock TaskBlock { get; private init; } = null!;
     public Guid TaskBlockId { get; private init; }
 
     public IEnumerable<Solution> Solutions => _solutions;

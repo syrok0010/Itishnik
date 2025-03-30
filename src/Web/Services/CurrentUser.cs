@@ -12,5 +12,5 @@ public class CurrentUser : IUser
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public string? Id => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+    public Guid? Id => Guid.Parse(_httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? Guid.Empty.ToString());
 }

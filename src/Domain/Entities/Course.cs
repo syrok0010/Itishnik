@@ -3,14 +3,15 @@ namespace Itishnik.Domain.Entities;
 public class Course
 {
     private string _name = null!;
-    private string _description = null!;
     private HashSet<Student> _students = [];
     private HashSet<TaskBlock> _taskBlocks = [];
     
     public Guid Id { get; private init; }
 
-    public Teacher Teacher { get; set; }
+    public Teacher Teacher { get; private set; } = null!;
     public Guid TeacherId { get; private set; }
+    
+    private Course() {}
 
     public Course(string name, string description, Teacher teacher)
     {
@@ -56,14 +57,5 @@ public class Course
         }
     }
 
-    public string Description
-    {
-        get => _description;
-        private set
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(Description));
-            _description = value;
-        }
-        
-    }
+    public string? Description { get; set; }
 }

@@ -8,6 +8,8 @@ public class TaskBlock
     private readonly HashSet<File> _files = [];
     private bool _isPublic;
     
+    private TaskBlock() {}
+    
     public TaskBlock(string name, Course course)
     {
         Name = name;
@@ -15,16 +17,16 @@ public class TaskBlock
     }
     
     public Guid Id { get; private init; }
-    
-    public Course Course { get; private init; }
+
+    public Course Course { get; private init; } = null!;
     public Guid CourseId { get; private init; }
 
     public IEnumerable<Task> Tasks => _tasks;
     public IEnumerable<File> Files => _files;
     
-    public DateTime StartTime { get; set; }
-    public DateTime EndTime { get; set; }
-    public TimeSpan TimeAllowed { get; set; }
+    public DateTime StartTime { get; private set; }
+    public DateTime EndTime { get; private set; }
+    public TimeSpan TimeAllowed { get; private set; }
 
     public void AddTask(Task task, int weight=0)
     {
