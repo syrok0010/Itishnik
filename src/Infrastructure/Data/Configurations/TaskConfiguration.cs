@@ -13,7 +13,7 @@ public class TaskConfiguration : IEntityTypeConfiguration<Task>
         builder.Property(t => t.Name)
             .HasMaxLength(255);
         builder.Property(t => t.Description)
-            .HasMaxLength(1000);
+            .HasMaxLength(5000);
         builder.HasOne(x => x.Teacher)
             .WithMany()
             .HasForeignKey(x => x.TeacherId);

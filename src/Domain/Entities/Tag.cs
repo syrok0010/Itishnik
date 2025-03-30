@@ -9,7 +9,7 @@ public class Tag
         Text = text;
     }
     
-    public Guid Id { get; init; }
+    public Guid Id { get; private init; }
 
     public string Text { get; private set; } = null!;
 }

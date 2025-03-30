@@ -2,24 +2,14 @@ namespace Itishnik.Domain.Entities;
 
 public class File
 {
-    private string _path = null!;
-    
     public Guid Id { get; private init; }
     
+    public string Path { get; private init; } = null!;
     private File() {}
 
     public File(string path)
     {
+        var check = new FileInfo(path);
         Path = path;
-    }
-
-    public string Path
-    {
-        get => _path;
-        set
-        {
-            var check = new FileInfo(value);
-            _path = value;
-        }
     }
 }

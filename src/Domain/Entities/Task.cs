@@ -29,7 +29,7 @@ public class Task
     public Teacher Teacher { get; private init; } = null!;
     public Guid TeacherId { get; private init; }
 
-    public Guid RightSolutionId { get; private init; }
+    public Guid? RightSolutionId { get; private init; }
     
     public bool IsPublic
     {

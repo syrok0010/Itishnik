@@ -9,7 +9,8 @@ public class TaskBlockConfiguration : IEntityTypeConfiguration<TaskBlock>
     public void Configure(EntityTypeBuilder<TaskBlock> builder)
     {
         builder.HasKey(tb => tb.Id);
-        builder.Property(tb => tb.Name).IsRequired().HasMaxLength(255);
+        builder.Property(tb => tb.Name)
+            .HasMaxLength(255);
         builder.HasOne(tb => tb.Course)
             .WithMany(c => c.TaskBlocks)
             .HasForeignKey(tb => tb.CourseId);

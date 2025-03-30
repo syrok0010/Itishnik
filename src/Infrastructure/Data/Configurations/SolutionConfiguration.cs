@@ -10,7 +10,7 @@ public class SolutionConfiguration : IEntityTypeConfiguration<Solution>
     {
         builder.HasKey(s => s.Id);
         builder.Property(s => s.Text)
-            .HasMaxLength(2000);
+            .HasMaxLength(10000);
         builder.HasOne(s => s.Task)
             .WithMany()
             .HasForeignKey(s => s.TaskId);
