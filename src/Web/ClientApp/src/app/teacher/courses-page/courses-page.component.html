@@ -1,36 +1,36 @@
+@let data = coursesList$ | async;
 
-
-<table
-  tuiTable
-  class="table"
-  [columns]="columns"
->
-  <thead>
-  <tr tuiThGroup>
-    <th
-      tuiTh
-      [resizable]="true"
-    >
-      Name
-    </th>
-    <th tuiTh>Balance</th>
-  </tr>
-  </thead>
-  <tbody
-    tuiTbody
-    [data]="data"
-  >
-  <tr
-    *ngFor="let item of data"
-    tuiTr
-  >
-    <td
-      *tuiCell="'balance'"
-      tuiTd
-    >
-      {{ item.balance | tuiFormatNumber | async }}
-    </td>
-  </tr>
-  </tbody>
-</table>
-
+<div class="w-full rounded-lg bg-white mx-auto h-full">
+  <table tuiTable [columns]="columns" class="p-4 w-full">
+    <thead>
+    <tr tuiThGroup>
+      <th tuiTh *tuiHead="'course'">Курс</th>
+      <th tuiTh *tuiHead="'groups'">Группы</th>
+      <th tuiTh *tuiHead="'students'">Количество студентов</th>
+      <th tuiTh *tuiHead="'taskBlocks'">Количество блоков заданий</th>
+      <th tuiTh *tuiHead="'description'">Описание</th>
+    </tr>
+    </thead>
+    <tbody tuiTbody [data]="data">
+      @for (item of data; track item.id) {
+        <tr tuiTr class="cursor-pointer">
+          <td tuiTd *tuiCell="'course'">
+            {{ item.name }}
+          </td>
+          <td tuiTd *tuiCell="'groups'">
+            1
+          </td>
+          <td tuiTd *tuiCell="'students'">
+            {{ item.students.length }}
+          </td>
+          <td tuiTd *tuiCell="'taskBlocks'">
+            {{ item.taskBlocks.length }}
+          </td>
+          <td tuiTd *tuiCell="'description'">
+            {{ item.description }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
