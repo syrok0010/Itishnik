@@ -5,6 +5,8 @@ public class File
     private string _path = null!;
     
     public Guid Id { get; private init; }
+    
+    private File() {}
 
     public File(string path)
     {

@@ -3,6 +3,7 @@ using System;
 using Itishnik.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Itishnik.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250329111229_CreatedDb")]
+    partial class CreatedDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,16 +37,18 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("text");
 
-                    b.Property<string>("TeacherId")
+                    b.Property<Guid>("TeacherId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("TeacherId1")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("TeacherId");
+                    b.HasIndex("TeacherId1");
 
                     b.ToTable("Courses");
                 });
@@ -56,8 +61,7 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.Property<string>("Path")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("character varying(500)");
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("TaskBlockId")
                         .HasColumnType("uuid");
@@ -81,7 +85,10 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.Property<int>("Grade")
                         .HasColumnType("integer");
 
-                    b.Property<string>("StudentId")
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("StudentId1")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -89,7 +96,7 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentId1");
 
                     b.ToTable("GradedCourses");
                 });
@@ -109,8 +116,10 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.Property<Guid?>("GradedCourseId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("StudentId")
-                        .IsRequired()
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("StudentId1")
                         .HasColumnType("text");
 
                     b.Property<Guid>("TaskBlockId")
@@ -120,7 +129,7 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.HasIndex("GradedCourseId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentId1");
 
                     b.HasIndex("TaskBlockId");
 
@@ -139,8 +148,10 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.Property<Guid?>("GradedTaskBlockId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("StudentId")
-                        .IsRequired()
+                    b.Property<Guid>("StudentId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("StudentId1")
                         .HasColumnType("text");
 
                     b.Property<Guid>("TaskId")
@@ -148,18 +159,95 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("character varying(2000)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.HasIndex("GradedTaskBlockId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentId1");
 
                     b.HasIndex("TaskId");
 
                     b.ToTable("Solutions");
+                });
+
+            modelBuilder.Entity("Itishnik.Domain.Entities.Student", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("text");
+
+                    b.Property<Guid?>("CourseId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("EducationStartYear")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("EducationalProgram")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("GroupNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Patronymic")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("Itishnik.Domain.Entities.Tag", b =>
@@ -173,8 +261,7 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -191,22 +278,14 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("character varying(1000)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsPublic")
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<Guid>("RightSolutionId")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("RightSolutionId1")
-                        .HasColumnType("uuid");
+                        .HasColumnType("text");
 
                     b.Property<Guid?>("TaskBlockId")
                         .HasColumnType("uuid");
@@ -214,19 +293,11 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.Property<Guid?>("TaskId")
                         .HasColumnType("uuid");
 
-                    b.Property<string>("TeacherId")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("RightSolutionId1");
 
                     b.HasIndex("TaskBlockId");
 
                     b.HasIndex("TaskId");
-
-                    b.HasIndex("TeacherId");
 
                     b.ToTable("Tasks");
                 });
@@ -251,8 +322,7 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("timestamp with time zone");
@@ -265,6 +335,69 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.HasIndex("CourseId");
 
                     b.ToTable("TaskBlocks");
+                });
+
+            modelBuilder.Entity("Itishnik.Domain.Entities.Teacher", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("text");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Patronymic")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Surname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Teachers");
                 });
 
             modelBuilder.Entity("Itishnik.Domain.Entities.TodoItem", b =>
@@ -408,81 +541,6 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Itishnik.Infrastructure.Identity.User", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(8)
-                        .HasColumnType("character varying(8)");
-
-                    b.Property<string>("Email")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("NormalizedEmail")
-                        .HasColumnType("text");
-
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Patronymic")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("SecurityStamp")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Surname")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)");
-
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("boolean");
-
-                    b.Property<string>("UserName")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("User");
-
-                    b.HasDiscriminator().HasValue("User");
-
-                    b.UseTphMappingStrategy();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -615,41 +673,11 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Itishnik.Domain.Entities.Student", b =>
-                {
-                    b.HasBaseType("Itishnik.Infrastructure.Identity.User");
-
-                    b.Property<Guid?>("CourseId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("EducationStartYear")
-                        .HasColumnType("integer");
-
-                    b.Property<string>("EducationalProgram")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("character varying(255)");
-
-                    b.Property<int>("GroupNumber")
-                        .HasColumnType("integer");
-
-                    b.HasIndex("CourseId");
-
-                    b.HasDiscriminator().HasValue("Student");
-                });
-
-            modelBuilder.Entity("Itishnik.Domain.Entities.Teacher", b =>
-                {
-                    b.HasBaseType("Itishnik.Infrastructure.Identity.User");
-
-                    b.HasDiscriminator().HasValue("Teacher");
-                });
-
             modelBuilder.Entity("Itishnik.Domain.Entities.Course", b =>
                 {
                     b.HasOne("Itishnik.Domain.Entities.Teacher", "Teacher")
                         .WithMany("Courses")
-                        .HasForeignKey("TeacherId")
+                        .HasForeignKey("TeacherId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -673,7 +701,7 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.HasOne("Itishnik.Domain.Entities.Student", "Student")
                         .WithMany("GradedCourses")
-                        .HasForeignKey("StudentId")
+                        .HasForeignKey("StudentId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -690,9 +718,7 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.HasOne("Itishnik.Domain.Entities.Student", "Student")
                         .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StudentId1");
 
                     b.HasOne("Itishnik.Domain.Entities.TaskBlock", "TaskBlock")
                         .WithMany()
@@ -713,9 +739,7 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.HasOne("Itishnik.Domain.Entities.Student", "Student")
                         .WithMany()
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("StudentId1");
 
                     b.HasOne("Itishnik.Domain.Entities.Task", "Task")
                         .WithMany()
@@ -728,6 +752,13 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.Navigation("Task");
                 });
 
+            modelBuilder.Entity("Itishnik.Domain.Entities.Student", b =>
+                {
+                    b.HasOne("Itishnik.Domain.Entities.Course", null)
+                        .WithMany("Students")
+                        .HasForeignKey("CourseId");
+                });
+
             modelBuilder.Entity("Itishnik.Domain.Entities.Tag", b =>
                 {
                     b.HasOne("Itishnik.Domain.Entities.Task", null)
@@ -737,12 +768,6 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("Itishnik.Domain.Entities.Task", b =>
                 {
-                    b.HasOne("Itishnik.Domain.Entities.Solution", "RightSolution")
-                        .WithMany()
-                        .HasForeignKey("RightSolutionId1")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Itishnik.Domain.Entities.TaskBlock", null)
                         .WithMany("Tasks")
                         .HasForeignKey("TaskBlockId");
@@ -750,16 +775,6 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.HasOne("Itishnik.Domain.Entities.Task", null)
                         .WithMany("NewVersions")
                         .HasForeignKey("TaskId");
-
-                    b.HasOne("Itishnik.Domain.Entities.Teacher", "Teacher")
-                        .WithMany()
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("RightSolution");
-
-                    b.Navigation("Teacher");
                 });
 
             modelBuilder.Entity("Itishnik.Domain.Entities.TaskBlock", b =>
@@ -858,13 +873,6 @@ namespace Itishnik.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Itishnik.Domain.Entities.Student", b =>
-                {
-                    b.HasOne("Itishnik.Domain.Entities.Course", null)
-                        .WithMany("Students")
-                        .HasForeignKey("CourseId");
-                });
-
             modelBuilder.Entity("Itishnik.Domain.Entities.Course", b =>
                 {
                     b.Navigation("Students");
@@ -882,6 +890,11 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.Navigation("Solutions");
                 });
 
+            modelBuilder.Entity("Itishnik.Domain.Entities.Student", b =>
+                {
+                    b.Navigation("GradedCourses");
+                });
+
             modelBuilder.Entity("Itishnik.Domain.Entities.Task", b =>
                 {
                     b.Navigation("NewVersions");
@@ -896,19 +909,14 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.Navigation("Tasks");
                 });
 
-            modelBuilder.Entity("Itishnik.Domain.Entities.TodoList", b =>
-                {
-                    b.Navigation("Items");
-                });
-
-            modelBuilder.Entity("Itishnik.Domain.Entities.Student", b =>
-                {
-                    b.Navigation("GradedCourses");
-                });
-
             modelBuilder.Entity("Itishnik.Domain.Entities.Teacher", b =>
                 {
                     b.Navigation("Courses");
+                });
+
+            modelBuilder.Entity("Itishnik.Domain.Entities.TodoList", b =>
+                {
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

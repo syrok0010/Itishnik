@@ -5,7 +5,9 @@ public class Solution
     private int _grade;
     private string _text = null!;
     
-    public Guid Id { get; private init; }
+    public Guid Id { get; init; }
+    
+    private Solution() {}
 
     public Solution(Task task, Student student, string text)
     {
@@ -24,11 +26,11 @@ public class Solution
         }
     }
     
-    public Task Task { get; private init; }
-    public Guid ProblemId { get; private init; }
+    public required Task Task { get; init; }
+    public Guid TaskId { get; init; }
     
-    public Student Student { get; private init; }
-    public Guid StudentId { get; private init; }
+    public required Student Student { get; init; }
+    public required string StudentId { get; init; }
 
     public int Grade
     {

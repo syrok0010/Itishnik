@@ -7,9 +7,18 @@ public class Task
     private readonly string _description = null!;
     private readonly HashSet<Task> _newVersions = [];
     private readonly HashSet<Tag> _tags = [];
+    
+    private Task() {}
 
-    public Task(string name, string description, bool publish = false)
+    public Task(
+        string name,
+        string description, 
+        Teacher teacher,
+        Solution rightSolution,
+        bool publish = false)
     {
+        Teacher = teacher;
+        RightSolution = rightSolution;
         Name = name;
         Description = description;
         _isPublic = false;
@@ -18,7 +27,13 @@ public class Task
             IsPublic = true;
         }
     }
-
+    
+    public required Teacher Teacher { get; init; }
+    public required string TeacherId { get; init; }
+    
+    public required Solution RightSolution { get; init; }
+    public required Guid RightSolutionId { get; init; }
+    
     public bool IsPublic
     {
         get => _isPublic;
@@ -34,7 +49,7 @@ public class Task
         }
     }
     
-    public Guid Id { get; private init; }
+    public Guid Id { get; init; }
 
     public IEnumerable<Task> NewVersions => _newVersions;
     public IEnumerable<Tag> Tags => _tags;

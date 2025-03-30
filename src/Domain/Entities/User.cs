@@ -4,6 +4,8 @@ namespace Itishnik.Infrastructure.Identity;
 
 public class User : IdentityUser
 {
+    protected const string EmptyNamePart = "";
+
     private string _name = null!;
     private string _surname = null!;
     

@@ -8,9 +8,8 @@ public class Student : User
     private int _educationStartYear;
     private int _groupNumber;
     private readonly HashSet<GradedCourse> _gradedCourses = [];
-    private readonly HashSet<Course> _courses = [];
-
-
+    
+    private Student() : base(EmptyNamePart, EmptyNamePart) {}
     public Student(
         string name,
         string surname,
@@ -25,8 +24,6 @@ public class Student : User
     }
 
     public IEnumerable<GradedCourse> GradedCourses => _gradedCourses;
-
-    public IEnumerable<Course> Courses => _courses;
 
     public void AddGradedCourse(GradedCourse gradedCourse)
     {

@@ -9,8 +9,10 @@ public class Course
     
     public Guid Id { get; private init; }
 
-    public Teacher Teacher { get; set; }
-    public Guid TeacherId { get; private set; }
+    public required Teacher Teacher { get; set; }
+    public required string TeacherId { get; set; }
+    
+    private Course() {}
 
     public Course(string name, string description, Teacher teacher)
     {

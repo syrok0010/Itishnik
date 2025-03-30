@@ -8,14 +8,17 @@ public class CourseConfiguration : IEntityTypeConfiguration<Course>
 {
     public void Configure(EntityTypeBuilder<Course> builder)
     {
-        builder.HasKey(x => x.Id);
-        builder.Property(x => x.Name)
+        builder.HasKey(c => c.Id);
+        
+        builder.Property(c => c.Name)
+            .IsRequired()
+            .HasMaxLength(255);
+        
+        builder.Property(c => c.Description)
             .IsRequired();
-        builder.Property(x => x.Description)
-            .IsRequired();
-        builder.HasOne(x => x.Teacher)
-            .WithMany(x => x.Courses);
-        builder.HasMany(x => x.Students)
-            .WithMany(x => x.Courses);
+        
+        builder.HasOne(c => c.Teacher)
+            .WithMany(t => t.Courses)
+            .HasForeignKey(c => c.TeacherId);
     }
 }

@@ -8,6 +8,8 @@ public class TaskBlock
     private readonly HashSet<File> _files = [];
     private bool _isPublic;
     
+    private TaskBlock() {}
+    
     public TaskBlock(string name, Course course)
     {
         Name = name;
@@ -16,8 +18,8 @@ public class TaskBlock
     
     public Guid Id { get; private init; }
     
-    public Course Course { get; private init; }
-    public Guid CourseId { get; private init; }
+    public required Course Course { get; init; }
+    public Guid CourseId { get; init; }
 
     public IEnumerable<Task> Tasks => _tasks;
     public IEnumerable<File> Files => _files;
