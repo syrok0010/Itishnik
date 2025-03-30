@@ -1,15 +1,13 @@
-using Itishnik.Infrastructure.Identity;
-
 namespace Itishnik.Domain.Entities;
 
-public class Student : User
+public class Student : ApplicationUser
 {
     private string _educationalProgram = null!;
     private int _educationStartYear;
     private int _groupNumber;
     private readonly HashSet<GradedCourse> _gradedCourses = [];
     
-    private Student() : base(EmptyNamePart, EmptyNamePart) {}
+    private Student() : base(string.Empty, string.Empty) {}
     public Student(
         string name,
         string surname,

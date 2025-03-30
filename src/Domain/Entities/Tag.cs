@@ -11,5 +11,5 @@ public class Tag
     
     public Guid Id { get; init; }
 
-    public required string Text { get; set; }
+    public string Text { get; private set; } = null!;
 }

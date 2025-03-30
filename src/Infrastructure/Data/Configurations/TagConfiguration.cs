@@ -10,7 +10,6 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
     {
         builder.HasKey(t => t.Id);
         builder.Property(t => t.Text)
-            .IsRequired()
             .HasMaxLength(100);
     }
 }

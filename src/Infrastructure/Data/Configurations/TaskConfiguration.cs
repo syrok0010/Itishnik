@@ -1,3 +1,4 @@
+using Itishnik.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Task = Itishnik.Domain.Entities.Task;
@@ -10,13 +11,16 @@ public class TaskConfiguration : IEntityTypeConfiguration<Task>
     {
         builder.HasKey(t => t.Id);
         builder.Property(t => t.Name)
-            .IsRequired()
             .HasMaxLength(255);
         builder.Property(t => t.Description)
-            .IsRequired()
             .HasMaxLength(1000);
         builder.HasOne(x => x.Teacher)
             .WithMany()
             .HasForeignKey(x => x.TeacherId);
+        builder.HasMany<Solution>()
+            .WithOne(x => x.Task)
+            .HasForeignKey(x => x.TaskId);
+        builder.HasMany(x => x.Tags)
+            .WithMany();
     }
 }

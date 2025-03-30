@@ -9,9 +9,8 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
 {
     public void Configure(EntityTypeBuilder<Student> builder)
     {
-        builder.HasBaseType<User>();
+        builder.HasBaseType<ApplicationUser>();
         builder.Property(s => s.EducationalProgram)
-            .IsRequired()
             .HasMaxLength(255);
     }
 }

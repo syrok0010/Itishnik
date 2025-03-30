@@ -14,11 +14,9 @@ public class Task
         string name,
         string description, 
         Teacher teacher,
-        Solution rightSolution,
         bool publish = false)
     {
         Teacher = teacher;
-        RightSolution = rightSolution;
         Name = name;
         Description = description;
         _isPublic = false;
@@ -27,12 +25,11 @@ public class Task
             IsPublic = true;
         }
     }
-    
-    public required Teacher Teacher { get; init; }
-    public required string TeacherId { get; init; }
-    
-    public required Solution RightSolution { get; init; }
-    public required Guid RightSolutionId { get; init; }
+
+    public Teacher Teacher { get; private init; } = null!;
+    public Guid TeacherId { get; private init; }
+
+    public Guid RightSolutionId { get; private init; }
     
     public bool IsPublic
     {
@@ -49,7 +46,7 @@ public class Task
         }
     }
     
-    public Guid Id { get; init; }
+    public Guid Id { get; private init; }
 
     public IEnumerable<Task> NewVersions => _newVersions;
     public IEnumerable<Tag> Tags => _tags;
@@ -74,5 +71,4 @@ public class Task
     }
     public void AddNewVersion(Task task) => _newVersions.Add(task);
     public void AddTag(Tag tag) => _tags.Add(tag);
-    
 }

@@ -9,7 +9,8 @@ public class SolutionConfiguration : IEntityTypeConfiguration<Solution>
     public void Configure(EntityTypeBuilder<Solution> builder)
     {
         builder.HasKey(s => s.Id);
-        builder.Property(s => s.Text).IsRequired().HasMaxLength(2000);
+        builder.Property(s => s.Text)
+            .HasMaxLength(2000);
         builder.HasOne(s => s.Task)
             .WithMany()
             .HasForeignKey(s => s.TaskId);

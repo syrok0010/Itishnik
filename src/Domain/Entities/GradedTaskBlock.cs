@@ -16,12 +16,12 @@ public class GradedTaskBlock
     }
 
     public Guid Id { get; private init; }
-    
-    public required Student Student { get; init; }
-    public required string StudentId { get; init; }
-    
-    public required TaskBlock TaskBlock { get; init; }
-    public Guid TaskBlockId { get; init; }
+
+    public Student Student { get; private init; } = null!;
+    public Guid StudentId { get; private init; }
+
+    public TaskBlock TaskBlock { get; private init; } = null!;
+    public Guid TaskBlockId { get; private init; }
 
     public IEnumerable<Solution> Solutions => _solutions;
 

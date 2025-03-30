@@ -9,7 +9,7 @@ public class TeacherConfiguration : IEntityTypeConfiguration<Teacher>
 {
     public void Configure(EntityTypeBuilder<Teacher> builder)
     {
-        builder.HasBaseType<User>();
+        builder.HasBaseType<ApplicationUser>();
         builder.HasMany(t => t.Courses)
             .WithOne(c => c.Teacher)
             .HasForeignKey(c => c.TeacherId);
