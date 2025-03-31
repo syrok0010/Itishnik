@@ -4,7 +4,7 @@ public class Teacher(string name, string surname, string? patronymic) : Applicat
 {
     private readonly HashSet<Course> _courses = [];
 
-    private Teacher() : this(string.Empty, string.Empty, null) {}
+    private Teacher() : this("DefaultName", "DefaultSurname", null) {}
 
     public IEnumerable<Course> Courses => _courses;
 

@@ -5,5 +5,48 @@
     "title": "Itishnik API",
     "version": "1.0.0"
   },
-  "components": {}
+  "paths": {
+    "/api/Courses": {
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "CreateCourseRequest",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCourseCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateCourseCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      }
+    }
+  }
 }

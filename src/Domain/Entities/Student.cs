@@ -7,7 +7,7 @@ public class Student : ApplicationUser
     private int _groupNumber;
     private readonly HashSet<GradedCourse> _gradedCourses = [];
     
-    private Student() : base(string.Empty, string.Empty) {}
+    private Student() : base("DefaultName", "DefaultSurname") {}
     public Student(
         string name,
         string surname,

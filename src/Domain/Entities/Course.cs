@@ -13,7 +13,7 @@ public class Course
     
     private Course() {}
 
-    public Course(string name, string description, Teacher teacher)
+    public Course(Teacher teacher, string name, string? description = null)
     {
         Name = name;
         Description = description;

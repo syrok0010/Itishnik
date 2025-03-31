@@ -72,15 +72,30 @@ public class ApplicationDbContextInitialiser
     {
         // Default roles
         var administratorRole = new IdentityRole<Guid>(Roles.Administrator);
+        var teacherRole = new IdentityRole<Guid>(Roles.Teacher);
+        var studentRole = new IdentityRole<Guid>(Roles.Student);
 
         if (_roleManager.Roles.All(r => r.Name != administratorRole.Name))
         {
             await _roleManager.CreateAsync(administratorRole);
+            await _roleManager.CreateAsync(teacherRole);
+            await _roleManager.CreateAsync(studentRole);
         }
 
         // Default users
         var administrator = new ApplicationUser("Админ", "Админов")
             { UserName = "administrator@localhost", Email = "administrator@localhost" };
+
+        var teacher = new Teacher("Иванов", "Иван", "Иванович") 
+            { UserName = "teacher@localhost", Email = "teacher@localhost" };
+
+        var student = new Student(
+            "Сергеев", 
+            "Сергей", 
+            "Сергеевич", 
+            "Программная инженерия",
+            1,
+            2022) { UserName = "student@localhost", Email = "student@localhost" };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
@@ -88,6 +103,18 @@ public class ApplicationDbContextInitialiser
             if (!string.IsNullOrWhiteSpace(administratorRole.Name))
             {
                 await _userManager.AddToRolesAsync(administrator, [administratorRole.Name]);
+            }
+
+            await _userManager.CreateAsync(teacher, "Teacher1!");
+            if (!string.IsNullOrWhiteSpace(teacherRole.Name))
+            {
+                await _userManager.AddToRolesAsync(teacher, [teacherRole.Name]);
+            }
+
+            await _userManager.CreateAsync(student, "Student1!");
+            if (!string.IsNullOrWhiteSpace(studentRole.Name))
+            {
+                await _userManager.AddToRolesAsync(student, [studentRole.Name]);
             }
         }
     }

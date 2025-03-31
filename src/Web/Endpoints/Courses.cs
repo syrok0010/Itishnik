@@ -1,3 +1,5 @@
+using Itishnik.Application.Common.Interfaces;
+using Itishnik.Web.Services;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.DependencyInjection.Courses.Commands.CreateCourse;
 
@@ -9,12 +11,17 @@ public class Courses : EndpointGroupBase
     {
         app.MapGroup(this)
             .RequireAuthorization()
-            .MapPost(CreateCourse);
+            .MapPost(CreateCourseRequest);
     }
 
-    public async Task<Created<Guid>> CreateCourse(ISender sender, CreateCourseCommand command)
+    public async Task<IResult> CreateCourseRequest(ISender sender, CreateCourseCommand command, IUser user)
     {
-        var id = await sender.Send(command);
+        if (user.Id == null)
+        {
+            return TypedResults.Unauthorized();
+        }
+        
+        var id = await sender.Send(command with {UserId = user.Id.Value});
         return TypedResults.Created($"/{nameof(Courses)}/{id}", id);
     }
 }
