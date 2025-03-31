@@ -1,15 +1,13 @@
-using Itishnik.Infrastructure.Identity;
-
 namespace Itishnik.Domain.Entities;
 
-public class Student : User
+public class Student : ApplicationUser
 {
     private string _educationalProgram = null!;
     private int _educationStartYear;
     private int _groupNumber;
     private readonly HashSet<GradedCourse> _gradedCourses = [];
-
-
+    
+    private Student() : base(string.Empty, string.Empty) {}
     public Student(
         string name,
         string surname,
@@ -23,7 +21,7 @@ public class Student : User
         GroupNumber = groupNumber;
     }
 
-    private IEnumerable<GradedCourse> GradedCourses => _gradedCourses;
+    public IEnumerable<GradedCourse> GradedCourses => _gradedCourses;
 
     public void AddGradedCourse(GradedCourse gradedCourse)
     {

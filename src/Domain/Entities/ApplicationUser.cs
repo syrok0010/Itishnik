@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Itishnik.Infrastructure.Identity;
+namespace Itishnik.Domain.Entities;
 
-public class User : IdentityUser
+public class ApplicationUser : IdentityUser<Guid>
 {
     private string _name = null!;
     private string _surname = null!;
     
     
-    protected User(string name, string surname, string? patronymic=null)
+    public ApplicationUser(string name, string surname, string? patronymic=null)
     {
         Name = name;
         Surname = surname;
         Patronymic = patronymic;
     }
-    
+
     public string Name
     {
         get => _name;

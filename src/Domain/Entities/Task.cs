@@ -7,9 +7,16 @@ public class Task
     private readonly string _description = null!;
     private readonly HashSet<Task> _newVersions = [];
     private readonly HashSet<Tag> _tags = [];
+    
+    private Task() {}
 
-    public Task(string name, string description, bool publish = false)
+    public Task(
+        string name,
+        string description, 
+        Teacher teacher,
+        bool publish = false)
     {
+        Teacher = teacher;
         Name = name;
         Description = description;
         _isPublic = false;
@@ -19,6 +26,11 @@ public class Task
         }
     }
 
+    public Teacher Teacher { get; private init; } = null!;
+    public Guid TeacherId { get; private init; }
+
+    public Guid? RightSolutionId { get; private init; }
+    
     public bool IsPublic
     {
         get => _isPublic;
@@ -59,5 +71,4 @@ public class Task
     }
     public void AddNewVersion(Task task) => _newVersions.Add(task);
     public void AddTag(Tag tag) => _tags.Add(tag);
-    
 }

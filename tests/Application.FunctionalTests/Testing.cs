@@ -1,10 +1,12 @@
 ﻿using Itishnik.Domain.Constants;
+using Itishnik.Domain.Entities;
 using Itishnik.Infrastructure.Data;
 using Itishnik.Infrastructure.Identity;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Task = System.Threading.Tasks.Task;
 
 namespace Itishnik.Application.FunctionalTests;
 
@@ -14,7 +16,7 @@ public partial class Testing
     private static ITestDatabase _database = null!;
     private static CustomWebApplicationFactory _factory = null!;
     private static IServiceScopeFactory _scopeFactory = null!;
-    private static string? _userId;
+    private static Guid? _userId;
 
     [OneTimeSetUp]
     public async Task RunBeforeAnyTests()
@@ -44,28 +46,48 @@ public partial class Testing
         await mediator.Send(request);
     }
 
-    public static string? GetUserId()
+    public static Guid? GetUserId()
     {
         return _userId;
     }
 
-    public static async Task<string> RunAsDefaultUserAsync()
+    public static async Task<Guid> RunAsDefaultUserAsync()
     {
-        return await RunAsUserAsync("test@local", "Testing1234!", Array.Empty<string>());
+        return await RunAsUserAsync(
+            "test@local",
+            "Testing1234!", 
+            [],
+            "Юзер",
+            "Юзеров",
+            "Юзерович");
     }
 
-    public static async Task<string> RunAsAdministratorAsync()
+    public static async Task<Guid> RunAsAdministratorAsync()
     {
-        return await RunAsUserAsync("administrator@local", "Administrator1234!", new[] { Roles.Administrator });
+        return await RunAsUserAsync(
+            "administrator@local",
+            "Administrator1234!",
+            [Roles.Administrator],
+            "Админ",
+            "Админов",
+            "Админович");
     }
 
-    public static async Task<string> RunAsUserAsync(string userName, string password, string[] roles)
+    public static async Task<Guid> RunAsUserAsync(
+        string userName,
+        string password,
+        string[] roles,
+        string name,
+        string surname,
+        string? patronymic = null
+        )
     {
         using var scope = _scopeFactory.CreateScope();
 
         var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-        var user = new ApplicationUser { UserName = userName, Email = userName };
+        var user = new ApplicationUser(name, surname, patronymic)
+            { UserName = userName, Email = userName };
 
         var result = await userManager.CreateAsync(user, password);
 
@@ -85,7 +107,7 @@ public partial class Testing
         {
             _userId = user.Id;
 
-            return _userId;
+            return (Guid)_userId;
         }
 
         var errors = string.Join(Environment.NewLine, result.ToApplicationResult().Errors);

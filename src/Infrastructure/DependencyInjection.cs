@@ -1,5 +1,6 @@
 ﻿using Itishnik.Application.Common.Interfaces;
 using Itishnik.Domain.Constants;
+using Itishnik.Domain.Entities;
 using Itishnik.Infrastructure.Data;
 using Itishnik.Infrastructure.Data.Interceptors;
 using Itishnik.Infrastructure.Identity;
@@ -27,7 +28,7 @@ public static class DependencyInjection
         {
             options.ConfigureWarnings(w => w.Ignore(RelationalEventId.PendingModelChangesWarning));
             options.AddInterceptors(sp.GetServices<ISaveChangesInterceptor>());
-            options.UseNpgsql(connectionString).AddAsyncSeeding(sp);
+            options.UseNpgsql(connectionString);
         });
 
 
@@ -37,7 +38,7 @@ public static class DependencyInjection
         builder.Services.AddSingleton<IEmailSender, EmailSender>();
 
         builder.Services
-            .AddIdentity<ApplicationUser, IdentityRole>(options =>
+            .AddIdentity<ApplicationUser, IdentityRole<Guid>>(options =>
             {
                 options.Password.RequireDigit = true;
                 options.Password.RequiredLength = 8;
