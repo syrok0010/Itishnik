@@ -1,10 +1,8 @@
-using Itishnik.Application.Common.Interfaces;
-
-namespace Microsoft.Extensions.DependencyInjection.Courses.Commands.CreateCourse;
+namespace Itishnik.Application.Courses.Commands.CreateCourse;
 
 public class CreateCourseCommandValidator : AbstractValidator<CreateCourseCommand>
 {
-    public CreateCourseCommandValidator(IApplicationDbContext db)
+    public CreateCourseCommandValidator()
     {
         RuleFor(x => x.Name)
             .NotEmpty()

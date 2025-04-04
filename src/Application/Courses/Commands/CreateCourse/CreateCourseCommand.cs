@@ -1,20 +1,26 @@
-using System.Text.Json.Serialization;
 using Itishnik.Application.Common.Interfaces;
+using Itishnik.Application.Common.Mappings;
+using Itishnik.Application.Common.Security;
 using Itishnik.Domain.Entities;
 
-namespace Microsoft.Extensions.DependencyInjection.Courses.Commands.CreateCourse;
+namespace Itishnik.Application.Courses.Commands.CreateCourse;
 
-public record CreateCourseCommand([property: JsonIgnore] Guid UserId, string Name, string? Description = null) : IRequest<Guid>;
+[Authorize(Roles = "Teacher")]
+public record CreateCourseCommand(string Name, string? Description = null) : IRequest<CourseResponse>;
 
-public class CreateCourseCommandHandler(IApplicationDbContext context) : IRequestHandler<CreateCourseCommand, Guid>
+public class CreateCourseCommandHandler(IApplicationDbContext context, IUser user) 
+    : IRequestHandler<CreateCourseCommand, CourseResponse>
 {
-    public async Task<Guid> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
+    private readonly IApplicationDbContext _context = context;
+    private readonly IUser _user = user;
+
+    public async Task<CourseResponse> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
     {
-        var teacher = await context.Teachers.FirstAsync(x => x.Id == request.UserId, cancellationToken);
+        var teacher = await _context.Teachers.FirstAsync(x => x.Id == _user.Id, cancellationToken);
         var course = new Course(teacher, request.Name, request.Description);
-        await context.Courses.AddAsync(course, cancellationToken);
+        await _context.Courses.AddAsync(course, cancellationToken);
         teacher.AddCourse(course);
-        await context.SaveChangesAsync(cancellationToken);
-        return course.Id;
+        await _context.SaveChangesAsync(cancellationToken);
+        return course.ToCourseResponse();
     }
 }

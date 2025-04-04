@@ -34,5 +34,8 @@ public class ApplicationUser : IdentityUser<Guid>
             _surname = value;
         }
     }
+
+    public string FullName => string.Join(' ', Surname, Name, Patronymic);
+    
     public string? Patronymic { get; set; }
 }

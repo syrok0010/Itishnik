@@ -85,11 +85,17 @@ public class ApplicationDbContextInitialiser
         // Default users
         var administrator = new ApplicationUser("Админ", "Админов")
         {
-            UserName = "administrator@localhost", Email = "administrator@localhost", EmailConfirmed = true
+            UserName = "administrator@localhost",
+            Email = "administrator@localhost", 
+            EmailConfirmed = true
         };
 
-        var teacher = new Teacher("Иванов", "Иван", "Иванович") 
-            { UserName = "teacher@localhost", Email = "teacher@localhost" };
+        var teacher = new Teacher("Иванов", "Иван", "Иванович")
+        {
+            UserName = "teacher@localhost", 
+            Email = "teacher@localhost",
+            EmailConfirmed = true
+        };
 
         var student = new Student(
             "Сергеев", 
@@ -97,7 +103,12 @@ public class ApplicationDbContextInitialiser
             "Сергеевич", 
             "Программная инженерия",
             1,
-            2022) { UserName = "student@localhost", Email = "student@localhost" };
+            2022)
+        {
+            UserName = "student@localhost",
+            Email = "student@localhost",
+            EmailConfirmed = true
+        };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {

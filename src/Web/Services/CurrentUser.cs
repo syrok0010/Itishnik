@@ -5,5 +5,6 @@ namespace Itishnik.Web.Services;
 
 public class CurrentUser(IHttpContextAccessor httpContextAccessor) : IUser
 {
-    public Guid? Id => Guid.Parse(httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? Guid.Empty.ToString());
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    public Guid? Id => Guid.Parse(_httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier) ?? Guid.Empty.ToString());
 }
