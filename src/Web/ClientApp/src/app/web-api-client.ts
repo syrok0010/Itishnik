@@ -15,4 +15,347 @@ import { HttpClient, HttpHeaders, HttpResponse, HttpResponseBase } from '@angula
 
 export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
+export interface ICoursesClient {
+    createCourseRequest(command: CreateCourseCommand): Observable<CourseResponse>;
+}
 
+@Injectable({
+    providedIn: 'root'
+})
+export class CoursesClient implements ICoursesClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    createCourseRequest(command: CreateCourseCommand): Observable<CourseResponse> {
+        let url_ = this.baseUrl + "/api/Courses";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateCourseRequest(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateCourseRequest(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<CourseResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<CourseResponse>;
+        }));
+    }
+
+    protected processCreateCourseRequest(response: HttpResponseBase): Observable<CourseResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 201) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result201 = CourseResponse.fromJS(resultData201);
+            return _observableOf(result201);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
+export class CourseResponse implements ICourseResponse {
+    id?: string;
+    name?: string;
+    teacherId?: string;
+    teacherFullName?: string;
+    teacherEmail?: string;
+    taskBlocks?: TaskBlockResponse[];
+    description?: string | undefined;
+
+    constructor(data?: ICourseResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.teacherId = _data["teacherId"];
+            this.teacherFullName = _data["teacherFullName"];
+            this.teacherEmail = _data["teacherEmail"];
+            if (Array.isArray(_data["taskBlocks"])) {
+                this.taskBlocks = [] as any;
+                for (let item of _data["taskBlocks"])
+                    this.taskBlocks!.push(TaskBlockResponse.fromJS(item));
+            }
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): CourseResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new CourseResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["teacherId"] = this.teacherId;
+        data["teacherFullName"] = this.teacherFullName;
+        data["teacherEmail"] = this.teacherEmail;
+        if (Array.isArray(this.taskBlocks)) {
+            data["taskBlocks"] = [];
+            for (let item of this.taskBlocks)
+                data["taskBlocks"].push(item.toJSON());
+        }
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface ICourseResponse {
+    id?: string;
+    name?: string;
+    teacherId?: string;
+    teacherFullName?: string;
+    teacherEmail?: string;
+    taskBlocks?: TaskBlockResponse[];
+    description?: string | undefined;
+}
+
+export class TaskBlockResponse implements ITaskBlockResponse {
+    id?: string;
+    courseId?: string;
+    name?: string;
+    tasks?: TaskListDto[];
+    weights?: number[];
+    start?: Date;
+    end?: Date;
+    timeAllowed?: string;
+
+    constructor(data?: ITaskBlockResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.courseId = _data["courseId"];
+            this.name = _data["name"];
+            if (Array.isArray(_data["tasks"])) {
+                this.tasks = [] as any;
+                for (let item of _data["tasks"])
+                    this.tasks!.push(TaskListDto.fromJS(item));
+            }
+            if (Array.isArray(_data["weights"])) {
+                this.weights = [] as any;
+                for (let item of _data["weights"])
+                    this.weights!.push(item);
+            }
+            this.start = _data["start"] ? new Date(_data["start"].toString()) : <any>undefined;
+            this.end = _data["end"] ? new Date(_data["end"].toString()) : <any>undefined;
+            this.timeAllowed = _data["timeAllowed"];
+        }
+    }
+
+    static fromJS(data: any): TaskBlockResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new TaskBlockResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["courseId"] = this.courseId;
+        data["name"] = this.name;
+        if (Array.isArray(this.tasks)) {
+            data["tasks"] = [];
+            for (let item of this.tasks)
+                data["tasks"].push(item.toJSON());
+        }
+        if (Array.isArray(this.weights)) {
+            data["weights"] = [];
+            for (let item of this.weights)
+                data["weights"].push(item);
+        }
+        data["start"] = this.start ? this.start.toISOString() : <any>undefined;
+        data["end"] = this.end ? this.end.toISOString() : <any>undefined;
+        data["timeAllowed"] = this.timeAllowed;
+        return data;
+    }
+}
+
+export interface ITaskBlockResponse {
+    id?: string;
+    courseId?: string;
+    name?: string;
+    tasks?: TaskListDto[];
+    weights?: number[];
+    start?: Date;
+    end?: Date;
+    timeAllowed?: string;
+}
+
+export class TaskListDto implements ITaskListDto {
+    id?: string;
+    name?: string;
+
+    constructor(data?: ITaskListDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+        }
+    }
+
+    static fromJS(data: any): TaskListDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TaskListDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        return data;
+    }
+}
+
+export interface ITaskListDto {
+    id?: string;
+    name?: string;
+}
+
+export class CreateCourseCommand implements ICreateCourseCommand {
+    name?: string;
+    description?: string | undefined;
+
+    constructor(data?: ICreateCourseCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): CreateCourseCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateCourseCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface ICreateCourseCommand {
+    name?: string;
+    description?: string | undefined;
+}
+
+export class SwaggerException extends Error {
+    override message: string;
+    status: number;
+    response: string;
+    headers: { [key: string]: any; };
+    result: any;
+
+    constructor(message: string, status: number, response: string, headers: { [key: string]: any; }, result: any) {
+        super();
+
+        this.message = message;
+        this.status = status;
+        this.response = response;
+        this.headers = headers;
+        this.result = result;
+    }
+
+    protected isSwaggerException = true;
+
+    static isSwaggerException(obj: any): obj is SwaggerException {
+        return obj.isSwaggerException === true;
+    }
+}
+
+function throwException(message: string, status: number, response: string, headers: { [key: string]: any; }, result?: any): Observable<any> {
+    if (result !== null && result !== undefined)
+        return _observableThrow(result);
+    else
+        return _observableThrow(new SwaggerException(message, status, response, headers, null));
+}
+
+function blobToText(blob: any): Observable<string> {
+    return new Observable<string>((observer: any) => {
+        if (!blob) {
+            observer.next("");
+            observer.complete();
+        } else {
+            let reader = new FileReader();
+            reader.onload = event => {
+                observer.next((event.target as any).result);
+                observer.complete();
+            };
+            reader.readAsText(blob);
+        }
+    });
+}

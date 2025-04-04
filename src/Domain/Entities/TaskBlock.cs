@@ -23,6 +23,7 @@ public class TaskBlock
 
     public IEnumerable<Task> Tasks => _tasks;
     public IEnumerable<File> Files => _files;
+    public IEnumerable<int> Weights => _weights;
     
     public DateTime StartTime { get; private set; }
     public DateTime EndTime { get; private set; }
