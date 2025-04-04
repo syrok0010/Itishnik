@@ -1,6 +1,5 @@
 ﻿using Itishnik.Domain.Constants;
 using Itishnik.Domain.Entities;
-using Itishnik.Infrastructure.Identity;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -12,8 +11,6 @@ namespace Itishnik.Infrastructure.Data;
 
 public static class InitialiserExtensions
 {
-    
-    
     public static async Task InitialiseDatabaseAsync(this WebApplication app)
     {
         using var scope = app.Services.CreateScope();
@@ -33,8 +30,11 @@ public class ApplicationDbContextInitialiser
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly RoleManager<IdentityRole<Guid>> _roleManager;
 
-    public ApplicationDbContextInitialiser(ILogger<ApplicationDbContextInitialiser> logger,
-        ApplicationDbContext context, UserManager<ApplicationUser> userManager, RoleManager<IdentityRole<Guid>> roleManager)
+    public ApplicationDbContextInitialiser(
+        ILogger<ApplicationDbContextInitialiser> logger,
+        ApplicationDbContext context,
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole<Guid>> roleManager)
     {
         _logger = logger;
         _context = context;
@@ -80,7 +80,9 @@ public class ApplicationDbContextInitialiser
 
         // Default users
         var administrator = new ApplicationUser("Админ", "Админов")
-            { UserName = "administrator@localhost", Email = "administrator@localhost" };
+        {
+            UserName = "administrator@localhost", Email = "administrator@localhost", EmailConfirmed = true
+        };
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
