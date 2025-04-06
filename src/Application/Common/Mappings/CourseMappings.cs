@@ -19,4 +19,9 @@ public static class CourseMappings
             course.Description
         );
     }
+
+    public static CourseListResponse ToCourseListResponse(this Course course)
+    {
+        return new CourseListResponse(course.Id, course.Name, course.Description);
+    }
 }

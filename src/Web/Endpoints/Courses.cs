@@ -1,6 +1,7 @@
+using Itishnik.Application.Common.Models;
 using Itishnik.Application.Courses;
 using Itishnik.Application.Courses.Commands.CreateCourse;
-using Itishnik.Application.Courses.Queries;
+using Itishnik.Application.Courses.Queries.GetCourseList;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Itishnik.Web.Endpoints;
@@ -12,6 +13,7 @@ public class Courses : EndpointGroupBase
         app.MapGroup(this)
             .RequireAuthorization()
             .MapPost(CreateCourseRequest)
+            .MapGet(GetCoursesList)
             .MapGet(GetCourseById, "{id}");
     }
     
@@ -19,6 +21,22 @@ public class Courses : EndpointGroupBase
     {
         var response = await sender.Send(command);
         return TypedResults.Created($"/{nameof(Courses)}/{response.Id}", response);
+    }
+
+    public async Task<
+        Results<
+            Ok<PaginatedList<CourseListResponse>>,
+            NotFound<PaginatedList<CourseListResponse>>
+        >
+    > GetCoursesList(ISender sender, [AsParameters] GetCoursesListQuery query)
+    {
+        var response = await sender.Send(query);
+
+        if (response.TotalCount == 0)
+        {
+            return TypedResults.NotFound(response);
+        }
+        return TypedResults.Ok(response);
     }
 
     public async Task<
