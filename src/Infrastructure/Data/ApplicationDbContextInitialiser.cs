@@ -90,7 +90,7 @@ public class ApplicationDbContextInitialiser
             EmailConfirmed = true
         };
 
-        var teacher = new Teacher("Иванов", "Иван", "Иванович")
+        var teacher = new Teacher("Иван", "Иванов", "Иванович")
         {
             UserName = "teacher@localhost", 
             Email = "teacher@localhost",
@@ -98,8 +98,8 @@ public class ApplicationDbContextInitialiser
         };
 
         var student = new Student(
-            "Сергеев", 
             "Сергей", 
+            "Сергеев", 
             "Сергеевич", 
             "Программная инженерия",
             1,
@@ -112,7 +112,7 @@ public class ApplicationDbContextInitialiser
 
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
-            await _userManager.CreateAsync(administrator, "Administrator1!");
+            await _userManager.CreateAsync(administrator, "Admin111!");
             if (!string.IsNullOrWhiteSpace(administratorRole.Name))
             {
                 await _userManager.AddToRolesAsync(administrator, [administratorRole.Name]);
