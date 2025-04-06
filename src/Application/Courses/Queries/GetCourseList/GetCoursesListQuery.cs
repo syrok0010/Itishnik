@@ -11,9 +11,10 @@ public class CreateCoursesListQueryHandler(IApplicationDbContext context)
 {
     private readonly IApplicationDbContext _context = context;
     
-    public async Task<PaginatedList<CourseListResponse>> Handle(GetCoursesListQuery request, CancellationToken cancellationToken)
+    public Task<PaginatedList<CourseListResponse>> Handle(GetCoursesListQuery request, CancellationToken cancellationToken)
     {
-        return await _context.Courses
+        return _context.Courses
+            .Include(x => x.Students)
             .Select(x => x.ToCourseListResponse())
             .PaginatedListAsync(request.PageNumber, request.PageSize);
     }

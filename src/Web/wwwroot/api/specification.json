@@ -276,6 +276,10 @@
           "name": {
             "type": "string"
           },
+          "studentsCount": {
+            "type": "integer",
+            "format": "int32"
+          },
           "description": {
             "type": "string",
             "nullable": true

@@ -22,6 +22,6 @@ public static class CourseMappings
 
     public static CourseListResponse ToCourseListResponse(this Course course)
     {
-        return new CourseListResponse(course.Id, course.Name, course.Description);
+        return new CourseListResponse(course.Id, course.Name, course.Students.Count(), course.Description);
     }
 }
