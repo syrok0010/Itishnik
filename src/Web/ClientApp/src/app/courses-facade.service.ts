@@ -56,4 +56,6 @@ export class CoursesFacadeService {
   private _store: BehaviorSubject<CoursesState> = new BehaviorSubject(_state);
 
   coursesList$ = this._store.pipe(map((state) => state.coursesList));
+
+  createCourse(name: string): void {}
 }
