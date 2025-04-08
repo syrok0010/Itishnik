@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
 using Itishnik.Application.Common.Behaviours;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-namespace Itishnik.Application;
+namespace Microsoft.Extensions.DependencyInjection;
 
 public static class DependencyInjection
 {
