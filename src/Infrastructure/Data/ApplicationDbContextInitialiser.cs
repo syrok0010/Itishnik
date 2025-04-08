@@ -113,22 +113,31 @@ public class ApplicationDbContextInitialiser
         if (_userManager.Users.All(u => u.UserName != administrator.UserName))
         {
             await _userManager.CreateAsync(administrator, "Admin111!");
-            if (!string.IsNullOrWhiteSpace(administratorRole.Name))
-            {
-                await _userManager.AddToRolesAsync(administrator, [administratorRole.Name]);
-            }
-
+            await _userManager.AddToRolesAsync(administrator, [administratorRole.Name!]);
             await _userManager.CreateAsync(teacher, "Teacher1!");
-            if (!string.IsNullOrWhiteSpace(teacherRole.Name))
-            {
-                await _userManager.AddToRolesAsync(teacher, [teacherRole.Name]);
-            }
-
+            await _userManager.AddToRolesAsync(teacher, [teacherRole.Name!]);
             await _userManager.CreateAsync(student, "Student1!");
-            if (!string.IsNullOrWhiteSpace(studentRole.Name))
-            {
-                await _userManager.AddToRolesAsync(student, [studentRole.Name]);
-            }
+            await _userManager.AddToRolesAsync(student, [studentRole.Name!]);
         }
+
+        if (!await _context.Courses.AnyAsync())
+        {
+            List<Course> courses =
+            [
+                new Course(teacher, "Алгосы 1"),
+                new Course(teacher, "Алгосы 2")
+            ];
+            foreach (var course in courses)
+            {
+                var gradedCourse = new GradedCourse(course, student);
+                course.AddGradedCourse(gradedCourse);
+                student.AddGradedCourse(gradedCourse);
+                teacher.AddCourse(course);
+                await _context.GradedCourses.AddAsync(gradedCourse);
+            }
+            await _context.Courses.AddRangeAsync(courses);
+        }
+
+        await _context.SaveChangesAsync();
     }
 }
