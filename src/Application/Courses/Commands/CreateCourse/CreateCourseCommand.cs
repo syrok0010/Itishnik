@@ -8,11 +8,12 @@ namespace Itishnik.Application.Courses.Commands.CreateCourse;
 [Authorize(Roles = "Teacher")]
 public record CreateCourseCommand(string Name, string? Description = null) : IRequest<CourseResponse>;
 
-public class CreateCourseCommandHandler(IApplicationDbContext context, IUser user) 
+public class CreateCourseCommandHandler(IApplicationDbContext context, IUser user, IMapper mapper) 
     : IRequestHandler<CreateCourseCommand, CourseResponse>
 {
     private readonly IApplicationDbContext _context = context;
     private readonly IUser _user = user;
+    private readonly IMapper _mapper = mapper;
 
     public async Task<CourseResponse> Handle(CreateCourseCommand request, CancellationToken cancellationToken)
     {
@@ -21,6 +22,6 @@ public class CreateCourseCommandHandler(IApplicationDbContext context, IUser use
         await _context.Courses.AddAsync(course, cancellationToken);
         teacher.AddCourse(course);
         await _context.SaveChangesAsync(cancellationToken);
-        return course.ToCourseResponse();
+        return _mapper.Map<Course, CourseResponse>(course);
     }
 }

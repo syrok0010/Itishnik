@@ -3,10 +3,10 @@ using Task = Itishnik.Domain.Entities.Task;
 
 namespace Itishnik.Application.Common.Mappings;
 
-public static class TasksMappings
+public class TaskProfile : Profile
 {
-    public static TaskListDto ToTaskListDto(this Task task)
+    public TaskProfile()
     {
-        return new TaskListDto(task.Id, task.Name);
+        CreateMap<Task, TaskListDto>();
     }
 }

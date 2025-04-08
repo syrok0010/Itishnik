@@ -195,11 +195,11 @@
               "format": "int32"
             }
           },
-          "start": {
+          "startTime": {
             "type": "string",
             "format": "date-time"
           },
-          "end": {
+          "endTime": {
             "type": "string",
             "format": "date-time"
           },

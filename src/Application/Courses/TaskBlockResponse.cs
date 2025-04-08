@@ -8,6 +8,6 @@ public record TaskBlockResponse(
     string Name,
     ICollection<TaskListDto> Tasks,
     ICollection<int> Weights,
-    DateTime Start,
-    DateTime End,
+    DateTime StartTime,
+    DateTime EndTime,
     TimeSpan TimeAllowed);

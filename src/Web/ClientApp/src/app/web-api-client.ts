@@ -286,8 +286,8 @@ export class TaskBlockResponse implements ITaskBlockResponse {
     name?: string;
     tasks?: TaskListDto[];
     weights?: number[];
-    start?: Date;
-    end?: Date;
+    startTime?: Date;
+    endTime?: Date;
     timeAllowed?: string;
 
     constructor(data?: ITaskBlockResponse) {
@@ -314,8 +314,8 @@ export class TaskBlockResponse implements ITaskBlockResponse {
                 for (let item of _data["weights"])
                     this.weights!.push(item);
             }
-            this.start = _data["start"] ? new Date(_data["start"].toString()) : <any>undefined;
-            this.end = _data["end"] ? new Date(_data["end"].toString()) : <any>undefined;
+            this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
+            this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
             this.timeAllowed = _data["timeAllowed"];
         }
     }
@@ -342,8 +342,8 @@ export class TaskBlockResponse implements ITaskBlockResponse {
             for (let item of this.weights)
                 data["weights"].push(item);
         }
-        data["start"] = this.start ? this.start.toISOString() : <any>undefined;
-        data["end"] = this.end ? this.end.toISOString() : <any>undefined;
+        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
+        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
         data["timeAllowed"] = this.timeAllowed;
         return data;
     }
@@ -355,8 +355,8 @@ export interface ITaskBlockResponse {
     name?: string;
     tasks?: TaskListDto[];
     weights?: number[];
-    start?: Date;
-    end?: Date;
+    startTime?: Date;
+    endTime?: Date;
     timeAllowed?: string;
 }
 

@@ -1,3 +1,4 @@
+using Itishnik.Application;
 using Itishnik.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
