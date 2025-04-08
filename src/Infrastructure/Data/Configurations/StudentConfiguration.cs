@@ -12,5 +12,8 @@ public class StudentConfiguration : IEntityTypeConfiguration<Student>
         builder.HasBaseType<ApplicationUser>();
         builder.Property(s => s.EducationalProgram)
             .HasMaxLength(255);
+        builder.HasMany(s => s.GradedCourses)
+            .WithOne(gc => gc.Student)
+            .HasForeignKey(gc => gc.StudentId);
     }
 }

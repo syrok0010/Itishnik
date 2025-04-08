@@ -3,8 +3,8 @@ namespace Itishnik.Domain.Entities;
 public class Course
 {
     private string _name = null!;
-    private HashSet<Student> _students = [];
-    private HashSet<TaskBlock> _taskBlocks = [];
+    private readonly HashSet<GradedCourse> _gradedCourses = [];
+    private readonly HashSet<TaskBlock> _taskBlocks = [];
     
     public Guid Id { get; private init; }
 
@@ -19,9 +19,10 @@ public class Course
         Description = description;
         Teacher = teacher;
     }
-
-    public IEnumerable<Student> Students => _students;
+    
     public IEnumerable<TaskBlock> TaskBlocks => _taskBlocks;
+
+    public IEnumerable<GradedCourse> GradedCourses => _gradedCourses;
 
     public void AddTaskBlock(TaskBlock taskBlock)
     {
@@ -38,9 +39,9 @@ public class Course
         _taskBlocks.Remove(taskBlock);
     }
 
-    public void AddStudent(Student student)
+    public void AddGradedCourse(GradedCourse gradedCourse)
     {
-        _students.Add(student);
+        _gradedCourses.Add(gradedCourse);
     }
 
     public string Name
@@ -49,7 +50,7 @@ public class Course
         private set
         {
             ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(Name));
-            if (_students.Count != 0)
+            if (_gradedCourses.Count != 0)
             {
                 throw new InvalidOperationException("Невозможно поменять название курса, пока есть студенты");
             }

@@ -10,7 +10,7 @@ public class GradedCourseConfiguration : IEntityTypeConfiguration<GradedCourse>
     {
         builder.HasKey(gc => gc.Id);
         builder.HasOne(gc => gc.Course)
-            .WithMany()
+            .WithMany(c => c.GradedCourses)
             .HasForeignKey(gc => gc.CourseId);
         builder.HasOne(gc => gc.Student)
             .WithMany(s => s.GradedCourses)
