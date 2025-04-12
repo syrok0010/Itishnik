@@ -130,6 +130,38 @@
           }
         }
       }
+    },
+    "/api/Tasks": {
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "CreateTaskRequest",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTaskCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -282,6 +314,84 @@
           },
           "description": {
             "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "TaskResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "isPublic": {
+            "type": "boolean"
+          },
+          "text": {
+            "type": "string"
+          },
+          "rightSolutionId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "teacherId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "previousVersionId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "firstVersionId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
+            }
+          }
+        }
+      },
+      "Tag": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateTaskCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "isPublic": {
+            "type": "boolean"
+          },
+          "previousTaskId": {
+            "type": "string",
+            "format": "guid",
             "nullable": true
           }
         }

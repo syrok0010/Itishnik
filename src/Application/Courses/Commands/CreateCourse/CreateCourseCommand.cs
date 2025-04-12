@@ -1,5 +1,4 @@
 using Itishnik.Application.Common.Interfaces;
-using Itishnik.Application.Common.Mappings;
 using Itishnik.Application.Common.Security;
 using Itishnik.Domain.Entities;
 
@@ -22,6 +21,6 @@ public class CreateCourseCommandHandler(IApplicationDbContext context, IUser use
         await _context.Courses.AddAsync(course, cancellationToken);
         teacher.AddCourse(course);
         await _context.SaveChangesAsync(cancellationToken);
-        return _mapper.Map<Course, CourseResponse>(course);
+        return _mapper.Map<CourseResponse>(course);
     }
 }

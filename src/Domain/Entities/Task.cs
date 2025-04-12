@@ -4,26 +4,25 @@ public class Task
 {
     private string _name = null!;
     private bool _isPublic;
-    private readonly string _description = null!;
-    private readonly HashSet<Task> _newVersions = [];
+    private readonly string _text = null!;
     private readonly HashSet<Tag> _tags = [];
     
     private Task() {}
 
     public Task(
         string name,
-        string description, 
+        string text, 
         Teacher teacher,
+        Task? previousVersion = null,
         bool publish = false)
     {
         Teacher = teacher;
         Name = name;
-        Description = description;
-        _isPublic = false;
-        if (publish)
-        {
-            IsPublic = true;
-        }
+        Text = text;
+        IsPublic = publish;
+        PreviousVersion = previousVersion;
+        if (previousVersion is not null) 
+            FirstVersion = previousVersion.FirstVersion ?? previousVersion;
     }
 
     public Teacher Teacher { get; private init; } = null!;
@@ -31,25 +30,30 @@ public class Task
 
     public Guid? RightSolutionId { get; private init; }
     
+    public Task? FirstVersion { get; private init; }
+    public Task? PreviousVersion { get; private init; }
+    
     public bool IsPublic
     {
         get => _isPublic;
         set
         {
-            _isPublic = _isPublic switch
+            if (!_isPublic)
             {
-                true when value => throw new InvalidOperationException("Задача уже опубликована"),
-                true when !value => throw new InvalidOperationException("Невозможно скрыть опубликованную задачу"),
-                false when !value => throw new InvalidOperationException("Задача не опубликована"),
-                _ => true
-            };
+                _isPublic = value;
+                return;
+            }
+
+            if (value)
+                throw new InvalidOperationException("Задача уже опубликована");
+            throw new InvalidOperationException("Невозможно скрыть опубликованную задачу");
         }
     }
     
     public Guid Id { get; private init; }
 
-    public IEnumerable<Task> NewVersions => _newVersions;
     public IEnumerable<Tag> Tags => _tags;
+
     public string Name
     {
         get => _name;
@@ -60,15 +64,15 @@ public class Task
         }
     }
 
-    public string Description
+    public string Text
     {
-        get => _description;
+        get => _text;
         private init
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(Description));
-            _description = value;
+            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(Text));
+            _text = value;
         }
     }
-    public void AddNewVersion(Task task) => _newVersions.Add(task);
+
     public void AddTag(Tag tag) => _tags.Add(tag);
 }
