@@ -1,50 +1,19 @@
 import { Injectable } from '@angular/core';
-import { Course, Student } from './web-api-client';
+import { CourseListResponse } from './web-api-client';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface CoursesState {
-  coursesList: Course[];
+  coursesList: CourseListResponse[];
 }
 
 const _state: CoursesState = {
   coursesList: [
-    new Course({
-      name: 'Course 1',
-      description: 'Course 1',
-      taskBlocks: [],
-      students: [
-        new Student({
-          educationStartYear: 2021,
-          educationalProgram: 'ПМИ',
-          groupNumber: 2,
-        }),
-        new Student({
-          educationStartYear: 2020,
-          educationalProgram: 'БИ',
-          groupNumber: 1,
-        }),
-        new Student({
-          educationStartYear: 2022,
-          educationalProgram: 'ПИ',
-          groupNumber: 3,
-        }),
-        new Student({
-          educationStartYear: 2023,
-          educationalProgram: 'ПИ',
-          groupNumber: 2,
-        }),
-        new Student({
-          educationStartYear: 2020,
-          educationalProgram: 'ПИ',
-          groupNumber: 2,
-        }),
-        new Student({
-          educationStartYear: 2022,
-          educationalProgram: 'ПИ',
-          groupNumber: 2,
-        }),
-      ],
+    new CourseListResponse({
+      id: '',
+      name: 'Some course name',
+      studentsCount: 15,
+      description: 'Very long description',
     }),
   ],
 };

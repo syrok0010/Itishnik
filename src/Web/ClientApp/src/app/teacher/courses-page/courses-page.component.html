@@ -7,7 +7,6 @@
     <thead>
       <tr tuiThGroup>
         <th tuiTh *tuiHead="'course'">Курс</th>
-        <th tuiTh *tuiHead="'groups'">Группы</th>
         <th tuiTh *tuiHead="'students'">Количество студентов</th>
         <th tuiTh *tuiHead="'taskBlocks'">Количество блоков заданий</th>
         <th tuiTh *tuiHead="'description'">Описание</th>
@@ -19,12 +18,10 @@
           <td tuiTd *tuiCell="'course'">
             {{ item.name }}
           </td>
-          <td tuiTd *tuiCell="'groups'">1</td>
           <td tuiTd *tuiCell="'students'">
-            {{ item.students.length }}
+            {{ item.studentsCount }}
           </td>
           <td tuiTd *tuiCell="'taskBlocks'">
-            {{ item.taskBlocks.length }}
           </td>
           <td tuiTd *tuiCell="'description'">
             {{ item.description }}

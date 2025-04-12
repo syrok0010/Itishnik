@@ -16,13 +16,7 @@ export class CoursesPageComponent {
   coursesFacade = inject(CoursesFacadeService);
   coursesList$ = this.coursesFacade.coursesList$;
 
-  readonly columns = [
-    'course',
-    'groups',
-    'students',
-    'taskBlocks',
-    'description',
-  ];
+  readonly columns = ['course', 'students', 'taskBlocks', 'description'];
 
   addCourse() {
     this.dialog(undefined).subscribe();
