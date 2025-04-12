@@ -10,4 +10,8 @@ export const routes: Routes = [
         (x) => x.CoursesPageComponent,
       ),
   },
+  {
+    path: 'teacher/tasks',
+    loadComponent: () => import('./tasks-page/tasks-page.component'),
+  },
 ];
