@@ -1,13 +1,17 @@
-import { Injectable } from '@angular/core';
-import { CourseListResponse } from './web-api-client';
-import { BehaviorSubject } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import {
+  CourseListResponse,
+  CoursesClient,
+  CreateCourseCommand,
+} from './web-api-client';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface CoursesState {
   coursesList: CourseListResponse[];
 }
 
-const _state: CoursesState = {
+let _state: CoursesState = {
   coursesList: [
     new CourseListResponse({
       id: '',
@@ -22,9 +26,31 @@ const _state: CoursesState = {
   providedIn: 'root',
 })
 export class CoursesFacadeService {
+  coursesClient = inject(CoursesClient);
+
   private _store: BehaviorSubject<CoursesState> = new BehaviorSubject(_state);
 
   coursesList$ = this._store.pipe(map((state) => state.coursesList));
 
-  createCourse(name: string): void {}
+  async createCourse(name: string): Promise<void> {
+    const response = await firstValueFrom(
+      this.coursesClient.createCourseRequest(
+        new CreateCourseCommand({ name: name, description: '' }),
+      ),
+    );
+    this._store.next(
+      (_state = {
+        ..._state,
+        coursesList: [
+          ..._state.coursesList,
+          new CourseListResponse({
+            id: response.id,
+            name: response.name,
+            description: response.description,
+            studentsCount: 0,
+          }),
+        ],
+      }),
+    );
+  }
 }
