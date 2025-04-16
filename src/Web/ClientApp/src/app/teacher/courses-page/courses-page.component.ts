@@ -4,10 +4,11 @@ import { CoursesFacadeService } from '../../courses-facade.service';
 import { AsyncPipe } from '@angular/common';
 import { TuiButton, tuiDialog, TuiIcon } from '@taiga-ui/core';
 import { CreateCourseDialogComponent } from '../create-course-dialog.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-courses-page',
-  imports: [TuiTable, AsyncPipe, TuiButton, TuiIcon],
+  imports: [TuiTable, AsyncPipe, TuiButton, TuiIcon, RouterLink],
   templateUrl: './courses-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: ':host { @apply grow flex flex-col }',
