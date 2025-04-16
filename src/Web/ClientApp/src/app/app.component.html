@@ -1,7 +1,9 @@
 <tui-root>
-  <div class="bg-gray-100 min-h-dvh flex flex-col">
+  <div class="flex min-h-dvh flex-col bg-gray-100">
     <app-nav-menu class="shrink-0"></app-nav-menu>
-    <main class="container mx-auto py-4 grow flex flex-col">
+    <main
+      class="container mx-auto flex grow flex-col py-4 [&>:not(:first-child)]:flex [&>:not(:first-child)]:grow [&>:not(:first-child)]:flex-col"
+    >
       <router-outlet></router-outlet>
     </main>
   </div>

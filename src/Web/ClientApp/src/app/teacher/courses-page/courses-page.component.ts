@@ -11,7 +11,6 @@ import { RouterLink } from '@angular/router';
   imports: [TuiTable, AsyncPipe, TuiButton, TuiIcon, RouterLink],
   templateUrl: './courses-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styles: ':host { @apply grow flex flex-col }',
 })
 export default class CoursesPageComponent {
   coursesFacade = inject(CoursesFacadeService);
