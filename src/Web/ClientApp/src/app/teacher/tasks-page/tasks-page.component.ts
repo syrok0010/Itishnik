@@ -6,6 +6,7 @@ import { TuiAvatar, TuiCheckbox, TuiChip } from '@taiga-ui/kit';
 import { TuiAutoColorPipe, TuiInitialsPipe, TuiTitle } from '@taiga-ui/core';
 import { TuiCell } from '@taiga-ui/layout';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-tasks-page',
@@ -20,6 +21,7 @@ import { FormsModule } from '@angular/forms';
     TuiCell,
     TuiCheckbox,
     FormsModule,
+    RouterLink,
   ],
   templateUrl: './tasks-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

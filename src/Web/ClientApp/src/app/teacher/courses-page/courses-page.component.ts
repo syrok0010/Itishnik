@@ -12,7 +12,7 @@ import { CreateCourseDialogComponent } from '../create-course-dialog.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   styles: ':host { @apply grow flex flex-col }',
 })
-export class CoursesPageComponent {
+export default class CoursesPageComponent {
   coursesFacade = inject(CoursesFacadeService);
   coursesList$ = this.coursesFacade.coursesList$;
 

@@ -14,7 +14,7 @@
     </thead>
     <tbody tuiTbody [data]="data">
       @for (item of data; track item.id) {
-        <tr tuiTr class="cursor-pointer hover:*:bg-gray-100 *:bg-transparent">
+        <tr tuiTr class="cursor-pointer hover:*:bg-gray-100 *:bg-transparent" [routerLink]="[item.id]">
           <td tuiTd *tuiCell="'isPublic'">
             <div tuiCell="l">
               <input
