@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TuiTable } from '@taiga-ui/addon-table';
-import { TasksFacadeService } from '../tasks-facade.service';
+import { TasksFacadeService } from '../../tasks-facade.service';
 import { AsyncPipe } from '@angular/common';
 import { TuiAvatar, TuiCheckbox, TuiChip } from '@taiga-ui/kit';
 import { TuiAutoColorPipe, TuiInitialsPipe, TuiTitle } from '@taiga-ui/core';

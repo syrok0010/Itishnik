@@ -12,6 +12,6 @@ export const routes: Routes = [
   },
   {
     path: 'teacher/tasks',
-    loadComponent: () => import('./tasks-page/tasks-page.component'),
+    loadComponent: () => import('./teacher/tasks-page/tasks-page.component'),
   },
 ];
