@@ -6,22 +6,17 @@ import {
 } from './web-api-client';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 export interface CoursesState {
   coursesList: CourseListResponse[];
 }
 
 let _state: CoursesState = {
-  coursesList: [
-    new CourseListResponse({
-      id: '',
-      name: 'Some course name',
-      studentsCount: 15,
-      description: 'Very long description',
-    }),
-  ],
+  coursesList: [],
 };
 
+@UntilDestroy()
 @Injectable({
   providedIn: 'root',
 })
@@ -31,6 +26,20 @@ export class CoursesFacadeService {
   private _store: BehaviorSubject<CoursesState> = new BehaviorSubject(_state);
 
   coursesList$ = this._store.pipe(map((state) => state.coursesList));
+
+  constructor() {
+    this.coursesClient
+      .getCoursesList(1, 25)
+      .pipe(untilDestroyed(this))
+      .subscribe((x) =>
+        this._store.next(
+          (_state = {
+            ..._state,
+            coursesList: [..._state.coursesList, ...x.items],
+          }),
+        ),
+      );
+  }
 
   async createCourse(name: string): Promise<void> {
     const response = await firstValueFrom(
