@@ -1,0 +1,43 @@
+@let data = coursesList$ | async;
+
+<div
+  class="w-full rounded-lg bg-white mx-auto h-full p-4 flex flex-col gap-2 items-center grow relative"
+>
+  <table tuiTable [columns]="columns" class="w-full">
+    <thead>
+      <tr tuiThGroup>
+        <th tuiTh *tuiHead="'course'">Курс</th>
+        <th tuiTh *tuiHead="'students'">Количество студентов</th>
+        <th tuiTh *tuiHead="'taskBlocks'">Количество блоков заданий</th>
+        <th tuiTh *tuiHead="'description'">Описание</th>
+      </tr>
+    </thead>
+    <tbody tuiTbody [data]="data">
+      @for (item of data; track item.id) {
+        <tr tuiTr class="cursor-pointer hover:*:bg-gray-100 *:bg-transparent">
+          <td tuiTd *tuiCell="'course'">
+            {{ item.name }}
+          </td>
+          <td tuiTd *tuiCell="'students'">
+            {{ item.studentsCount }}
+          </td>
+          <td tuiTd *tuiCell="'taskBlocks'">
+          </td>
+          <td tuiTd *tuiCell="'description'">
+            {{ item.description }}
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+
+  <button
+    appearance="primary"
+    tuiButton
+    type="button"
+    class="!absolute bottom-4 right-4 shadow-sm"
+    (click)="addCourse()"
+  >
+    <tui-icon icon="@tui.plus" />
+  </button>
+</div>
