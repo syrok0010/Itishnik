@@ -24,6 +24,9 @@ public class GetTaskListQueryHandler(IApplicationDbContext context, IMapper mapp
         if (_currentUser.Roles.Contains(Roles.Teacher)) 
             query = query.Where(t => t.IsPublic || t.TeacherId == _currentUser.Id);
         
+        query = query
+            .Where(t => !_context.Tasks.Any(otherTask => otherTask.PreviousVersion != null && otherTask.PreviousVersion.Id == t.Id));
+        
         return query
             .ProjectTo<TaskListResponse>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
