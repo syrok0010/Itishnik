@@ -1,5 +1,4 @@
 using Itishnik.Domain.Entities;
-using Task = System.Threading.Tasks.Task;
 
 namespace Itishnik.Application.Tasks;
 
@@ -12,6 +11,8 @@ public class TaskResponse
     
     public Guid? RightSolutionId { get; init; }
     public Guid? TeacherId { get; init; }
+    public string TeacherFullName { get; init; } = null!;
+    public string TeacherEmail { get; init; } = null!;
     
     public Guid? PreviousVersionId { get; init; }
     public Guid? FirstVersionId { get; init; }
@@ -22,7 +23,9 @@ public class TaskResponse
     {
         public Mapping()
         {
-            CreateMap<Domain.Entities.Task, TaskResponse>();
+            CreateMap<Domain.Entities.Task, TaskResponse>()
+                .ForMember(cr => cr.TeacherFullName, options => options.MapFrom(c => c.Teacher.FullName))
+                .ForMember(cr => cr.TeacherEmail, options => options.MapFrom(c => c.Teacher.Email));
         }
     }
 }

@@ -693,6 +693,8 @@ export class TaskResponse implements ITaskResponse {
     text?: string;
     rightSolutionId?: string | undefined;
     teacherId?: string | undefined;
+    teacherFullName?: string;
+    teacherEmail?: string;
     previousVersionId?: string | undefined;
     firstVersionId?: string | undefined;
     tags?: Tag[];
@@ -714,6 +716,8 @@ export class TaskResponse implements ITaskResponse {
             this.text = _data["text"];
             this.rightSolutionId = _data["rightSolutionId"];
             this.teacherId = _data["teacherId"];
+            this.teacherFullName = _data["teacherFullName"];
+            this.teacherEmail = _data["teacherEmail"];
             this.previousVersionId = _data["previousVersionId"];
             this.firstVersionId = _data["firstVersionId"];
             if (Array.isArray(_data["tags"])) {
@@ -739,6 +743,8 @@ export class TaskResponse implements ITaskResponse {
         data["text"] = this.text;
         data["rightSolutionId"] = this.rightSolutionId;
         data["teacherId"] = this.teacherId;
+        data["teacherFullName"] = this.teacherFullName;
+        data["teacherEmail"] = this.teacherEmail;
         data["previousVersionId"] = this.previousVersionId;
         data["firstVersionId"] = this.firstVersionId;
         if (Array.isArray(this.tags)) {
@@ -757,6 +763,8 @@ export interface ITaskResponse {
     text?: string;
     rightSolutionId?: string | undefined;
     teacherId?: string | undefined;
+    teacherFullName?: string;
+    teacherEmail?: string;
     previousVersionId?: string | undefined;
     firstVersionId?: string | undefined;
     tags?: Tag[];

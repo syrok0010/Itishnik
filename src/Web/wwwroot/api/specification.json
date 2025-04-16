@@ -393,6 +393,12 @@
             "format": "guid",
             "nullable": true
           },
+          "teacherFullName": {
+            "type": "string"
+          },
+          "teacherEmail": {
+            "type": "string"
+          },
           "previousVersionId": {
             "type": "string",
             "format": "guid",
