@@ -17,6 +17,6 @@ public class Auth : EndpointGroupBase
 
     private static Results<Ok<AuthState>, BadRequest> GetUserState(IUser user)
     {
-        return TypedResults.Ok(new AuthState(user.Id ?? Guid.Empty));
+        return TypedResults.Ok(new AuthState(user.Id ?? Guid.Empty, user.Roles));
     }
 }

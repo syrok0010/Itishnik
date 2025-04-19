@@ -282,54 +282,6 @@ export class CoursesClient implements ICoursesClient {
     }
 }
 
-export class AuthState implements IAuthState {
-    userId?: string;
-    roles?: string[] | undefined;
-
-    constructor(data?: IAuthState) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.userId = _data["userId"];
-            if (Array.isArray(_data["roles"])) {
-                this.roles = [] as any;
-                for (let item of _data["roles"])
-                    this.roles!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): AuthState {
-        data = typeof data === 'object' ? data : {};
-        let result = new AuthState();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["userId"] = this.userId;
-        if (Array.isArray(this.roles)) {
-            data["roles"] = [];
-            for (let item of this.roles)
-                data["roles"].push(item);
-        }
-        return data;
-    }
-}
-
-export interface IAuthState {
-    userId?: string;
-    roles?: string[] | undefined;
-}
-
 export interface ITasksClient {
     createTaskRequest(command: CreateTaskCommand): Observable<TaskResponse>;
     getTaskList(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfTaskListResponse>;
@@ -462,6 +414,54 @@ export class TasksClient implements ITasksClient {
         }
         return _observableOf(null as any);
     }
+}
+
+export class AuthState implements IAuthState {
+    userId?: string;
+    roles?: string[] | undefined;
+
+    constructor(data?: IAuthState) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.userId = _data["userId"];
+            if (Array.isArray(_data["roles"])) {
+                this.roles = [] as any;
+                for (let item of _data["roles"])
+                    this.roles!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): AuthState {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuthState();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["userId"] = this.userId;
+        if (Array.isArray(this.roles)) {
+            data["roles"] = [];
+            for (let item of this.roles)
+                data["roles"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IAuthState {
+    userId?: string;
+    roles?: string[] | undefined;
 }
 
 export class CourseResponse implements ICourseResponse {
