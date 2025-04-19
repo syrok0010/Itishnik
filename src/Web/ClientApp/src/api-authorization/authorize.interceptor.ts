@@ -5,10 +5,9 @@ import {
   HttpHandler,
   HttpEvent,
   HttpErrorResponse,
-  HttpResponse,
 } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -28,21 +27,11 @@ export class AuthorizeInterceptor implements HttpInterceptor {
       catchError((error) => {
         if (
           error instanceof HttpErrorResponse &&
-          error.url?.startsWith(this.loginUrl)
+          (error.status === 401 || error.status === 403)
         ) {
           window.location.href = `${this.loginUrl}?ReturnUrl=${window.location.pathname}`;
         }
         return throwError(() => error);
-      }),
-      // HACK: As of .NET 8 preview 5, some non-error responses still need to be redirected to login page.
-      map((event: HttpEvent<any>) => {
-        if (
-          event instanceof HttpResponse &&
-          event.url?.startsWith(this.loginUrl)
-        ) {
-          window.location.href = `${this.loginUrl}?ReturnUrl=${window.location.pathname}`;
-        }
-        return event;
       }),
     );
   }

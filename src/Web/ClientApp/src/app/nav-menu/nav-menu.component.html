@@ -1,15 +1,25 @@
-<header class="flex w-full bg-white justify-center">
-  <nav class="flex justify-between container items-center">
-    <div class="flex h-full gap-x-6 py-4">
+<header class="flex w-full justify-center bg-white shadow-sm">
+  <nav class="container flex items-center justify-between">
+    <div class="flex h-full items-center gap-x-6 py-4">
       <a class="text-lg font-medium"> Лого </a>
-      <a class="text-lg font-medium" routerLink="/teacher/courses"> Курсы </a>
-      <a class="text-lg font-medium" routerLink="/teacher/tasks"> Задания </a>
-      <a class="text-lg font-medium" routerLink="/teacher/students">
-        Студенты
-      </a>
+      @for (link of links; track link[0]) {
+        <a
+          routerLinkActive="text-indigo-600 font-semibold"
+          [routerLinkActiveOptions]="{ exact: false }"
+          class="text-lg font-medium text-gray-600 transition-colors duration-200 ease-in-out hover:text-primary"
+          [routerLink]="link[1]"
+        >
+          {{link[0]}}
+        </a>
+      }
     </div>
-    <a class="text-lg font-medium" routerLink="/profile">
-      Пупкин И.И.
+    <a
+      routerLink="/profile"
+      routerLinkActive="text-primary font-semibold"
+      [routerLinkActiveOptions]="{ exact: true }"
+      class="flex items-center gap-x-2 text-lg font-medium text-gray-600 transition-colors duration-200 ease-in-out hover:text-primary"
+    >
+      <span>Пупкин И.И.</span>
       <tui-icon icon="@tui.circle-user-round" />
     </a>
   </nav>
