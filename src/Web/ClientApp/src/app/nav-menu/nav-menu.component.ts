@@ -10,8 +10,8 @@ import { TuiIcon } from '@taiga-ui/core';
 })
 export class NavMenuComponent {
   readonly links: [string, string][] = [
-    ['Курсы', '/teacher/courses'],
-    ['Задания', '/teacher/tasks'],
-    ['Студенты', '/teacher/students'],
+    ['Курсы', '/courses'],
+    ['Задания', '/tasks'],
+    ['Студенты', '/students'],
   ] as const;
 }
