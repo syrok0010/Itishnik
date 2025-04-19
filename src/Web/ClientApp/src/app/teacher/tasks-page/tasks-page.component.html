@@ -19,13 +19,13 @@
             class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
           >
             <div tuiCell="l" class="flex justify-center">
-              <input
-                tuiCheckbox
-                type="checkbox"
-                size="m"
-                disabled
-                [ngModel]="item.isPublic"
-              />
+              <tui-badge
+                appearance="{{item.isPublic ? 'positive' : 'negative'}}"
+                tuiStatus
+                size="xl"
+              >
+                {{item.isPublic ? 'Да' : 'Нет'}}
+              </tui-badge>
             </div>
           </td>
           <td
