@@ -6,8 +6,10 @@ export const routes: Routes = [
   {
     path: 'teacher/courses',
     loadComponent: () =>
-      import('./teacher/courses-page/courses-page.component').then(
-        (x) => x.CoursesPageComponent,
-      ),
+      import('./teacher/courses-page/courses-page.component'),
+  },
+  {
+    path: 'teacher/tasks',
+    loadComponent: () => import('./teacher/tasks-page/tasks-page.component'),
   },
 ];

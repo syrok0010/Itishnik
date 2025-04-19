@@ -8,4 +8,10 @@ import { TuiIcon } from '@taiga-ui/core';
   standalone: true,
   imports: [RouterLink, RouterLinkActive, TuiIcon],
 })
-export class NavMenuComponent {}
+export class NavMenuComponent {
+  readonly links: [string, string][] = [
+    ['Курсы', '/teacher/courses'],
+    ['Задания', '/teacher/tasks'],
+    ['Студенты', '/teacher/students'],
+  ] as const;
+}

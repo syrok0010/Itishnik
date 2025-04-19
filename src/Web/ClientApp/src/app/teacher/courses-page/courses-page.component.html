@@ -1,8 +1,6 @@
 @let data = coursesList$ | async;
 
-<div
-  class="w-full rounded-lg bg-white mx-auto h-full p-4 flex flex-col gap-2 items-center grow relative"
->
+<div class="relative w-full grow rounded-lg bg-white p-4">
   <table tuiTable [columns]="columns" class="w-full">
     <thead>
       <tr tuiThGroup>
@@ -14,16 +12,31 @@
     </thead>
     <tbody tuiTbody [data]="data">
       @for (item of data; track item.id) {
-        <tr tuiTr class="cursor-pointer hover:*:bg-gray-100 *:bg-transparent">
-          <td tuiTd *tuiCell="'course'">
+        <tr tuiTr class="group cursor-pointer" [routerLink]="[item.id]">
+          <td
+            tuiTd
+            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+            *tuiCell="'course'"
+          >
             {{ item.name }}
           </td>
-          <td tuiTd *tuiCell="'students'">
+          <td
+            tuiTd
+            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+            *tuiCell="'students'"
+          >
             {{ item.studentsCount }}
           </td>
-          <td tuiTd *tuiCell="'taskBlocks'">
-          </td>
-          <td tuiTd *tuiCell="'description'">
+          <td
+            tuiTd
+            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+            *tuiCell="'taskBlocks'"
+          ></td>
+          <td
+            tuiTd
+            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+            *tuiCell="'description'"
+          >
             {{ item.description }}
           </td>
         </tr>
