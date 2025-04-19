@@ -7,8 +7,14 @@ import {
   NavigationCancel,
   NavigationError,
 } from '@angular/router';
-import { BehaviorSubject, combineLatest, Observable } from 'rxjs';
-import { map, filter, distinctUntilChanged, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, combineLatest, Observable, timer } from 'rxjs';
+import {
+  map,
+  filter,
+  distinctUntilChanged,
+  shareReplay,
+  delayWhen,
+} from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @UntilDestroy()
@@ -27,7 +33,10 @@ export class GlobalLoadingService {
   ]).pipe(
     map(([routerState, manualState]) => routerState || manualState),
     distinctUntilChanged(),
-    shareReplay({ bufferSize: 1, refCount: true }),
+    delayWhen((isLoading) => timer(isLoading ? 0 : 400)),
+    distinctUntilChanged(),
+    untilDestroyed(this),
+    shareReplay({ bufferSize: 1, refCount: false }),
   );
 
   constructor() {
