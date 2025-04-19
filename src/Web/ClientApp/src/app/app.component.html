@@ -1,10 +1,12 @@
 <tui-root>
-  <div class="flex min-h-dvh flex-col bg-gray-100">
-    <app-nav-menu class="shrink-0"></app-nav-menu>
-    <main
-      class="container mx-auto flex grow flex-col py-4 [&>:not(:first-child)]:flex [&>:not(:first-child)]:grow [&>:not(:first-child)]:flex-col"
-    >
-      <router-outlet></router-outlet>
-    </main>
-  </div>
+  <tui-loader [overlay]="true" [showLoader]="showLoader$ | async" size="xl">
+    <div class="flex min-h-dvh flex-col bg-gray-100">
+      <app-nav-menu class="shrink-0" />
+      <main
+        class="container mx-auto flex grow flex-col py-4 [&>:not(:first-child)]:flex [&>:not(:first-child)]:grow [&>:not(:first-child)]:flex-col"
+      >
+        <router-outlet />
+      </main>
+    </div>
+  </tui-loader>
 </tui-root>
