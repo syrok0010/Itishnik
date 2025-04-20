@@ -1,0 +1,23 @@
+using Itishnik.Application.Common.Interfaces;
+using Itishnik.Application.Common.Security;
+
+namespace Itishnik.Application.Courses.Queries.GetStudentsOnCourse;
+
+[Authorize(Policy = "CourseOwner", Roles = "Administrator")]
+public record GetStudentsOnCourseQuery(Guid Id) : IRequest<CourseStudentListResponse>;
+
+public class GetStudentsOnCourseQueryHandler(IApplicationDbContext context, IMapper mapper, IUser user) : IRequestHandler<GetStudentsOnCourseQuery, CourseStudentListResponse>
+{
+    private readonly IApplicationDbContext _context = context;
+    private readonly IMapper _mapper = mapper;
+    private readonly IUser _user = user;
+    
+    public async Task<CourseStudentListResponse> Handle(GetStudentsOnCourseQuery request, CancellationToken cancellationToken)
+    {
+        var students = await _context.Students
+            .Where(s => s.GradedCourses.Any(gc => gc.CourseId == request.Id))
+            .ProjectTo<StudentDto>(_mapper.ConfigurationProvider)
+            .ToListAsync(cancellationToken);
+        return new CourseStudentListResponse { StudentsList = students };
+    }
+}
