@@ -16,6 +16,11 @@ export const routes: Routes = [
       import('./teacher/courses-page/courses-page.component'),
   },
   {
+    path: 'courses/:id',
+    canMatch: [isAdminOrTeacherGuard],
+    loadComponent: () => import('./teacher/course-page/course-page.component'),
+  },
+  {
     path: 'tasks',
     canMatch: [isAdminOrTeacherGuard],
     loadComponent: () => import('./teacher/tasks-page.component'),
