@@ -25,10 +25,7 @@ export class AuthorizeInterceptor implements HttpInterceptor {
   ): Observable<HttpEvent<any>> {
     return next.handle(req).pipe(
       catchError((error) => {
-        if (
-          error instanceof HttpErrorResponse &&
-          (error.status === 401 || error.status === 403)
-        ) {
+        if (error instanceof HttpErrorResponse && error.status === 401) {
           window.location.href = `${this.loginUrl}?ReturnUrl=${window.location.pathname}`;
         }
         return throwError(() => error);
