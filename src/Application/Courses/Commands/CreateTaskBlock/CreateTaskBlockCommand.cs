@@ -5,7 +5,7 @@ using Itishnik.Domain.Entities;
 
 namespace Itishnik.Application.Courses.Commands.CreateTaskBlock;
 
-[Authorize(Policy = Policies.CourseOwner)]
+[Authorize(Roles = Roles.Teacher)]
 public record CreateTaskBlockCommand(
     Guid CourseId,
     string Name,
@@ -39,6 +39,7 @@ public class CreateTaskBlockCommandHandler(IApplicationDbContext context, IMappe
             taskBlock.AddTask(task, request.Weights[i]);
         }
         course.AddTaskBlock(taskBlock);
+        await _context.SaveChangesAsync(cancellationToken);
         return _mapper.Map<TaskBlockResponse>(taskBlock);
     }
 }
