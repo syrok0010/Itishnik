@@ -13,9 +13,6 @@ public class TaskResponse
     public Guid? TeacherId { get; init; }
     public string TeacherFullName { get; init; } = null!;
     public string TeacherEmail { get; init; } = null!;
-    
-    public Guid? PreviousVersionId { get; init; }
-    public Guid? FirstVersionId { get; init; }
 
     public ICollection<Tag> Tags { get; init; } = null!;
 

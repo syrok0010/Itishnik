@@ -1,6 +1,6 @@
 namespace Itishnik.Domain.Entities;
 
-public class Task : IOwnedResource
+public class Task : BaseAuditableEntity, IOwnedResource
 {
     private string _name = null!;
     private bool _isPublic;
@@ -50,8 +50,6 @@ public class Task : IOwnedResource
         }
     }
     
-    public Guid Id { get; private init; }
-
     public IEnumerable<Tag> Tags => _tags;
 
     public string Name

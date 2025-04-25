@@ -61,9 +61,12 @@ export class TasksFacadeService {
         ..._state,
         taskList: [
           ..._state.taskList,
-          new TaskListResponse({
-            ...response,
-          }),
+          ...response.map(
+            (t) =>
+              new TaskListResponse({
+                ...t,
+              }),
+          ),
         ],
       }),
     );

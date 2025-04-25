@@ -1,6 +1,7 @@
 using Itishnik.Application.Common.Models;
 using Itishnik.Application.Tasks;
 using Itishnik.Application.Tasks.Commands.CreateTask;
+using Itishnik.Application.Tasks.Queries.GetTaskById;
 using Itishnik.Application.Tasks.Queries.GetTaskList;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -12,13 +13,14 @@ public class Tasks : EndpointGroupBase
     {
         app.MapGroup(this)
             .MapPost(CreateTaskRequest)
-            .MapGet(GetTaskList);
+            .MapGet(GetTaskList)
+            .MapGet(GetTaskWithAllVersions, "{id}");
     }
     
-    public async Task<Created<TaskResponse>> CreateTaskRequest(ISender sender, CreateTaskCommand command)
+    public async Task<Created<TaskResponse[]>> CreateTaskRequest(ISender sender, CreateTaskCommand command)
     {
         var response = await sender.Send(command);
-        return TypedResults.Created($"/{nameof(Tasks)}/{response.Id}", response);
+        return TypedResults.Created($"/{nameof(Tasks)}/{response.Last().Id}", response);
     }
     
     public async Task<
@@ -30,5 +32,11 @@ public class Tasks : EndpointGroupBase
     {
         var response = await sender.Send(query);
         return response.TotalCount == 0 ? TypedResults.NotFound(response) : TypedResults.Ok(response);
+    }
+    
+    public async Task<Ok<TaskResponse[]>> GetTaskWithAllVersions(ISender sender, Guid id)
+    {
+        var response = await sender.Send(new GetTaskByIdQuery(id));
+        return TypedResults.Ok(response);
     }
 }
