@@ -1,6 +1,6 @@
 namespace Itishnik.Domain.Entities;
 
-public class Task
+public class Task : IOwnedResource
 {
     private string _name = null!;
     private bool _isPublic;
@@ -75,4 +75,5 @@ public class Task
     }
 
     public void AddTag(Tag tag) => _tags.Add(tag);
+    public Guid GetOwnerId() => TeacherId;
 }

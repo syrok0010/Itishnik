@@ -2,8 +2,8 @@ namespace Itishnik.Domain.Entities;
 
 public class Tag
 {
-    
     private Tag() {}
+
     public Tag(string text)
     {
         Text = text;
