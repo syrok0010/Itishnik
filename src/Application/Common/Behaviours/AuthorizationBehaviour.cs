@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using Itishnik.Domain.Constants;
+using System.Reflection;
 using Itishnik.Application.Common.Exceptions;
 using Itishnik.Application.Common.Interfaces;
 using Itishnik.Application.Common.Security;
@@ -22,7 +23,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();
+        var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>().ToList();
 
         if (authorizeAttributes.Any())
         {
@@ -31,6 +32,8 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
             {
                 throw new UnauthorizedAccessException();
             }
+
+            var userId = _user.Id.Value;
 
             // Role-based authorization
             var authorizeAttributesWithRoles = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Roles));
@@ -43,7 +46,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
                 {
                     foreach (var role in roles)
                     {
-                        var isInRole = await _identityService.IsInRoleAsync(_user.Id ?? Guid.Empty, role.Trim());
+                        var isInRole = await _identityService.IsInRoleAsync(userId, role.Trim());
                         if (isInRole)
                         {
                             authorized = true;
@@ -63,9 +66,34 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
             var authorizeAttributesWithPolicies = authorizeAttributes.Where(a => !string.IsNullOrWhiteSpace(a.Policy));
             if (authorizeAttributesWithPolicies.Any())
             {
-                foreach (var policy in authorizeAttributesWithPolicies.Select(a => a.Policy))
+                var resourceMetadataAttribute = request.GetType().GetCustomAttribute<ResourceMetadataAttribute>();
+
+                foreach (var policyName in authorizeAttributesWithPolicies.Select(a => a.Policy))
                 {
-                    var authorized = await _identityService.AuthorizeAsync(_user.Id ?? Guid.Empty, policy);
+                    bool authorized;
+
+                    if (policyName == Policies.OwnerOrAdmin && resourceMetadataAttribute is not null)
+                    {
+                        var resourceIdProperty = request.GetType().GetProperty(resourceMetadataAttribute.ResourceIdPropertyName);
+                        if (resourceIdProperty is null)
+                        {
+                            throw new InvalidOperationException($"Property '{resourceMetadataAttribute.ResourceIdPropertyName}' not found on request '{typeof(TRequest).Name}' required by ResourceMetadataAttribute for policy '{policyName}'.");
+                        }
+
+                        var resourceId = resourceIdProperty.GetValue(request);
+                        if (resourceId is null)
+                        {
+                             throw new InvalidOperationException($"Resource identifier from property '{resourceMetadataAttribute.ResourceIdPropertyName}' is null for policy '{policyName}' on request '{typeof(TRequest).Name}'.");
+                        }
+
+                        // Вызываем новый метод IIdentityService для ресурсной политики
+                        authorized = await _identityService.AuthorizeAsync(userId, policyName, resourceId, resourceMetadataAttribute.ResourceType);
+                    }
+                    else
+                    {
+                        authorized = await _identityService.AuthorizeAsync(userId, policyName);
+                    }
+
 
                     if (!authorized)
                     {

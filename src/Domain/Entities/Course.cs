@@ -1,6 +1,6 @@
 namespace Itishnik.Domain.Entities;
 
-public class Course
+public class Course : IOwnedResource
 {
     private string _name = null!;
     private readonly HashSet<GradedCourse> _gradedCourses = [];
@@ -59,4 +59,6 @@ public class Course
     }
 
     public string? Description { get; set; }
+
+    public Guid GetOwnerId() => TeacherId;
 }

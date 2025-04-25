@@ -96,7 +96,8 @@ public static class DependencyInjection
             };
         });
         
-        builder.Services.AddAuthorization(options =>
-            options.AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator)));
+        builder.Services.AddAuthorizationBuilder()
+            .AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator))
+            .AddPolicy(Policies.OwnerOrAdmin, policy => policy.AddRequirements(new OwnerOrAdminRequirement()));
     }
 }

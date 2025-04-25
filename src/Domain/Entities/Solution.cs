@@ -1,6 +1,6 @@
 namespace Itishnik.Domain.Entities;
 
-public class Solution
+public class Solution : IOwnedResource
 {
     private int _grade;
     private string _text = null!;
@@ -41,4 +41,6 @@ public class Solution
             _grade = value;
         }
     }
+
+    public Guid GetOwnerId() => StudentId;
 }

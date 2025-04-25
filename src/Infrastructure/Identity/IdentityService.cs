@@ -1,9 +1,9 @@
 using Itishnik.Application.Common.Interfaces;
 using Itishnik.Application.Common.Models;
 using Itishnik.Domain.Entities;
+using Itishnik.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 
 namespace Itishnik.Infrastructure.Identity;
 
@@ -12,15 +12,18 @@ public class IdentityService : IIdentityService
     private readonly UserManager<ApplicationUser> _userManager;
     private readonly IUserClaimsPrincipalFactory<ApplicationUser> _userClaimsPrincipalFactory;
     private readonly IAuthorizationService _authorizationService;
+    private readonly ApplicationDbContext _dbContext;
 
     public IdentityService(
         UserManager<ApplicationUser> userManager,
         IUserClaimsPrincipalFactory<ApplicationUser> userClaimsPrincipalFactory,
-        IAuthorizationService authorizationService)
+        IAuthorizationService authorizationService,
+        ApplicationDbContext dbContext)
     {
         _userManager = userManager;
         _userClaimsPrincipalFactory = userClaimsPrincipalFactory;
         _authorizationService = authorizationService;
+        _dbContext = dbContext;
     }
 
     public async Task<string?> GetUserNameAsync(Guid userId)
@@ -68,6 +71,22 @@ public class IdentityService : IIdentityService
 
         var result = await _authorizationService.AuthorizeAsync(principal, policyName);
 
+        return result.Succeeded;
+    }
+    
+    public async Task<bool> AuthorizeAsync(Guid userId, string policyName, object resourceId, Type resourceType)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user is null)
+            return false;
+
+        var principal = await _userClaimsPrincipalFactory.CreateAsync(user);
+        object? resource = await _dbContext.FindAsync(resourceType, resourceId);
+
+        if (resource is null)
+            return false;
+
+        var result = await _authorizationService.AuthorizeAsync(principal, resource, policyName);
         return result.Succeeded;
     }
 
