@@ -35,11 +35,10 @@ public class CreateTaskBlockCommandHandler(IApplicationDbContext context, IMappe
             request.Description);
         var tasks = await _context.Tasks
             .Where(t => request.TaskIds.Contains(t.Id))
-            .Zip(request.Weights)
-            .ToListAsync(cancellationToken);
-        foreach (var task in tasks)
+            .ToDictionaryAsync(t => t.Id, cancellationToken);
+        foreach ((Guid id, int weight) in request.TaskIds.Zip(request.Weights))
         {
-            taskBlock.AddTask(task.First, task.Second);
+            taskBlock.AddTask(tasks[id], weight);
         }
         course.AddTaskBlock(taskBlock);
         await _context.SaveChangesAsync(cancellationToken);
