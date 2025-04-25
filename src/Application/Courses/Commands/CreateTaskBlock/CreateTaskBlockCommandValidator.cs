@@ -22,17 +22,16 @@ public class CreateTaskBlockCommandValidator : AbstractValidator<CreateTaskBlock
             .WithMessage("Время выполнения не должно быть нулевым");
         RuleFor(x => x.TaskIds)
             .MustAsync(AllTaskIdsExist)
-            .WithMessage("Один или несколько задач не существует");
+            .WithMessage("Одна или несколько задач не существует");
 
     }
 
     private async Task<bool> AllTaskIdsExist(IList<Guid> taskIds, CancellationToken cancellationToken)
     {
-        var existingTaskIds = await _context.Tasks
+        var existingTasksCount = await _context.Tasks
             .Where(t => taskIds.Contains(t.Id))
-            .Select(t => t.Id)
-            .ToListAsync(cancellationToken);
+            .CountAsync(cancellationToken);
         
-        return existingTaskIds.Count == taskIds.Count;
+        return existingTasksCount == taskIds.Count;
     }
 }

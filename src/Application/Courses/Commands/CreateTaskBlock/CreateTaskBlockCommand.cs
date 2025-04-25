@@ -33,10 +33,13 @@ public class CreateTaskBlockCommandHandler(IApplicationDbContext context, IMappe
             request.EndTime,
             request.TimeAllowed,
             request.Description);
-        for (var i = 0; i < request.TaskIds.Count; i++)
+        var tasks = await _context.Tasks
+            .Where(t => request.TaskIds.Contains(t.Id))
+            .Zip(request.Weights)
+            .ToListAsync(cancellationToken);
+        foreach (var task in tasks)
         {
-            var task = await _context.Tasks.FirstAsync(x => x.Id == request.TaskIds[i], cancellationToken);
-            taskBlock.AddTask(task, request.Weights[i]);
+            taskBlock.AddTask(task.First, task.Second);
         }
         course.AddTaskBlock(taskBlock);
         await _context.SaveChangesAsync(cancellationToken);
