@@ -23,6 +23,9 @@ public class CreateTaskBlockCommandValidator : AbstractValidator<CreateTaskBlock
         RuleFor(x => x.TaskIds)
             .MustAsync(AllTaskIdsExist)
             .WithMessage("Одна или несколько задач не существует");
+        RuleFor(x => x)
+            .Must(x => x.Weights.Count == x.TaskIds.Count)
+            .WithMessage("Количества заданий и весов должны совпадать");
 
     }
 
