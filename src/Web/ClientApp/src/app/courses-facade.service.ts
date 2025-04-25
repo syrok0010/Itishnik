@@ -43,7 +43,7 @@ export class CoursesFacadeService {
 
   async createCourse(name: string): Promise<void> {
     const response = await firstValueFrom(
-      this.coursesClient.createCourseRequest(
+      this.coursesClient.createCourse(
         new CreateCourseCommand({ name: name, description: '' }),
       ),
     );

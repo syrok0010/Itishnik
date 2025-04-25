@@ -10,10 +10,18 @@ public class TaskBlock
     
     private TaskBlock() {}
     
-    public TaskBlock(string name, Course course)
+    public TaskBlock(
+        string name, 
+        Course course,
+        DateTime startTime,
+        DateTime endTime,
+        TimeSpan timeAllowed,
+        string? description = null)
     {
         Name = name;
         Course = course;
+        ChangeTimes(startTime, endTime, timeAllowed);
+        Description = description;
     }
     
     public Guid Id { get; private init; }
@@ -24,10 +32,27 @@ public class TaskBlock
     public IEnumerable<Task> Tasks => _tasks;
     public IEnumerable<File> Files => _files;
     public IEnumerable<int> Weights => _weights;
-    
+
     public DateTime StartTime { get; private set; }
     public DateTime EndTime { get; private set; }
     public TimeSpan TimeAllowed { get; private set; }
+
+    public void ChangeTimes(DateTime startTime, DateTime endTime, TimeSpan timeAllowed)
+    {
+        if (startTime > endTime)
+        {
+            throw new ArgumentException("Время начала не должно быть позже времени конца");
+        }
+
+        if (timeAllowed == TimeSpan.Zero)
+        {
+            throw new ArgumentException("Время выполнения не должно быть нулевым");
+        }
+
+        StartTime = startTime;
+        EndTime = endTime;
+        TimeAllowed = timeAllowed;
+    }
 
     public void AddTask(Task task, int weight=0)
     {

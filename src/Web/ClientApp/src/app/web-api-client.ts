@@ -86,9 +86,10 @@ export class AuthClient implements IAuthClient {
 }
 
 export interface ICoursesClient {
-    createCourseRequest(command: CreateCourseCommand): Observable<CourseResponse>;
+    createCourse(command: CreateCourseCommand): Observable<CourseResponse>;
     getCoursesList(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfCourseListResponse>;
     getCourseById(id: string): Observable<CourseResponse>;
+    createTaskBlock(id: string, command: CreateTaskBlockCommand): Observable<TaskBlockResponse>;
 }
 
 @Injectable({
@@ -104,7 +105,7 @@ export class CoursesClient implements ICoursesClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    createCourseRequest(command: CreateCourseCommand): Observable<CourseResponse> {
+    createCourse(command: CreateCourseCommand): Observable<CourseResponse> {
         let url_ = this.baseUrl + "/api/Courses";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -121,11 +122,11 @@ export class CoursesClient implements ICoursesClient {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreateCourseRequest(response_);
+            return this.processCreateCourse(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCreateCourseRequest(response_ as any);
+                    return this.processCreateCourse(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<CourseResponse>;
                 }
@@ -134,7 +135,7 @@ export class CoursesClient implements ICoursesClient {
         }));
     }
 
-    protected processCreateCourseRequest(response: HttpResponseBase): Observable<CourseResponse> {
+    protected processCreateCourse(response: HttpResponseBase): Observable<CourseResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -268,6 +269,65 @@ export class CoursesClient implements ICoursesClient {
             let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result404 = CourseResponse.fromJS(resultData404);
             return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    createTaskBlock(id: string, command: CreateTaskBlockCommand): Observable<TaskBlockResponse> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/block";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateTaskBlock(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateTaskBlock(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TaskBlockResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TaskBlockResponse>;
+        }));
+    }
+
+    protected processCreateTaskBlock(response: HttpResponseBase): Observable<TaskBlockResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 201) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result201 = TaskBlockResponse.fromJS(resultData201);
+            return _observableOf(result201);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -801,6 +861,86 @@ export interface ICourseListResponse {
     id?: string;
     name?: string;
     studentsCount?: number;
+    description?: string | undefined;
+}
+
+export class CreateTaskBlockCommand implements ICreateTaskBlockCommand {
+    courseId?: string;
+    name?: string;
+    taskIds?: string[];
+    weights?: number[];
+    startTime?: Date;
+    endTime?: Date;
+    timeAllowed?: string;
+    description?: string | undefined;
+
+    constructor(data?: ICreateTaskBlockCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.courseId = _data["courseId"];
+            this.name = _data["name"];
+            if (Array.isArray(_data["taskIds"])) {
+                this.taskIds = [] as any;
+                for (let item of _data["taskIds"])
+                    this.taskIds!.push(item);
+            }
+            if (Array.isArray(_data["weights"])) {
+                this.weights = [] as any;
+                for (let item of _data["weights"])
+                    this.weights!.push(item);
+            }
+            this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
+            this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
+            this.timeAllowed = _data["timeAllowed"];
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): CreateTaskBlockCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateTaskBlockCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["courseId"] = this.courseId;
+        data["name"] = this.name;
+        if (Array.isArray(this.taskIds)) {
+            data["taskIds"] = [];
+            for (let item of this.taskIds)
+                data["taskIds"].push(item);
+        }
+        if (Array.isArray(this.weights)) {
+            data["weights"] = [];
+            for (let item of this.weights)
+                data["weights"].push(item);
+        }
+        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
+        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        data["timeAllowed"] = this.timeAllowed;
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface ICreateTaskBlockCommand {
+    courseId?: string;
+    name?: string;
+    taskIds?: string[];
+    weights?: number[];
+    startTime?: Date;
+    endTime?: Date;
+    timeAllowed?: string;
     description?: string | undefined;
 }
 
