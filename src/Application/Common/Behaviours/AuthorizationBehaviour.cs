@@ -72,7 +72,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
                 {
                     bool authorized;
 
-                    if (policyName == Policies.OwnerOrAdmin && resourceMetadataAttribute is not null)
+                    if (resourceMetadataAttribute is not null)
                     {
                         var resourceIdProperty = request.GetType().GetProperty(resourceMetadataAttribute.ResourceIdPropertyName);
                         if (resourceIdProperty is null)
