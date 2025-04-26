@@ -5,6 +5,7 @@ using Itishnik.Infrastructure.Data;
 using Itishnik.Infrastructure.Data.Interceptors;
 using Itishnik.Infrastructure.Identity;
 using Itishnik.Infrastructure.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -96,6 +97,7 @@ public static class DependencyInjection
             };
         });
         
+        builder.Services.AddScoped<IAuthorizationHandler, OwnerAuthorizationHandler>();
         builder.Services.AddAuthorizationBuilder()
             .AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator))
             .AddPolicy(Policies.Owner, policy => policy.AddRequirements(new OwnerRequirement()))

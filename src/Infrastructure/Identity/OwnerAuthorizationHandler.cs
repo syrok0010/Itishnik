@@ -1,15 +1,11 @@
 using System.Security.Claims;
-using Itishnik.Application.Common.Interfaces;
 using Itishnik.Domain.Common;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Itishnik.Infrastructure.Identity;
 
-public class OwnerAuthorizationHandler(IIdentityService identityService)
-    : AuthorizationHandler<OwnerRequirement, IOwnedResource>
+public class OwnerAuthorizationHandler : AuthorizationHandler<OwnerRequirement, IOwnedResource>
 {
-    private readonly IIdentityService _identityService = identityService;
-
     protected override Task HandleRequirementAsync(
         AuthorizationHandlerContext context,
         OwnerRequirement requirement,

@@ -5,7 +5,8 @@ using Itishnik.Domain.Entities;
 
 namespace Itishnik.Application.Courses.Commands.CreateTaskBlock;
 
-[Authorize(Roles = Roles.Teacher)]
+[Authorize(Policy = Policies.Owner)]
+[ResourceMetadata(nameof(CourseId), typeof(Course))]
 public record CreateTaskBlockCommand(
     Guid CourseId,
     string Name,
@@ -16,12 +17,11 @@ public record CreateTaskBlockCommand(
     TimeSpan TimeAllowed,
     string? Description = null) : IRequest<TaskBlockResponse>;
 
-public class CreateTaskBlockCommandHandler(IApplicationDbContext context, IMapper mapper, IUser currentUser) :
+public class CreateTaskBlockCommandHandler(IApplicationDbContext context, IMapper mapper) :
     IRequestHandler<CreateTaskBlockCommand, TaskBlockResponse>
 {
     private readonly IApplicationDbContext _context = context;
     private readonly IMapper _mapper = mapper;
-    private readonly IUser _currentUser = currentUser;
     
     public async Task<TaskBlockResponse> Handle(CreateTaskBlockCommand request, CancellationToken cancellationToken)
     {
