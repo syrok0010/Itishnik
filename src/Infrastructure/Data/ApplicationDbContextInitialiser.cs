@@ -96,6 +96,13 @@ public class ApplicationDbContextInitialiser
             Email = "teacher@localhost",
             EmailConfirmed = true
         };
+        
+        var teacher2 = new Teacher("Иван", "Иванов", "Иванович")
+        {
+            UserName = "teacher2@localhost", 
+            Email = "teacher2@localhost",
+            EmailConfirmed = true
+        };
 
         var student = new Student(
             "Сергей", 
@@ -116,17 +123,15 @@ public class ApplicationDbContextInitialiser
             await _userManager.AddToRolesAsync(administrator, [administratorRole.Name!]);
             await _userManager.CreateAsync(teacher, "Teacher1!");
             await _userManager.AddToRolesAsync(teacher, [teacherRole.Name!]);
+            await _userManager.CreateAsync(teacher2, "Teacher1!");
+            await _userManager.AddToRolesAsync(teacher2, [teacherRole.Name!]);
             await _userManager.CreateAsync(student, "Student1!");
             await _userManager.AddToRolesAsync(student, [studentRole.Name!]);
         }
 
         if (!await _context.Courses.AnyAsync())
         {
-            List<Course> courses =
-            [
-                new Course(teacher, "Алгосы 1"),
-                new Course(teacher, "Алгосы 2")
-            ];
+            List<Course> courses = [new(teacher, "Алгосы 1"), new(teacher, "Алгосы 2")];
             foreach (var course in courses)
             {
                 var gradedCourse = new GradedCourse(course, student);

@@ -98,18 +98,10 @@ public static class DependencyInjection
         });
         
         builder.Services.AddScoped<IAuthorizationHandler, OwnerAuthorizationHandler>();
+        builder.Services.AddScoped<IAuthorizationHandler, OwnerOrAdminAuthorizationHandler>();
         builder.Services.AddAuthorizationBuilder()
             .AddPolicy(Policies.CanPurge, policy => policy.RequireRole(Roles.Administrator))
             .AddPolicy(Policies.Owner, policy => policy.AddRequirements(new OwnerRequirement()))
-            .AddPolicy(Policies.OwnerOrAdmin, policy => policy
-                .AddRequirements(new OwnerRequirement())
-                .RequireAssertion(ctx =>
-                {
-                    var isAdmin = ctx.User.IsInRole(Roles.Administrator);
-                    if (ctx.HasFailed && isAdmin) 
-                        ctx.Succeed(ctx.Requirements.First());
-                    return ctx.HasSucceeded || isAdmin;
-                })
-            );
+            .AddPolicy(Policies.OwnerOrAdmin, policy => policy.AddRequirements(new OwnerOrAdminRequirement()));
     }
 }
