@@ -2,18 +2,23 @@ import { inject, Injectable } from '@angular/core';
 import {
   CreateTaskCommand,
   TaskListResponse,
+  TaskResponse,
   TasksClient,
 } from './web-api-client';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 export interface TasksState {
   taskList: TaskListResponse[];
+  tasks: TaskResponse[];
+  currentTaskId: string | null;
 }
 
 let _state: TasksState = {
   taskList: [],
+  tasks: [],
+  currentTaskId: null,
 };
 
 @UntilDestroy()
@@ -26,6 +31,21 @@ export class TasksFacadeService {
   private _store: BehaviorSubject<TasksState> = new BehaviorSubject(_state);
 
   taskList$ = this._store.pipe(map((state) => state.taskList));
+  currentTaskChain$ = this._store.pipe(
+    filter((state) => !state.currentTaskId),
+    map((state) => {
+      const currentTask = state.tasks.find((t) => t.id === state.currentTaskId);
+      if (!currentTask) return [];
+      if (!currentTask.firstTaskId) return [currentTask];
+      return state.tasks
+        .filter(
+          (t) =>
+            t.id == currentTask.firstTaskId ||
+            t.firstTaskId == currentTask.firstTaskId,
+        )
+        .sort((a, b) => a.created.getTime() - b.created.getTime());
+    }),
+  );
 
   constructor() {
     this.tasksClient
@@ -67,6 +87,30 @@ export class TasksFacadeService {
                 ...t,
               }),
           ),
+        ],
+      }),
+    );
+  }
+
+  async setCurrentTaskId(taskId: string): Promise<void> {
+    const response = await firstValueFrom(
+      this.tasksClient.getTaskWithAllVersions(taskId),
+    );
+    this._store.next(
+      (_state = {
+        ..._state,
+        currentTaskId: taskId,
+        tasks: [
+          ..._state.tasks.filter(
+            (task) => !response.some((r) => r.id === task.id),
+          ),
+          ...response,
+        ],
+        taskList: [
+          ..._state.taskList.filter(
+            (task) => !response.some((r) => r.id === task.id),
+          ),
+          ...response.map((r) => new TaskListResponse({ ...r })),
         ],
       }),
     );

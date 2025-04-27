@@ -788,20 +788,6 @@ export class TasksClient implements ITasksClient {
             }
             return _observableOf(result200);
             }));
-        } else if (status === 404) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData404)) {
-                result404 = [] as any;
-                for (let item of resultData404)
-                    result404!.push(TaskResponse.fromJS(item));
-            }
-            else {
-                result404 = <any>null;
-            }
-            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
-            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -1521,6 +1507,9 @@ export class TaskResponse implements ITaskResponse {
     teacherFullName?: string;
     teacherEmail?: string;
     tags?: Tag[];
+    firstTaskId?: string | undefined;
+    created?: Date;
+    lastModified?: Date;
 
     constructor(data?: ITaskResponse) {
         if (data) {
@@ -1546,6 +1535,9 @@ export class TaskResponse implements ITaskResponse {
                 for (let item of _data["tags"])
                     this.tags!.push(Tag.fromJS(item));
             }
+            this.firstTaskId = _data["firstTaskId"];
+            this.created = _data["created"] ? new Date(_data["created"].toString()) : <any>undefined;
+            this.lastModified = _data["lastModified"] ? new Date(_data["lastModified"].toString()) : <any>undefined;
         }
     }
 
@@ -1571,6 +1563,9 @@ export class TaskResponse implements ITaskResponse {
             for (let item of this.tags)
                 data["tags"].push(item.toJSON());
         }
+        data["firstTaskId"] = this.firstTaskId;
+        data["created"] = this.created ? this.created.toISOString() : <any>undefined;
+        data["lastModified"] = this.lastModified ? this.lastModified.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -1585,6 +1580,9 @@ export interface ITaskResponse {
     teacherFullName?: string;
     teacherEmail?: string;
     tags?: Tag[];
+    firstTaskId?: string | undefined;
+    created?: Date;
+    lastModified?: Date;
 }
 
 export class Tag implements ITag {

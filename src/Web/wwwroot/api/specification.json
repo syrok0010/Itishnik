@@ -538,19 +538,6 @@
                 }
               }
             }
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/TaskResponse"
-                  }
-                }
-              }
-            }
           }
         }
       }
@@ -900,6 +887,19 @@
             "items": {
               "$ref": "#/components/schemas/Tag"
             }
+          },
+          "firstTaskId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },

@@ -15,6 +15,10 @@ public class TaskResponse
     public string TeacherEmail { get; init; } = null!;
 
     public ICollection<Tag> Tags { get; init; } = null!;
+    
+    public Guid? FirstTaskId { get; init; }
+    public DateTimeOffset Created { get; set; }
+    public DateTimeOffset LastModified { get; set; }
 
     private class Mapping : Profile
     {
@@ -22,7 +26,8 @@ public class TaskResponse
         {
             CreateMap<Domain.Entities.Task, TaskResponse>()
                 .ForMember(cr => cr.TeacherFullName, options => options.MapFrom(c => c.Teacher.FullName))
-                .ForMember(cr => cr.TeacherEmail, options => options.MapFrom(c => c.Teacher.Email));
+                .ForMember(cr => cr.TeacherEmail, options => options.MapFrom(c => c.Teacher.Email))
+                .ForMember(cr => cr.FirstTaskId, options => options.MapFrom(c => c.FirstVersion == null ? (Guid?)null : c.FirstVersion.Id));
         }
     }
 }
