@@ -600,6 +600,8 @@ export class CoursesClient implements ICoursesClient {
 export interface ITasksClient {
     createTaskRequest(command: CreateTaskCommand): Observable<TaskResponse[]>;
     getTaskList(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfTaskListResponse>;
+    createTag(command: CreateTagCommand): Observable<Tag>;
+    getTagList(): Observable<Tag[]>;
     getTaskWithAllVersions(id: string): Observable<TaskResponse[]>;
 }
 
@@ -728,6 +730,127 @@ export class TasksClient implements ITasksClient {
             let result404: any = null;
             let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result404 = PaginatedListOfTaskListResponse.fromJS(resultData404);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    createTag(command: CreateTagCommand): Observable<Tag> {
+        let url_ = this.baseUrl + "/api/Tasks/tags";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processCreateTag(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processCreateTag(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Tag>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Tag>;
+        }));
+    }
+
+    protected processCreateTag(response: HttpResponseBase): Observable<Tag> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 201) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result201: any = null;
+            let resultData201 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result201 = Tag.fromJS(resultData201);
+            return _observableOf(result201);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getTagList(): Observable<Tag[]> {
+        let url_ = this.baseUrl + "/api/Tasks/tags";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetTagList(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetTagList(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<Tag[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<Tag[]>;
+        }));
+    }
+
+    protected processGetTagList(response: HttpResponseBase): Observable<Tag[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(Tag.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData404)) {
+                result404 = [] as any;
+                for (let item of resultData404)
+                    result404!.push(Tag.fromJS(item));
+            }
+            else {
+                result404 = <any>null;
+            }
             return throwException("A server side error occurred.", status, _responseText, _headers, result404);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1671,6 +1794,42 @@ export interface ICreateTaskCommand {
     text?: string;
     isPublic?: boolean;
     previousTaskId?: string | undefined;
+}
+
+export class CreateTagCommand implements ICreateTagCommand {
+    text?: string;
+
+    constructor(data?: ICreateTagCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.text = _data["text"];
+        }
+    }
+
+    static fromJS(data: any): CreateTagCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreateTagCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["text"] = this.text;
+        return data;
+    }
+}
+
+export interface ICreateTagCommand {
+    text?: string;
 }
 
 export class PaginatedListOfTaskListResponse implements IPaginatedListOfTaskListResponse {
