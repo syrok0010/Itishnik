@@ -2,6 +2,7 @@ using Itishnik.Application.Common.Models;
 using Itishnik.Application.Tasks;
 using Itishnik.Application.Tasks.Commands.CreateTag;
 using Itishnik.Application.Tasks.Commands.CreateTask;
+using Itishnik.Application.Tasks.Commands.SetTaskTags;
 using Itishnik.Application.Tasks.Queries.GetTagList;
 using Itishnik.Application.Tasks.Queries.GetTaskById;
 using Itishnik.Application.Tasks.Queries.GetTaskList;
@@ -19,7 +20,8 @@ public class Tasks : EndpointGroupBase
             .MapPost(CreateTag, "tags")
             .MapGet(GetTagList, "tags")
             .MapGet(GetTaskList)
-            .MapGet(GetTaskWithAllVersions, "{id}");
+            .MapGet(GetTaskWithAllVersions, "{id}")
+            .MapPatch(SetTaskTags, "{id}/tags");
     }
     
     public async Task<Created<TaskResponse[]>> CreateTaskRequest(ISender sender, CreateTaskCommand command)
@@ -54,6 +56,15 @@ public class Tasks : EndpointGroupBase
     public async Task<Ok<TaskResponse[]>> GetTaskWithAllVersions(ISender sender, Guid id)
     {
         var response = await sender.Send(new GetTaskByIdQuery(id));
+        return TypedResults.Ok(response);
+    }
+    
+    public async Task<Results<Ok<TaskResponse[]>, BadRequest>> SetTaskTags(ISender sender, Guid id, SetTaskTagsCommand command)
+    {
+        if (id != command.TaskId)
+            return TypedResults.BadRequest();
+        
+        var response = await sender.Send(command);
         return TypedResults.Ok(response);
     }
 }

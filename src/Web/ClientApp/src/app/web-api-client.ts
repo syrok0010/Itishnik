@@ -603,6 +603,7 @@ export interface ITasksClient {
     createTag(command: CreateTagCommand): Observable<Tag>;
     getTagList(): Observable<Tag[]>;
     getTaskWithAllVersions(id: string): Observable<TaskResponse[]>;
+    setTaskTags(id: string, command: SetTaskTagsCommand): Observable<TaskResponse[]>;
 }
 
 @Injectable({
@@ -910,6 +911,72 @@ export class TasksClient implements ITasksClient {
                 result200 = <any>null;
             }
             return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    setTaskTags(id: string, command: SetTaskTagsCommand): Observable<TaskResponse[]> {
+        let url_ = this.baseUrl + "/api/Tasks/{id}/tags";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSetTaskTags(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSetTaskTags(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TaskResponse[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TaskResponse[]>;
+        }));
+    }
+
+    protected processSetTaskTags(response: HttpResponseBase): Observable<TaskResponse[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(TaskResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -1962,6 +2029,54 @@ export interface ITaskListResponse {
     teacherFullName?: string;
     teacherEmail?: string;
     tags?: Tag[];
+}
+
+export class SetTaskTagsCommand implements ISetTaskTagsCommand {
+    taskId?: string;
+    tagIds?: string[];
+
+    constructor(data?: ISetTaskTagsCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.taskId = _data["taskId"];
+            if (Array.isArray(_data["tagIds"])) {
+                this.tagIds = [] as any;
+                for (let item of _data["tagIds"])
+                    this.tagIds!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): SetTaskTagsCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new SetTaskTagsCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["taskId"] = this.taskId;
+        if (Array.isArray(this.tagIds)) {
+            data["tagIds"] = [];
+            for (let item of this.tagIds)
+                data["tagIds"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface ISetTaskTagsCommand {
+    taskId?: string;
+    tagIds?: string[];
 }
 
 export class SwaggerException extends Error {

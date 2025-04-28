@@ -13,15 +13,7 @@ public class GetTaskByIdQueryHandler(IApplicationDbContext context, IMapper mapp
     public Task<TaskResponse[]> Handle(GetTaskByIdQuery request, CancellationToken cancellationToken)
     {
         return _context.Tasks
-            .Where(t => 
-                _context.Tasks
-                    .Where(original => original.Id == request.TaskId)
-                    .Select(original => original.FirstVersion == null ? original.Id : original.FirstVersion.Id)
-                    .Any(firstVersionId =>
-                        t.Id == firstVersionId || (t.FirstVersion != null && t.FirstVersion.Id == firstVersionId)
-                    )
-            )
-            .OrderBy(t => t.Created)
+            .GetTaskChain(_context, request.TaskId)
             .ProjectTo<TaskResponse>(_mapper.ConfigurationProvider)
             .ToArrayAsync(cancellationToken);
     }

@@ -73,5 +73,13 @@ public class Task : BaseAuditableEntity, IOwnedResource
     }
 
     public void AddTag(Tag tag) => _tags.Add(tag);
+
+    public void SetTags(params IEnumerable<Tag> tags)
+    {
+        _tags.Clear();
+        foreach (var tag in tags) 
+            _tags.Add(tag);
+    }
+    
     public Guid GetOwnerId() => TeacherId;
 }
