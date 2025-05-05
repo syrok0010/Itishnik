@@ -68,12 +68,7 @@ public class Courses : EndpointGroupBase
         return TypedResults.Created($"/{nameof(Courses)}/{response.Id}", response);
     }
 
-    public async Task<
-        Results<
-            NotFound<CourseStudentListResponse>,
-            Ok<CourseStudentListResponse>
-        >
-    > GetStudentsOnCourse(ISender sender, Guid id)
+    public async Task<Ok<CourseStudentListResponse>> GetStudentsOnCourse(ISender sender, Guid id)
     {
         var response = await sender.Send(new GetStudentsOnCourseQuery(id));
         return TypedResults.Ok(response);

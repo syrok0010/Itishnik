@@ -220,16 +220,6 @@
           }
         ],
         "responses": {
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CourseStudentListResponse"
-                }
-              }
-            }
-          },
           "200": {
             "description": "",
             "content": {
