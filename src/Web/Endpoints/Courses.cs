@@ -19,7 +19,7 @@ public class Courses : EndpointGroupBase
             .MapGet(GetCoursesList)
             .MapGet(GetCourseById, "{id}")
             .MapPost(CreateTaskBlock, "{id}/block")
-            .MapGet(GetStudentsOnCourse, "{id}/students");
+            .MapGet(GetStudents, "{id}/students");
     }
     
     public async Task<Created<CourseResponse>> CreateCourse(ISender sender, CreateCourseCommand command)
@@ -68,7 +68,7 @@ public class Courses : EndpointGroupBase
         return TypedResults.Created($"/{nameof(Courses)}/{response.Id}", response);
     }
 
-    public async Task<Ok<CourseStudentListResponse>> GetStudentsOnCourse(ISender sender, Guid id)
+    public async Task<Ok<CourseStudentListResponse>> GetStudents(ISender sender, Guid id)
     {
         var response = await sender.Send(new GetStudentsOnCourseQuery(id));
         return TypedResults.Ok(response);

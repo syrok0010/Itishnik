@@ -21,6 +21,6 @@ public class GetStudentsOnCourseQueryHandler(IApplicationDbContext context, IMap
             .Where(s => s.GradedCourses.Any(gc => gc.CourseId == request.Id))
             .ProjectTo<StudentDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
-        return new CourseStudentListResponse { StudentsList = students };
+        return new CourseStudentListResponse { Students = students };
     }
 }

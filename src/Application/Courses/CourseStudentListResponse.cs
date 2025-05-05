@@ -21,5 +21,5 @@ public class StudentDto
 
 public class CourseStudentListResponse
 {
-    public List<StudentDto> StudentsList { get; init; } = null!;
+    public List<StudentDto> Students { get; init; } = null!;
 }
