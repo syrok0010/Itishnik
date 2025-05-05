@@ -201,6 +201,48 @@
         }
       }
     },
+    "/api/Courses/{id}/students": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "GetStudentsOnCourse",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseStudentListResponse"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseStudentListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Tasks": {
       "post": {
         "tags": [
@@ -493,6 +535,37 @@
           "description": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "CourseStudentListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "studentsList": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StudentDto"
+            }
+          }
+        }
+      },
+      "StudentDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "group": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
           }
         }
       },

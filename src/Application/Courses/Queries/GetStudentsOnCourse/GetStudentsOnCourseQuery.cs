@@ -1,9 +1,12 @@
 using Itishnik.Application.Common.Interfaces;
 using Itishnik.Application.Common.Security;
+using Itishnik.Domain.Constants;
+using Itishnik.Domain.Entities;
 
 namespace Itishnik.Application.Courses.Queries.GetStudentsOnCourse;
 
-[Authorize(Policy = "CourseOwner", Roles = "Administrator")]
+[Authorize(Policy = Policies.OwnerOrAdmin)]
+[ResourceMetadata(nameof(Id), typeof(Course))]
 public record GetStudentsOnCourseQuery(Guid Id) : IRequest<CourseStudentListResponse>;
 
 public class GetStudentsOnCourseQueryHandler(IApplicationDbContext context, IMapper mapper, IUser user) : IRequestHandler<GetStudentsOnCourseQuery, CourseStudentListResponse>
