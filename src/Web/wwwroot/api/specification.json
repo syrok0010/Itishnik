@@ -206,7 +206,7 @@
         "tags": [
           "Courses"
         ],
-        "operationId": "GetStudentsOnCourse",
+        "operationId": "GetStudents",
         "parameters": [
           {
             "name": "id",
@@ -532,7 +532,7 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "studentsList": {
+          "students": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/StudentDto"

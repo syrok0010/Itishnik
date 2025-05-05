@@ -90,7 +90,7 @@ export interface ICoursesClient {
     getCoursesList(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfCourseListResponse>;
     getCourseById(id: string): Observable<CourseResponse>;
     createTaskBlock(id: string, command: CreateTaskBlockCommand): Observable<TaskBlockResponse>;
-    getStudentsOnCourse(id: string): Observable<CourseStudentListResponse>;
+    getStudents(id: string): Observable<CourseStudentListResponse>;
 }
 
 @Injectable({
@@ -342,7 +342,7 @@ export class CoursesClient implements ICoursesClient {
         return _observableOf(null as any);
     }
 
-    getStudentsOnCourse(id: string): Observable<CourseStudentListResponse> {
+    getStudents(id: string): Observable<CourseStudentListResponse> {
         let url_ = this.baseUrl + "/api/Courses/{id}/students";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -358,11 +358,11 @@ export class CoursesClient implements ICoursesClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetStudentsOnCourse(response_);
+            return this.processGetStudents(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetStudentsOnCourse(response_ as any);
+                    return this.processGetStudents(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<CourseStudentListResponse>;
                 }
@@ -371,7 +371,7 @@ export class CoursesClient implements ICoursesClient {
         }));
     }
 
-    protected processGetStudentsOnCourse(response: HttpResponseBase): Observable<CourseStudentListResponse> {
+    protected processGetStudents(response: HttpResponseBase): Observable<CourseStudentListResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -997,7 +997,7 @@ export interface ICreateTaskBlockCommand {
 }
 
 export class CourseStudentListResponse implements ICourseStudentListResponse {
-    studentsList?: StudentDto[];
+    students?: StudentDto[];
 
     constructor(data?: ICourseStudentListResponse) {
         if (data) {
@@ -1010,10 +1010,10 @@ export class CourseStudentListResponse implements ICourseStudentListResponse {
 
     init(_data?: any) {
         if (_data) {
-            if (Array.isArray(_data["studentsList"])) {
-                this.studentsList = [] as any;
-                for (let item of _data["studentsList"])
-                    this.studentsList!.push(StudentDto.fromJS(item));
+            if (Array.isArray(_data["students"])) {
+                this.students = [] as any;
+                for (let item of _data["students"])
+                    this.students!.push(StudentDto.fromJS(item));
             }
         }
     }
@@ -1027,17 +1027,17 @@ export class CourseStudentListResponse implements ICourseStudentListResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.studentsList)) {
-            data["studentsList"] = [];
-            for (let item of this.studentsList)
-                data["studentsList"].push(item.toJSON());
+        if (Array.isArray(this.students)) {
+            data["students"] = [];
+            for (let item of this.students)
+                data["students"].push(item.toJSON());
         }
         return data;
     }
 }
 
 export interface ICourseStudentListResponse {
-    studentsList?: StudentDto[];
+    students?: StudentDto[];
 }
 
 export class StudentDto implements IStudentDto {
