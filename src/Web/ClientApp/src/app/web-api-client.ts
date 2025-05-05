@@ -90,6 +90,7 @@ export interface ICoursesClient {
     getCoursesList(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfCourseListResponse>;
     getCourseById(id: string): Observable<CourseResponse>;
     createTaskBlock(id: string, command: CreateTaskBlockCommand): Observable<TaskBlockResponse>;
+    getStudents(id: string): Observable<CourseStudentListResponse>;
 }
 
 @Injectable({
@@ -332,6 +333,57 @@ export class CoursesClient implements ICoursesClient {
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getStudents(id: string): Observable<CourseStudentListResponse> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/students";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetStudents(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetStudents(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<CourseStudentListResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<CourseStudentListResponse>;
+        }));
+    }
+
+    protected processGetStudents(response: HttpResponseBase): Observable<CourseStudentListResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CourseStudentListResponse.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -942,6 +994,98 @@ export interface ICreateTaskBlockCommand {
     endTime?: Date;
     timeAllowed?: string;
     description?: string | undefined;
+}
+
+export class CourseStudentListResponse implements ICourseStudentListResponse {
+    students?: StudentDto[];
+
+    constructor(data?: ICourseStudentListResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["students"])) {
+                this.students = [] as any;
+                for (let item of _data["students"])
+                    this.students!.push(StudentDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CourseStudentListResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new CourseStudentListResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.students)) {
+            data["students"] = [];
+            for (let item of this.students)
+                data["students"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface ICourseStudentListResponse {
+    students?: StudentDto[];
+}
+
+export class StudentDto implements IStudentDto {
+    id?: string;
+    fullName?: string;
+    group?: string;
+    email?: string;
+
+    constructor(data?: IStudentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.fullName = _data["fullName"];
+            this.group = _data["group"];
+            this.email = _data["email"];
+        }
+    }
+
+    static fromJS(data: any): StudentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StudentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["fullName"] = this.fullName;
+        data["group"] = this.group;
+        data["email"] = this.email;
+        return data;
+    }
+}
+
+export interface IStudentDto {
+    id?: string;
+    fullName?: string;
+    group?: string;
+    email?: string;
 }
 
 export class TaskResponse implements ITaskResponse {

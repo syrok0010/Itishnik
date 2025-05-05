@@ -4,6 +4,7 @@ using Itishnik.Application.Courses.Commands.CreateCourse;
 using Itishnik.Application.Courses.Commands.CreateTaskBlock;
 using Itishnik.Application.Courses.Queries.GetCourseById;
 using Itishnik.Application.Courses.Queries.GetCourseList;
+using Itishnik.Application.Courses.Queries.GetStudentsOnCourse;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Itishnik.Web.Endpoints;
@@ -17,7 +18,8 @@ public class Courses : EndpointGroupBase
             .MapPost(CreateCourse)
             .MapGet(GetCoursesList)
             .MapGet(GetCourseById, "{id}")
-            .MapPost(CreateTaskBlock, "{id}/block");
+            .MapPost(CreateTaskBlock, "{id}/block")
+            .MapGet(GetStudents, "{id}/students");
     }
     
     public async Task<Created<CourseResponse>> CreateCourse(ISender sender, CreateCourseCommand command)
@@ -64,5 +66,11 @@ public class Courses : EndpointGroupBase
         if (command.CourseId != id) return TypedResults.BadRequest();
         var response = await sender.Send(command);
         return TypedResults.Created($"/{nameof(Courses)}/{response.Id}", response);
+    }
+
+    public async Task<Ok<CourseStudentListResponse>> GetStudents(ISender sender, Guid id)
+    {
+        var response = await sender.Send(new GetStudentsOnCourseQuery(id));
+        return TypedResults.Ok(response);
     }
 }

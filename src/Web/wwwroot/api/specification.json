@@ -201,6 +201,38 @@
         }
       }
     },
+    "/api/Courses/{id}/students": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "GetStudents",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseStudentListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Tasks": {
       "post": {
         "tags": [
@@ -493,6 +525,37 @@
           "description": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "CourseStudentListResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "students": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StudentDto"
+            }
+          }
+        }
+      },
+      "StudentDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "group": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
           }
         }
       },
