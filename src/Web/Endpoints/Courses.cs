@@ -1,5 +1,6 @@
 ﻿using Itishnik.Application.Common.Models;
 using Itishnik.Application.Courses;
+using Itishnik.Application.Courses.Commands.ChangeTaskBlockTimeline;
 using Itishnik.Application.Courses.Commands.ChangeTaskBlockName;
 using Itishnik.Application.Courses.Commands.CreateCourse;
 using Itishnik.Application.Courses.Commands.CreateTaskBlock;
@@ -21,6 +22,7 @@ public class Courses : EndpointGroupBase
             .MapGet(GetCourseById, "{id}")
             .MapPost(CreateTaskBlock, "{id}/block")
             .MapGet(GetStudents, "{id}/students")
+            .MapPatch(ChangeTaskBlockTimeline, "{id}/{blockId}/timeline")
             .MapPatch(ChangeTaskBlockName, "{id}/{blockId}/name");
     }
     
@@ -84,6 +86,17 @@ public class Courses : EndpointGroupBase
     public async Task<Ok<CourseStudentListResponse>> GetStudents(ISender sender, Guid id)
     {
         var response = await sender.Send(new GetStudentsOnCourseQuery(id));
+        return TypedResults.Ok(response);
+    }
+
+    public async Task<Results<Ok<TaskBlockResponse>, BadRequest, NotFound<TaskBlockResponse>>> ChangeTaskBlockTimeline(
+        ISender sender, 
+        Guid id,
+        Guid blockId, 
+        ChangeTaskBlockTimelineCommand command)
+    {
+        if (command.CourseId != id || command.TaskBlockId != blockId) return TypedResults.BadRequest();
+        var response = await sender.Send(command);
         return TypedResults.Ok(response);
     }
 }

@@ -91,7 +91,7 @@ export interface ICoursesClient {
     getCourseById(id: string): Observable<CourseResponse>;
     createTaskBlock(id: string, command: CreateTaskBlockCommand): Observable<TaskBlockResponse>;
     getStudents(id: string): Observable<CourseStudentListResponse>;
-    changeTaskBlockName(id: string, blockId: string, command: ChangeTaskBlockNameCommand): Observable<TaskBlockResponse>;
+    changeTaskBlockTimeline(id: string, blockId: string, command: ChangeTaskBlockTimelineCommand): Observable<TaskBlockResponse>;
 }
 
 @Injectable({
@@ -394,8 +394,8 @@ export class CoursesClient implements ICoursesClient {
         return _observableOf(null as any);
     }
 
-    changeTaskBlockName(id: string, blockId: string, command: ChangeTaskBlockNameCommand): Observable<TaskBlockResponse> {
-        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/name";
+    changeTaskBlockTimeline(id: string, blockId: string, command: ChangeTaskBlockTimelineCommand): Observable<TaskBlockResponse> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/timeline";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -417,11 +417,11 @@ export class CoursesClient implements ICoursesClient {
         };
 
         return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processChangeTaskBlockName(response_);
+            return this.processChangeTaskBlockTimeline(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processChangeTaskBlockName(response_ as any);
+                    return this.processChangeTaskBlockTimeline(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<TaskBlockResponse>;
                 }
@@ -430,7 +430,7 @@ export class CoursesClient implements ICoursesClient {
         }));
     }
 
-    protected processChangeTaskBlockName(response: HttpResponseBase): Observable<TaskBlockResponse> {
+    protected processChangeTaskBlockTimeline(response: HttpResponseBase): Observable<TaskBlockResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1158,12 +1158,14 @@ export interface IStudentDto {
     email?: string;
 }
 
-export class ChangeTaskBlockNameCommand implements IChangeTaskBlockNameCommand {
+export class ChangeTaskBlockTimelineCommand implements IChangeTaskBlockTimelineCommand {
     courseId?: string;
     taskBlockId?: string;
-    name?: string;
+    startTime?: Date;
+    endTime?: Date;
+    timeAllowed?: string;
 
-    constructor(data?: IChangeTaskBlockNameCommand) {
+    constructor(data?: IChangeTaskBlockTimelineCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1176,13 +1178,15 @@ export class ChangeTaskBlockNameCommand implements IChangeTaskBlockNameCommand {
         if (_data) {
             this.courseId = _data["courseId"];
             this.taskBlockId = _data["taskBlockId"];
-            this.name = _data["name"];
+            this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
+            this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
+            this.timeAllowed = _data["timeAllowed"];
         }
     }
 
-    static fromJS(data: any): ChangeTaskBlockNameCommand {
+    static fromJS(data: any): ChangeTaskBlockTimelineCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new ChangeTaskBlockNameCommand();
+        let result = new ChangeTaskBlockTimelineCommand();
         result.init(data);
         return result;
     }
@@ -1191,15 +1195,19 @@ export class ChangeTaskBlockNameCommand implements IChangeTaskBlockNameCommand {
         data = typeof data === 'object' ? data : {};
         data["courseId"] = this.courseId;
         data["taskBlockId"] = this.taskBlockId;
-        data["name"] = this.name;
+        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
+        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        data["timeAllowed"] = this.timeAllowed;
         return data;
     }
 }
 
-export interface IChangeTaskBlockNameCommand {
+export interface IChangeTaskBlockTimelineCommand {
     courseId?: string;
     taskBlockId?: string;
-    name?: string;
+    startTime?: Date;
+    endTime?: Date;
+    timeAllowed?: string;
 }
 
 export class TaskResponse implements ITaskResponse {
