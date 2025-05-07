@@ -17,7 +17,9 @@ public class ChangeTaskBlockNameCommandHandler(IApplicationDbContext context, IM
     
     public async Task<TaskBlockResponse> Handle(ChangeTaskBlockNameCommand request, CancellationToken cancellationToken)
     {
-        var taskBlock = await _context.TaskBlocks.FirstAsync(tb => tb.Id == request.TaskBlockId, cancellationToken);
+        var taskBlock = await _context.TaskBlocks
+            .Include(tb => tb.Tasks)
+            .FirstAsync(tb => tb.Id == request.TaskBlockId, cancellationToken);
         taskBlock.Name = request.Name;
         await _context.SaveChangesAsync(cancellationToken);
         return _mapper.Map<TaskBlockResponse>(taskBlock);
