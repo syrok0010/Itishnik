@@ -112,26 +112,4 @@ public class Courses : EndpointGroupBase
         var response = await sender.Send(command);
         return TypedResults.Ok(response);
     }
-
-    public async Task<Results<Ok<TaskBlockResponse>, BadRequest, NotFound<TaskBlockResponse>>> ChangeTaskBlockTimeline(
-        ISender sender, 
-        Guid id,
-        Guid blockId, 
-        ChangeTaskBlockTimelineCommand command)
-    {
-        if (command.CourseId != id || command.TaskBlockId != blockId) return TypedResults.BadRequest();
-        var response = await sender.Send(command);
-        return TypedResults.Ok(response);
-    }
-
-    public async Task<Results<Ok<TaskBlockResponse>, BadRequest>> ChangeTaskBlockDescription(
-        ISender sender, 
-        Guid id,
-        Guid blockId,
-        ChangeTaskBlockDescriptionCommand command)
-    {
-        if (command.CourseId != id || command.TaskBlockId != blockId) return TypedResults.BadRequest();
-        var response = await sender.Send(command);
-        return TypedResults.Ok(response);
-    }
 }

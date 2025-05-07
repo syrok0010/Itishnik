@@ -233,6 +233,63 @@
         }
       }
     },
+    "/api/Courses/{id}/{blockId}/description": {
+      "patch": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "ChangeTaskBlockDescription",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeTaskBlockDescriptionCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskBlockResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Courses/{id}/{blockId}/timeline": {
       "patch": {
         "tags": [
@@ -300,12 +357,12 @@
         }
       }
     },
-    "/api/Courses/{id}/{blockId}/description": {
+    "/api/Courses/{id}/{blockId}/name": {
       "patch": {
         "tags": [
           "Courses"
         ],
-        "operationId": "ChangeTaskBlockDescription",
+        "operationId": "ChangeTaskBlockName",
         "parameters": [
           {
             "name": "id",
@@ -333,7 +390,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChangeTaskBlockDescriptionCommand"
+                "$ref": "#/components/schemas/ChangeTaskBlockNameCommand"
               }
             }
           },
@@ -353,6 +410,16 @@
           },
           "400": {
             "description": ""
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskBlockResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -683,6 +750,24 @@
           }
         }
       },
+      "ChangeTaskBlockDescriptionCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "courseId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "taskBlockId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
       "ChangeTaskBlockTimelineCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -709,7 +794,7 @@
           }
         }
       },
-      "ChangeTaskBlockDescriptionCommand": {
+      "ChangeTaskBlockNameCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -721,9 +806,8 @@
             "type": "string",
             "format": "guid"
           },
-          "description": {
-            "type": "string",
-            "nullable": true
+          "name": {
+            "type": "string"
           }
         }
       },
