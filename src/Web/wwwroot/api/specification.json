@@ -238,7 +238,7 @@
         "tags": [
           "Courses"
         ],
-        "operationId": "PatchApiCoursesName",
+        "operationId": "ChangeTaskBlockName",
         "parameters": [
           {
             "name": "id",

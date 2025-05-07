@@ -91,7 +91,7 @@ export interface ICoursesClient {
     getCourseById(id: string): Observable<CourseResponse>;
     createTaskBlock(id: string, command: CreateTaskBlockCommand): Observable<TaskBlockResponse>;
     getStudents(id: string): Observable<CourseStudentListResponse>;
-    patchApiCoursesName(id: string, blockId: string, command: ChangeTaskBlockNameCommand): Observable<TaskBlockResponse>;
+    changeTaskBlockName(id: string, blockId: string, command: ChangeTaskBlockNameCommand): Observable<TaskBlockResponse>;
 }
 
 @Injectable({
@@ -394,7 +394,7 @@ export class CoursesClient implements ICoursesClient {
         return _observableOf(null as any);
     }
 
-    patchApiCoursesName(id: string, blockId: string, command: ChangeTaskBlockNameCommand): Observable<TaskBlockResponse> {
+    changeTaskBlockName(id: string, blockId: string, command: ChangeTaskBlockNameCommand): Observable<TaskBlockResponse> {
         let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/name";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -417,11 +417,11 @@ export class CoursesClient implements ICoursesClient {
         };
 
         return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processPatchApiCoursesName(response_);
+            return this.processChangeTaskBlockName(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processPatchApiCoursesName(response_ as any);
+                    return this.processChangeTaskBlockName(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<TaskBlockResponse>;
                 }
@@ -430,7 +430,7 @@ export class CoursesClient implements ICoursesClient {
         }));
     }
 
-    protected processPatchApiCoursesName(response: HttpResponseBase): Observable<TaskBlockResponse> {
+    protected processChangeTaskBlockName(response: HttpResponseBase): Observable<TaskBlockResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
