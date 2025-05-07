@@ -94,6 +94,7 @@ export interface ICoursesClient {
     changeTaskBlockDescription(id: string, blockId: string, command: ChangeTaskBlockDescriptionCommand): Observable<TaskBlockResponse>;
     changeTaskBlockTimeline(id: string, blockId: string, command: ChangeTaskBlockTimelineCommand): Observable<TaskBlockResponse>;
     changeTaskBlockName(id: string, blockId: string, command: ChangeTaskBlockNameCommand): Observable<TaskBlockResponse>;
+    changeDescription(id: string, command: ChangeCourseDescriptionCommand): Observable<CourseResponse>;
 }
 
 @Injectable({
@@ -586,6 +587,72 @@ export class CoursesClient implements ICoursesClient {
             let result404: any = null;
             let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result404 = TaskBlockResponse.fromJS(resultData404);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    changeDescription(id: string, command: ChangeCourseDescriptionCommand): Observable<CourseResponse> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/description";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processChangeDescription(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processChangeDescription(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<CourseResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<CourseResponse>;
+        }));
+    }
+
+    protected processChangeDescription(response: HttpResponseBase): Observable<CourseResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CourseResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = CourseResponse.fromJS(resultData404);
             return throwException("A server side error occurred.", status, _responseText, _headers, result404);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -1429,6 +1496,46 @@ export interface IChangeTaskBlockNameCommand {
     courseId?: string;
     taskBlockId?: string;
     name?: string;
+}
+
+export class ChangeCourseDescriptionCommand implements IChangeCourseDescriptionCommand {
+    id?: string;
+    description?: string | undefined;
+
+    constructor(data?: IChangeCourseDescriptionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.description = _data["description"];
+        }
+    }
+
+    static fromJS(data: any): ChangeCourseDescriptionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangeCourseDescriptionCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["description"] = this.description;
+        return data;
+    }
+}
+
+export interface IChangeCourseDescriptionCommand {
+    id?: string;
+    description?: string | undefined;
 }
 
 export class TaskResponse implements ITaskResponse {

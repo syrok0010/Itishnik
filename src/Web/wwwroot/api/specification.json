@@ -424,6 +424,63 @@
         }
       }
     },
+    "/api/Courses/{id}/description": {
+      "patch": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "ChangeDescription",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeCourseDescriptionCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Tasks": {
       "post": {
         "tags": [
@@ -808,6 +865,20 @@
           },
           "name": {
             "type": "string"
+          }
+        }
+      },
+      "ChangeCourseDescriptionCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
