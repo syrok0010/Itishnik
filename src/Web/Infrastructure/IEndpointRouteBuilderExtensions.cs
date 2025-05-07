@@ -47,7 +47,7 @@ public static class IEndpointRouteBuilderExtensions
 
         return builder;
     }
-    
+
     public static IEndpointRouteBuilder MapPatch(this IEndpointRouteBuilder builder, Delegate handler,
         [StringSyntax("Route")] string pattern)
     {
