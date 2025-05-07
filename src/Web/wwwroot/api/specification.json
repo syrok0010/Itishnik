@@ -233,6 +233,63 @@
         }
       }
     },
+    "/api/Courses/{id}/{blockId}/description": {
+      "patch": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "PatchApiCoursesDescription",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeTaskBlockDescriptionCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskBlockResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Tasks": {
       "post": {
         "tags": [
@@ -556,6 +613,24 @@
           },
           "email": {
             "type": "string"
+          }
+        }
+      },
+      "ChangeTaskBlockDescriptionCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "courseId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "taskBlockId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
