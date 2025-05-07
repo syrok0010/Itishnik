@@ -91,7 +91,7 @@ export interface ICoursesClient {
     getCourseById(id: string): Observable<CourseResponse>;
     createTaskBlock(id: string, command: CreateTaskBlockCommand): Observable<TaskBlockResponse>;
     getStudents(id: string): Observable<CourseStudentListResponse>;
-    changeTaskBlockTimeline(id: string, blockId: string, command: ChangeTaskBlockTimelineCommand): Observable<TaskBlockResponse>;
+    patchApiCoursesDescription(id: string, blockId: string, command: ChangeTaskBlockDescriptionCommand): Observable<TaskBlockResponse>;
 }
 
 @Injectable({
@@ -394,8 +394,8 @@ export class CoursesClient implements ICoursesClient {
         return _observableOf(null as any);
     }
 
-    changeTaskBlockTimeline(id: string, blockId: string, command: ChangeTaskBlockTimelineCommand): Observable<TaskBlockResponse> {
-        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/timeline";
+    patchApiCoursesDescription(id: string, blockId: string, command: ChangeTaskBlockDescriptionCommand): Observable<TaskBlockResponse> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/description";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -417,11 +417,11 @@ export class CoursesClient implements ICoursesClient {
         };
 
         return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processChangeTaskBlockTimeline(response_);
+            return this.processPatchApiCoursesDescription(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processChangeTaskBlockTimeline(response_ as any);
+                    return this.processPatchApiCoursesDescription(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<TaskBlockResponse>;
                 }
@@ -430,7 +430,7 @@ export class CoursesClient implements ICoursesClient {
         }));
     }
 
-    protected processChangeTaskBlockTimeline(response: HttpResponseBase): Observable<TaskBlockResponse> {
+    protected processPatchApiCoursesDescription(response: HttpResponseBase): Observable<TaskBlockResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -447,13 +447,6 @@ export class CoursesClient implements ICoursesClient {
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("A server side error occurred.", status, _responseText, _headers);
-            }));
-        } else if (status === 404) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = TaskBlockResponse.fromJS(resultData404);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -1158,14 +1151,12 @@ export interface IStudentDto {
     email?: string;
 }
 
-export class ChangeTaskBlockTimelineCommand implements IChangeTaskBlockTimelineCommand {
+export class ChangeTaskBlockDescriptionCommand implements IChangeTaskBlockDescriptionCommand {
     courseId?: string;
     taskBlockId?: string;
-    startTime?: Date;
-    endTime?: Date;
-    timeAllowed?: string;
+    description?: string | undefined;
 
-    constructor(data?: IChangeTaskBlockTimelineCommand) {
+    constructor(data?: IChangeTaskBlockDescriptionCommand) {
         if (data) {
             for (var property in data) {
                 if (data.hasOwnProperty(property))
@@ -1178,15 +1169,13 @@ export class ChangeTaskBlockTimelineCommand implements IChangeTaskBlockTimelineC
         if (_data) {
             this.courseId = _data["courseId"];
             this.taskBlockId = _data["taskBlockId"];
-            this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
-            this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
-            this.timeAllowed = _data["timeAllowed"];
+            this.description = _data["description"];
         }
     }
 
-    static fromJS(data: any): ChangeTaskBlockTimelineCommand {
+    static fromJS(data: any): ChangeTaskBlockDescriptionCommand {
         data = typeof data === 'object' ? data : {};
-        let result = new ChangeTaskBlockTimelineCommand();
+        let result = new ChangeTaskBlockDescriptionCommand();
         result.init(data);
         return result;
     }
@@ -1195,19 +1184,15 @@ export class ChangeTaskBlockTimelineCommand implements IChangeTaskBlockTimelineC
         data = typeof data === 'object' ? data : {};
         data["courseId"] = this.courseId;
         data["taskBlockId"] = this.taskBlockId;
-        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
-        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
-        data["timeAllowed"] = this.timeAllowed;
+        data["description"] = this.description;
         return data;
     }
 }
 
-export interface IChangeTaskBlockTimelineCommand {
+export interface IChangeTaskBlockDescriptionCommand {
     courseId?: string;
     taskBlockId?: string;
-    startTime?: Date;
-    endTime?: Date;
-    timeAllowed?: string;
+    description?: string | undefined;
 }
 
 export class TaskResponse implements ITaskResponse {

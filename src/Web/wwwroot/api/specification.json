@@ -233,12 +233,12 @@
         }
       }
     },
-    "/api/Courses/{id}/{blockId}/timeline": {
+    "/api/Courses/{id}/{blockId}/description": {
       "patch": {
         "tags": [
           "Courses"
         ],
-        "operationId": "ChangeTaskBlockTimeline",
+        "operationId": "PatchApiCoursesDescription",
         "parameters": [
           {
             "name": "id",
@@ -266,7 +266,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/ChangeTaskBlockTimelineCommand"
+                "$ref": "#/components/schemas/ChangeTaskBlockDescriptionCommand"
               }
             }
           },
@@ -286,16 +286,6 @@
           },
           "400": {
             "description": ""
-          },
-          "404": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/TaskBlockResponse"
-                }
-              }
-            }
           }
         }
       }
@@ -626,7 +616,7 @@
           }
         }
       },
-      "ChangeTaskBlockTimelineCommand": {
+      "ChangeTaskBlockDescriptionCommand": {
         "type": "object",
         "additionalProperties": false,
         "properties": {
@@ -638,17 +628,9 @@
             "type": "string",
             "format": "guid"
           },
-          "startTime": {
+          "description": {
             "type": "string",
-            "format": "date-time"
-          },
-          "endTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "timeAllowed": {
-            "type": "string",
-            "format": "duration"
+            "nullable": true
           }
         }
       },
