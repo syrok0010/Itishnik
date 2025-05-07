@@ -1,24 +1,35 @@
 @if (currentTaskChain(); as taskChain) {
   <div class="relative w-full grow rounded-lg bg-white p-8">
-    <div class="flex flex-row items-end justify-between">
-      <h1 class="text-xl">
-        Задание: <span class="ml-4 font-bold">{{ taskChain[0].name }}</span>
-      </h1>
-      <div class="flex flex-row items-center gap-4">
+    <div class="flex flex-col gap-y-6 mb-8">
+      <div class="flex flex-row items-end justify-between">
+        <h1 class="text-2xl md:text-3xl font-bold">
+         {{ taskChain[0].name }}
+        </h1>
+
+        @if (!currentVersion().isPublic) {
+          <button tuiButton size="m" (click)="publish()">Опубликовать</button>
+        } @else {
+          <tui-badge appearance="positive" tuiStatus size="xl">
+            Задача опубликована
+          </tui-badge>
+        }
+      </div>
+
+      <div class="flex flex-row items-center gap-3">
         <tui-avatar
           [src]="currentVersion().teacherFullName | tuiInitials"
           [style.background]="currentVersion().teacherFullName | tuiAutoColor"
           size="m"
         />
-        <span tuiTitle class="truncate">
+        <span tuiTitle class="truncate text-xl">
           {{ currentVersion().teacherFullName }}
-          <span tuiSubtitle class="truncate">{{
-            currentVersion().teacherEmail
-          }}</span>
+          <span tuiSubtitle class="truncate text-base">{{
+              currentVersion().teacherEmail
+            }}</span>
         </span>
       </div>
 
-      <div class="flex flex-row items-center gap-2">
+      <div class="flex flex-row items-start gap-2 flex-wrap">
         @for (tag of currentVersion().tags; track tag.id) {
           <tui-chip
             size="m"
@@ -29,7 +40,9 @@
           </tui-chip>
         }
         @if (currentVersion().tags?.length === 0) {
-          <span class="text-base"> У этой задачи пока нет тегов </span>
+          <span class="text-base text-gray-600 italic">
+            У этой задачи пока нет тегов
+          </span>
         }
         <button
           tuiIconButton
@@ -37,17 +50,9 @@
           size="m"
           appearance="outline"
           (click)="showEditTagsDialog()"
-          class="ml-2"
+          class="ml-2 shrink-0"
         ></button>
       </div>
-
-      @if (!currentVersion().isPublic) {
-        <button tuiButton size="m" (click)="publish()">Опубликовать</button>
-      } @else {
-        <tui-badge appearance="positive" tuiStatus size="xl">
-          Задача опубликована
-        </tui-badge>
-      }
     </div>
   </div>
 }
