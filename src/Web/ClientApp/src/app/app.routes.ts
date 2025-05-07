@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { isAdminOrTeacherGuard } from '../api-authorization/auth-guards';
+import { taskResolver } from './task-resolver';
 
 export const routes: Routes = [
   { path: '', component: HomeComponent },
@@ -18,6 +19,9 @@ export const routes: Routes = [
   {
     path: 'tasks/:id',
     canMatch: [isAdminOrTeacherGuard],
+    resolve: {
+      task: taskResolver,
+    },
     loadComponent: () => import('./teacher/task-page/task-page.component'),
   },
 ];

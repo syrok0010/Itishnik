@@ -4,7 +4,6 @@ import {
   computed,
   effect,
   inject,
-  OnInit,
   TemplateRef,
   viewChild,
 } from '@angular/core';
@@ -45,7 +44,7 @@ import TagMultiselectInputComponent from '../../components/tag-multiselect-input
   templateUrl: './task-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class TaskPageComponent implements OnInit {
+export default class TaskPageComponent {
   editTagsDialogTemplate = viewChild<TemplateRef<any>>('editTagsDialog');
   private readonly route = inject(ActivatedRoute);
   private readonly taskFacade = inject(TasksFacadeService);
@@ -72,10 +71,6 @@ export default class TaskPageComponent implements OnInit {
       if (!this.currentVersion()) return;
       this.tagControl.setValue(this.currentVersion().tags.map((t) => t.id));
     });
-  }
-
-  async ngOnInit() {
-    await this.taskFacade.setCurrentTaskId(this.id);
   }
 
   async updateTaskTags() {
