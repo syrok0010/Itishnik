@@ -233,12 +233,79 @@
         }
       }
     },
+    "/api/Courses/{id}/{blockId}/timeline": {
+      "patch": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "ChangeTaskBlockTimeline",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeTaskBlockTimelineCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskBlockResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskBlockResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Courses/{id}/{blockId}/description": {
       "patch": {
         "tags": [
           "Courses"
         ],
-        "operationId": "PatchApiCoursesDescription",
+        "operationId": "ChangeTaskBlockDescription",
         "parameters": [
           {
             "name": "id",
@@ -613,6 +680,32 @@
           },
           "email": {
             "type": "string"
+          }
+        }
+      },
+      "ChangeTaskBlockTimelineCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "courseId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "taskBlockId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timeAllowed": {
+            "type": "string",
+            "format": "duration"
           }
         }
       },

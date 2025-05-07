@@ -91,7 +91,8 @@ export interface ICoursesClient {
     getCourseById(id: string): Observable<CourseResponse>;
     createTaskBlock(id: string, command: CreateTaskBlockCommand): Observable<TaskBlockResponse>;
     getStudents(id: string): Observable<CourseStudentListResponse>;
-    patchApiCoursesDescription(id: string, blockId: string, command: ChangeTaskBlockDescriptionCommand): Observable<TaskBlockResponse>;
+    changeTaskBlockTimeline(id: string, blockId: string, command: ChangeTaskBlockTimelineCommand): Observable<TaskBlockResponse>;
+    changeTaskBlockDescription(id: string, blockId: string, command: ChangeTaskBlockDescriptionCommand): Observable<TaskBlockResponse>;
 }
 
 @Injectable({
@@ -394,7 +395,76 @@ export class CoursesClient implements ICoursesClient {
         return _observableOf(null as any);
     }
 
-    patchApiCoursesDescription(id: string, blockId: string, command: ChangeTaskBlockDescriptionCommand): Observable<TaskBlockResponse> {
+    changeTaskBlockTimeline(id: string, blockId: string, command: ChangeTaskBlockTimelineCommand): Observable<TaskBlockResponse> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/timeline";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (blockId === undefined || blockId === null)
+            throw new Error("The parameter 'blockId' must be defined.");
+        url_ = url_.replace("{blockId}", encodeURIComponent("" + blockId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processChangeTaskBlockTimeline(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processChangeTaskBlockTimeline(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TaskBlockResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TaskBlockResponse>;
+        }));
+    }
+
+    protected processChangeTaskBlockTimeline(response: HttpResponseBase): Observable<TaskBlockResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TaskBlockResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status === 404) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result404: any = null;
+            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result404 = TaskBlockResponse.fromJS(resultData404);
+            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    changeTaskBlockDescription(id: string, blockId: string, command: ChangeTaskBlockDescriptionCommand): Observable<TaskBlockResponse> {
         let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/description";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -417,11 +487,11 @@ export class CoursesClient implements ICoursesClient {
         };
 
         return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processPatchApiCoursesDescription(response_);
+            return this.processChangeTaskBlockDescription(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processPatchApiCoursesDescription(response_ as any);
+                    return this.processChangeTaskBlockDescription(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<TaskBlockResponse>;
                 }
@@ -430,7 +500,7 @@ export class CoursesClient implements ICoursesClient {
         }));
     }
 
-    protected processPatchApiCoursesDescription(response: HttpResponseBase): Observable<TaskBlockResponse> {
+    protected processChangeTaskBlockDescription(response: HttpResponseBase): Observable<TaskBlockResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -1149,6 +1219,58 @@ export interface IStudentDto {
     fullName?: string;
     group?: string;
     email?: string;
+}
+
+export class ChangeTaskBlockTimelineCommand implements IChangeTaskBlockTimelineCommand {
+    courseId?: string;
+    taskBlockId?: string;
+    startTime?: Date;
+    endTime?: Date;
+    timeAllowed?: string;
+
+    constructor(data?: IChangeTaskBlockTimelineCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.courseId = _data["courseId"];
+            this.taskBlockId = _data["taskBlockId"];
+            this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
+            this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
+            this.timeAllowed = _data["timeAllowed"];
+        }
+    }
+
+    static fromJS(data: any): ChangeTaskBlockTimelineCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangeTaskBlockTimelineCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["courseId"] = this.courseId;
+        data["taskBlockId"] = this.taskBlockId;
+        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
+        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        data["timeAllowed"] = this.timeAllowed;
+        return data;
+    }
+}
+
+export interface IChangeTaskBlockTimelineCommand {
+    courseId?: string;
+    taskBlockId?: string;
+    startTime?: Date;
+    endTime?: Date;
+    timeAllowed?: string;
 }
 
 export class ChangeTaskBlockDescriptionCommand implements IChangeTaskBlockDescriptionCommand {
