@@ -18,7 +18,9 @@ public class ChangeTaskBlockDescriptionCommandHandler(IApplicationDbContext cont
     
     public async Task<TaskBlockResponse> Handle(ChangeTaskBlockDescriptionCommand request, CancellationToken cancellationToken)
     {
-        var taskBlock = await _context.TaskBlocks.FirstAsync(tb => tb.Id == request.TaskBlockId, cancellationToken);
+        var taskBlock = await _context.TaskBlocks
+            .Include(tb => tb.Tasks)
+            .FirstAsync(tb => tb.Id == request.TaskBlockId, cancellationToken);
         taskBlock.Description = request.Description;
         await _context.SaveChangesAsync(cancellationToken);
         return _mapper.Map<TaskBlockResponse>(taskBlock);
