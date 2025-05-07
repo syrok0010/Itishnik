@@ -21,7 +21,7 @@ public class Courses : EndpointGroupBase
             .MapGet(GetCourseById, "{id}")
             .MapPost(CreateTaskBlock, "{id}/block")
             .MapGet(GetStudents, "{id}/students")
-            .MapPatch("{id}/{blockId}/description", ChangeTaskBlockDescription);
+            .MapPatch(ChangeTaskBlockDescription, "{id}/{blockId}/description");
     }
     
     public async Task<Created<CourseResponse>> CreateCourse(ISender sender, CreateCourseCommand command)
