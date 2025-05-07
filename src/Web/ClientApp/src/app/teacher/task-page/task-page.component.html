@@ -1,0 +1,79 @@
+@if (currentTaskChain(); as taskChain) {
+  <div class="relative w-full grow rounded-lg bg-white p-8">
+    <div class="flex flex-row items-end justify-between">
+      <h1 class="text-xl">
+        Задание: <span class="ml-4 font-bold">{{ taskChain[0].name }}</span>
+      </h1>
+      <div class="flex flex-row items-center gap-4">
+        <tui-avatar
+          [src]="currentVersion().teacherFullName | tuiInitials"
+          [style.background]="currentVersion().teacherFullName | tuiAutoColor"
+          size="m"
+        />
+        <span tuiTitle class="truncate">
+          {{ currentVersion().teacherFullName }}
+          <span tuiSubtitle class="truncate">{{
+            currentVersion().teacherEmail
+          }}</span>
+        </span>
+      </div>
+
+      <div class="flex flex-row items-center gap-2">
+        @for (tag of currentVersion().tags; track tag.id) {
+          <tui-chip
+            size="m"
+            appearance="custom"
+            [style.background-color]="tag.text | tuiAutoColor"
+          >
+            {{ tag.text }}
+          </tui-chip>
+        }
+        @if (currentVersion().tags?.length === 0) {
+          <span class="text-base"> У этой задачи пока нет тегов </span>
+        }
+        <button
+          tuiIconButton
+          iconStart="@tui.pen"
+          size="m"
+          appearance="outline"
+          (click)="showEditTagsDialog()"
+          class="ml-2"
+        ></button>
+      </div>
+
+      @if (!currentVersion().isPublic) {
+        <button tuiButton size="m" (click)="publish()">Опубликовать</button>
+      } @else {
+        <tui-badge appearance="positive" tuiStatus size="xl">
+          Задача опубликована
+        </tui-badge>
+      }
+    </div>
+  </div>
+}
+
+<ng-template #editTagsDialog let-observer>
+  <div class="mt-6 flex flex-col gap-4">
+    <app-tag-multiselect-input [formControl]="tagControl" />
+
+    <div class="flex justify-end gap-4">
+      <button
+        size="xl"
+        tuiButton
+        type="button"
+        appearance="secondary"
+        (click)="observer.complete()"
+      >
+        Отменить
+      </button>
+      <button
+        size="xl"
+        tuiButton
+        type="button"
+        (click)="updateTaskTags(); observer.complete()"
+      >
+        Сохранить
+      </button>
+    </div>
+  </div>
+</ng-template>

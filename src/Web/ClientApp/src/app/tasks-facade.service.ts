@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import {
   CreateTaskCommand,
+  SetTaskTagsCommand,
   TaskListResponse,
   TaskResponse,
   TasksClient,
@@ -32,7 +33,7 @@ export class TasksFacadeService {
 
   taskList$ = this._store.pipe(map((state) => state.taskList));
   currentTaskChain$ = this._store.pipe(
-    filter((state) => !state.currentTaskId),
+    filter((state) => !!state.currentTaskId),
     map((state) => {
       const currentTask = state.tasks.find((t) => t.id === state.currentTaskId);
       if (!currentTask) return [];
@@ -110,7 +111,27 @@ export class TasksFacadeService {
           ..._state.taskList.filter(
             (task) => !response.some((r) => r.id === task.id),
           ),
-          ...response.map((r) => new TaskListResponse({ ...r })),
+          ...response
+            .filter((r) => !!r.firstTaskId)
+            .map((r) => new TaskListResponse({ ...r })),
+        ],
+      }),
+    );
+  }
+
+  async updateTags(taskId: string, tagIds: string[]) {
+    const response = await firstValueFrom(
+      this.tasksClient.setTaskTags(
+        taskId,
+        new SetTaskTagsCommand({ taskId, tagIds }),
+      ),
+    );
+    this._store.next(
+      (_state = {
+        ..._state,
+        tasks: [
+          ..._state.tasks.filter((t) => response.every((rt) => rt.id !== t.id)),
+          ...response,
         ],
       }),
     );
