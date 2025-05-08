@@ -4,6 +4,7 @@ import {
   computed,
   effect,
   inject,
+  Signal,
   signal,
   TemplateRef,
   viewChild,
@@ -32,13 +33,35 @@ import {
 import { TuiAccordion } from '@taiga-ui/experimental';
 import { TuiMultiSelectModule } from '@taiga-ui/legacy';
 import {
+  AbstractControl,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import TagMultiselectInputComponent from '../../components/tag-multiselect-input.component';
 import { AsyncPipe } from '@angular/common';
+
+export function textDifferentFromLatest(
+  latestTextSignal: Signal<string | undefined>,
+): ValidatorFn {
+  return (control: AbstractControl): ValidationErrors | null => {
+    const newText = control.value as string | null;
+    const latestText = latestTextSignal();
+
+    if (
+      latestText === undefined ||
+      newText === null ||
+      newText.trim() !== latestText.trim()
+    ) {
+      return null;
+    }
+
+    return { textNotChanged: true };
+  };
+}
 
 @Component({
   selector: 'app-task-page',
@@ -67,6 +90,8 @@ import { AsyncPipe } from '@angular/common';
   providers: [
     tuiValidationErrorsProvider({
       required: 'Условие задачи не может быть пустым',
+      textNotChanged:
+        'Новый текст задачи должен отличаться от предыдущей версии',
     }),
   ],
 })
@@ -78,11 +103,6 @@ export default class TaskPageComponent {
   id: string = this.route.snapshot.paramMap.get('id');
 
   tagControl = new FormControl<string[]>([]);
-
-  newVersionForm = new FormGroup({
-    text: new FormControl<string>('', [Validators.required]),
-    solutionId: new FormControl<string | null>(null),
-  });
 
   currentTaskChain = toSignal(this.taskFacade.currentTaskChain$);
   creatingNewVersion = signal(false);
@@ -96,6 +116,16 @@ export default class TaskPageComponent {
   latestVersion = computed(() => {
     const chain = this.currentTaskChain();
     return !chain || chain.length === 0 ? null : chain[0];
+  });
+
+  private latestVersionText = computed(() => this.latestVersion()?.text);
+
+  newVersionForm = new FormGroup({
+    text: new FormControl<string>('', [
+      Validators.required,
+      textDifferentFromLatest(this.latestVersionText),
+    ]),
+    solutionId: new FormControl<string | null>(null),
   });
 
   private initializeTagControl = effect(() => {
@@ -135,10 +165,8 @@ export default class TaskPageComponent {
   async saveNewVersion() {
     const latest = this.latestVersion();
 
-    if (
-      !this.newVersionForm.controls.text.dirty ||
-      this.newVersionForm.invalid
-    ) {
+    if (this.newVersionForm.invalid) {
+      this.newVersionForm.markAllAsTouched();
       return;
     }
 
@@ -148,6 +176,7 @@ export default class TaskPageComponent {
       latest.isPublic,
       latest.id,
     );
+    this.creatingNewVersion.set(false);
     this.newVersionForm.reset();
   }
 
