@@ -657,6 +657,44 @@
           }
         }
       }
+    },
+    "/api/Tasks/{id}/publish": {
+      "patch": {
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "Publish",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaskResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      }
     }
   },
   "components": {
