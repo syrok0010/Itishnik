@@ -136,4 +136,26 @@ export class TasksFacadeService {
       }),
     );
   }
+
+  async publishTask(id: string) {
+    const response = await firstValueFrom(this.tasksClient.publish(id));
+
+    this._store.next(
+      (_state = {
+        ..._state,
+        tasks: [
+          ..._state.tasks.filter(
+            (task) => !response.some((r) => r.id === task.id),
+          ),
+          ...response,
+        ],
+        taskList: [
+          ..._state.taskList.filter(
+            (task) => !response.some((r) => r.id === task.id),
+          ),
+          new TaskListResponse({ ...response[response.length - 1] }),
+        ],
+      }),
+    );
+  }
 }

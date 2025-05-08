@@ -151,7 +151,7 @@ export default class TaskPageComponent {
     this.newVersionForm.reset();
   }
 
-  publish() {
-    throw new Error('Method not implemented.');
+  async publish() {
+    await this.taskFacade.publishTask(this.currentVersion().id);
   }
 }
