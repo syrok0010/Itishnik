@@ -2,6 +2,7 @@ using Itishnik.Application.Common.Interfaces;
 using Itishnik.Application.Common.Security;
 using Itishnik.Application.Tasks.Queries;
 using Itishnik.Domain.Constants;
+using Task = Itishnik.Domain.Entities.Task;
 
 namespace Itishnik.Application.Tasks.Commands.PublishTask;
 
