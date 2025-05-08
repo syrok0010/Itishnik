@@ -1,5 +1,26 @@
-@let data = currentCourse$ | async;
-
-<div class="relative w-full grow rounded-lg bg-white p-4">
-  <h1>{{data.name}}</h1>
+<div class="flex flex-col w-full rounded-lg bg-white p-4 gap-4">
+  <h1 class="text-2xl font-semibold">{{currentCourse()?.name}}</h1>
+  <label tuiLabel class="grow w-full">
+    Описание курса
+    <tui-textfield>
+        <textarea
+          [formControl]="descriptionControl"
+          placeholder="Введите описание курса"
+          tuiTextarea
+          [min]="3"
+        ></textarea>
+    </tui-textfield>
+  </label>
+  <button
+    appearance="primary"
+    tuiButton
+    type="button"
+    class="shadow-sm mr-auto"
+    [iconEnd]="descriptionControl.invalid ? '@tui.check' : '@tui.save'"
+    size="m"
+    [disabled]="descriptionControl.invalid"
+    (click)="saveDescription()"
+  >
+    {{descriptionControl.invalid ? 'Сохранено' : 'Сохранить'}}
+  </button>
 </div>

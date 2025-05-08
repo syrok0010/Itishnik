@@ -1,11 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import {
+  ChangeCourseDescriptionCommand,
   CourseListResponse,
   CoursesClient,
   CreateCourseCommand,
 } from './web-api-client';
 import { BehaviorSubject, firstValueFrom, switchMap } from 'rxjs';
-import { distinctUntilChanged, map, shareReplay } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, shareReplay } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 export interface CoursesState {
@@ -30,6 +31,7 @@ export class CoursesFacadeService {
   coursesList$ = this._store.pipe(map((state) => state.coursesList));
   currentCourse$ = this._store.pipe(
     map((state) => state.currentCourseId),
+    filter((courseId) => !!courseId),
     distinctUntilChanged(),
     switchMap((courseId) => this.coursesClient.getCourseById(courseId)),
     shareReplay(1),
@@ -72,6 +74,18 @@ export class CoursesFacadeService {
           }),
         ],
       }),
+    );
+  }
+
+  async updateDescription(
+    courseId: string,
+    description: string,
+  ): Promise<void> {
+    const response = await firstValueFrom(
+      this.coursesClient.changeDescription(
+        courseId,
+        new ChangeCourseDescriptionCommand({ id: courseId, description }),
+      ),
     );
   }
 }
