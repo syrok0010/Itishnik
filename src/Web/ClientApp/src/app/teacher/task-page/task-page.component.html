@@ -1,9 +1,9 @@
 @if (currentTaskChain(); as taskChain) {
   <div class="relative w-full grow rounded-lg bg-white p-8">
-    <div class="flex flex-col gap-y-6 mb-8">
+    <div class="mb-8 flex flex-col gap-y-6">
       <div class="flex flex-row items-end justify-between">
-        <h1 class="text-2xl md:text-3xl font-bold">
-         {{ taskChain[0].name }}
+        <h1 class="text-2xl font-bold md:text-3xl">
+          {{ taskChain[0].name }}
         </h1>
 
         @if (!currentVersion().isPublic) {
@@ -15,7 +15,7 @@
         }
       </div>
 
-      <div class="flex flex-row items-center gap-3">
+      <div class="flex flex-row items-center gap-2">
         <tui-avatar
           [src]="currentVersion().teacherFullName | tuiInitials"
           [style.background]="currentVersion().teacherFullName | tuiAutoColor"
@@ -24,36 +24,111 @@
         <span tuiTitle class="truncate text-xl">
           {{ currentVersion().teacherFullName }}
           <span tuiSubtitle class="truncate text-base">{{
-              currentVersion().teacherEmail
-            }}</span>
+            currentVersion().teacherEmail
+          }}</span>
         </span>
       </div>
 
-      <div class="flex flex-row items-start gap-2 flex-wrap">
-        @for (tag of currentVersion().tags; track tag.id) {
-          <tui-chip
+      <div class="flex flex-row justify-between">
+        <div class="flex flex-row flex-wrap items-start gap-2">
+          @for (tag of currentVersion().tags; track tag.id) {
+            <tui-chip
+              size="m"
+              appearance="custom"
+              [style.background-color]="tag.text | tuiAutoColor"
+            >
+              {{ tag.text }}
+            </tui-chip>
+          }
+          @if (currentVersion().tags?.length === 0) {
+            <span class="text-base italic text-gray-600">
+              У этой задачи пока нет тегов
+            </span>
+          }
+          <button
+            tuiIconButton
+            iconStart="@tui.pen"
             size="m"
-            appearance="custom"
-            [style.background-color]="tag.text | tuiAutoColor"
-          >
-            {{ tag.text }}
-          </tui-chip>
-        }
-        @if (currentVersion().tags?.length === 0) {
-          <span class="text-base text-gray-600 italic">
-            У этой задачи пока нет тегов
-          </span>
-        }
-        <button
-          tuiIconButton
-          iconStart="@tui.pen"
-          size="m"
-          appearance="outline"
-          (click)="showEditTagsDialog()"
-          class="ml-2 shrink-0"
-        ></button>
+            appearance="outline"
+            (click)="showEditTagsDialog()"
+            class="ml-2 shrink-0"
+          ></button>
+        </div>
+        <button tuiButton size="m" (click)="creatingNewVersion.set(true)">
+          Добавить версию
+        </button>
       </div>
     </div>
+
+    <tui-accordion [closeOthers]="false">
+      @if (creatingNewVersion()) {
+        <button tuiAccordion="true">Новая версия</button>
+        <tui-expand [formGroup]="newVersionForm">
+          <label tuiLabel class="mb-2 block text-lg font-semibold"
+            >Условие задачи
+            <tui-textfield>
+              <textarea
+                tuiTextarea
+                formControlName="text"
+                [min]="6"
+                class="w-full"
+              ></textarea>
+            </tui-textfield>
+            <tui-error
+              formControlName="text"
+              [error]="[] | tuiFieldError | async"
+          /></label>
+
+          <div class="flex justify-end">
+            <button
+              tuiButton
+              size="m"
+              (click)="saveNewVersion()"
+              [disabled]="
+                newVersionForm.invalid || !newVersionForm.controls.text.dirty
+              "
+            >
+              Сохранить
+            </button>
+          </div>
+        </tui-expand>
+      }
+
+      @for (
+        version of currentTaskChain();
+        track version.id;
+        let index = $index;
+        let first = $first
+      ) {
+        <button [tuiAccordion]="first">
+          Версия {{ taskChain.length - index }}
+        </button>
+
+        <tui-expand>
+          <div class="flex flex-col gap-4">
+            <div>
+              <h3 class="mb-2 text-lg font-semibold">Условие задачи</h3>
+              <div class="prose max-w-none">
+                {{ version.text }}
+              </div>
+            </div>
+
+            @if (version.rightSolutionId) {
+              <button
+                tuiButton
+                size="m"
+                appearance="outline"
+                [routerLink]="['/solutions', version.rightSolutionId]"
+              >
+                Верное решение
+              </button>
+            } @else {
+              <span>Верное решение не добавлено</span>
+            }
+          </div>
+        </tui-expand>
+      }
+    </tui-accordion>
   </div>
 }
 

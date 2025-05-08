@@ -44,7 +44,7 @@ export class TasksFacadeService {
             t.id == currentTask.firstTaskId ||
             t.firstTaskId == currentTask.firstTaskId,
         )
-        .sort((a, b) => a.created.getTime() - b.created.getTime());
+        .sort((a, b) => b.created.getTime() - a.created.getTime());
     }),
   );
 
@@ -66,6 +66,7 @@ export class TasksFacadeService {
     name: string,
     text: string,
     isPublic: boolean,
+    previousTaskId: string | null = null,
   ): Promise<void> {
     const response = await firstValueFrom(
       this.tasksClient.createTaskRequest(
@@ -73,6 +74,7 @@ export class TasksFacadeService {
           name,
           text,
           isPublic,
+          previousTaskId,
         }),
       ),
     );
