@@ -113,9 +113,7 @@ export class TasksFacadeService {
           ..._state.taskList.filter(
             (task) => !response.some((r) => r.id === task.id),
           ),
-          ...response
-            .filter((r) => !!r.firstTaskId)
-            .map((r) => new TaskListResponse({ ...r })),
+          new TaskListResponse({ ...response[response.length - 1] }),
         ],
       }),
     );
