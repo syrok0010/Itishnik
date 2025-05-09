@@ -6,7 +6,7 @@ import {
   CreateCourseCommand,
 } from './web-api-client';
 import { BehaviorSubject, firstValueFrom, switchMap } from 'rxjs';
-import { distinctUntilChanged, filter, map, shareReplay } from 'rxjs/operators';
+import { filter, map, shareReplay } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 export interface CoursesState {
@@ -32,7 +32,6 @@ export class CoursesFacadeService {
   currentCourse$ = this._store.pipe(
     map((state) => state.currentCourseId),
     filter((courseId) => !!courseId),
-    distinctUntilChanged(),
     switchMap((courseId) => this.coursesClient.getCourseById(courseId)),
     shareReplay(1),
   );
@@ -81,11 +80,12 @@ export class CoursesFacadeService {
     courseId: string,
     description: string,
   ): Promise<void> {
-    const response = await firstValueFrom(
+    await firstValueFrom(
       this.coursesClient.changeDescription(
         courseId,
         new ChangeCourseDescriptionCommand({ id: courseId, description }),
       ),
     );
+    this._store.next(_state);
   }
 }

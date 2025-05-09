@@ -8,9 +8,8 @@ import {
   Signal,
 } from '@angular/core';
 import { CoursesFacadeService } from '../../courses-facade.service';
-import { AsyncPipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { TuiButton, TuiIcon, TuiTextfield } from '@taiga-ui/core';
+import { TuiButton, TuiTextfield } from '@taiga-ui/core';
 import { TuiTextarea } from '@taiga-ui/kit';
 import {
   AbstractControl,
@@ -29,27 +28,22 @@ export function textDifferentFromLatest(
     const latestText = latestTextSignal();
 
     if (
+      latestText === null ||
       latestText === undefined ||
       newText === null ||
-      newText.trim() !== latestText.trim()
+      newText === undefined ||
+      newText.trim() === latestText.trim()
     ) {
-      return null;
+      return { textNotChanged: true }; //сохранено
     }
 
-    return { textNotChanged: true };
+    return null; //сохранить
   };
 }
 
 @Component({
   selector: 'app-course-page',
-  imports: [
-    AsyncPipe,
-    TuiTextfield,
-    TuiTextarea,
-    TuiButton,
-    TuiIcon,
-    ReactiveFormsModule,
-  ],
+  imports: [TuiTextfield, TuiTextarea, TuiButton, ReactiveFormsModule],
   templateUrl: './course-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -66,7 +60,9 @@ export default class CoursePageComponent implements OnInit {
   constructor() {
     effect(() => {
       if (!this.currentCourse()) return;
-      this.descriptionControl.setValue(this.currentCourse().description);
+      this.descriptionControl.setValue(this.currentCourse().description, {
+        emitEvent: false,
+      });
     });
   }
 
