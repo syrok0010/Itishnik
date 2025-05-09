@@ -1,6 +1,6 @@
 <header class="flex w-full justify-center bg-white shadow-sm">
   <nav class="container flex items-center justify-between">
-    <div class="flex h-full items-center gap-x-6 py-4">
+    <div class="flex h-full gap-x-6 py-4">
       <a class="text-lg font-medium"> Лого </a>
       @for (link of links; track link[0]) {
         <a
@@ -19,7 +19,7 @@
       [routerLinkActiveOptions]="{ exact: true }"
       class="flex items-center gap-x-2 text-lg font-medium text-gray-600 transition-colors duration-200 ease-in-out hover:text-primary"
     >
-      <span>Пупкин И.И.</span>
+      <span>{{ shortenedFullName() }}</span>
       <tui-icon icon="@tui.circle-user-round" />
     </a>
   </nav>
