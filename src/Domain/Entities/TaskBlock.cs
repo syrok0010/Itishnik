@@ -60,6 +60,13 @@ public class TaskBlock
         _tasks.Add(task);
         _weights.Add(weight);
     }
+    
+    public void RemoveTask(Task task)
+    {
+        var index = _tasks.IndexOf(task);
+        _tasks.RemoveAt(index);
+        _weights.RemoveAt(index);
+    }
 
     public void ChangeWeight(int taskNumber, int value)
     {

@@ -1,15 +1,19 @@
 ﻿using Itishnik.Application.Common.Models;
 using Itishnik.Application.Courses;
+using Itishnik.Application.Courses.Commands.AddTaskToBlock;
 using Itishnik.Application.Courses.Commands.ChangeCourseDescription;
 using Itishnik.Application.Courses.Commands.ChangeTaskBlockDescription;
 using Itishnik.Application.Courses.Commands.ChangeTaskBlockTimeline;
 using Itishnik.Application.Courses.Commands.ChangeTaskBlockName;
+using Itishnik.Application.Courses.Commands.ChangeWeightsInBlock;
 using Itishnik.Application.Courses.Commands.CreateCourse;
 using Itishnik.Application.Courses.Commands.CreateTaskBlock;
+using Itishnik.Application.Courses.Commands.DeleteTaskFromBlock;
 using Itishnik.Application.Courses.Queries.GetCourseById;
 using Itishnik.Application.Courses.Queries.GetCourseList;
 using Itishnik.Application.Courses.Queries.GetStudentsOnCourse;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Itishnik.Web.Endpoints;
 
@@ -27,7 +31,10 @@ public class Courses : EndpointGroupBase
             .MapPatch(ChangeTaskBlockDescription, "{id}/{blockId}/description")
             .MapPatch(ChangeTaskBlockTimeline, "{id}/{blockId}/timeline")
             .MapPatch(ChangeTaskBlockName, "{id}/{blockId}/name")
-            .MapPatch(ChangeDescription, "{id}/description");
+            .MapPatch(ChangeDescription, "{id}/description")
+            .MapPost(AddTaskToBlock, "{id}/{blockId}/task")
+            .MapDelete(DeleteTaskFromBlock, "{id}/{blockId}/task")
+            .MapPatch(ChangeWeights, "{id}/{blockId}/gradeWeights");
     }
     
     public async Task<Created<CourseResponse>> CreateCourse(ISender sender, CreateCourseCommand command)
@@ -121,6 +128,39 @@ public class Courses : EndpointGroupBase
         ChangeCourseDescriptionCommand command)
     {
         if (command.Id != id) return TypedResults.BadRequest();
+        var response = await sender.Send(command);
+        return TypedResults.Ok(response);
+    }
+
+    public async Task<Results<Ok<TaskBlockResponse>, BadRequest>> AddTaskToBlock(
+        ISender sender,
+        Guid id, 
+        Guid blockId, 
+        [FromBody] AddTaskToBlockCommand command)
+    {
+        if (command.Id != id || command.BlockId != blockId) return TypedResults.BadRequest();
+        var response = await sender.Send(command);
+        return TypedResults.Ok(response);
+    }
+
+    public async Task<Results<NoContent, BadRequest>> DeleteTaskFromBlock(
+        ISender sender, 
+        Guid id, 
+        Guid blockId,
+        [FromBody] DeleteTaskFromBlockCommand command)
+    {
+        if (command.Id != id || command.BlockId != blockId) return TypedResults.BadRequest();
+        await sender.Send(command);
+        return TypedResults.NoContent();
+    }
+
+    public async Task<Results<Ok<TaskBlockResponse>, BadRequest>> ChangeWeights(
+        ISender sender,
+        Guid id, 
+        Guid blockId,
+        [FromBody] ChangeWeightsInBlockCommand command)
+    {
+        if (command.Id != id || command.BlockId != blockId) return TypedResults.BadRequest();
         var response = await sender.Send(command);
         return TypedResults.Ok(response);
     }
