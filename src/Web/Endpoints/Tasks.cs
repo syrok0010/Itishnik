@@ -17,7 +17,7 @@ public class Tasks : EndpointGroupBase
     public override void Map(WebApplication app)
     {
         app.MapGroup(this)
-            .MapPost(CreateTaskRequest)
+            .MapPost(CreateTask)
             .MapPost(CreateTag, "tags")
             .MapGet(GetTagList, "tags")
             .MapGet(GetTaskList)
@@ -26,7 +26,7 @@ public class Tasks : EndpointGroupBase
             .MapPatch(Publish, "{id}/publish");
     }
     
-    public async Task<Created<TaskResponse[]>> CreateTaskRequest(ISender sender, CreateTaskCommand command)
+    public async Task<Created<TaskResponse[]>> CreateTask(ISender sender, CreateTaskCommand command)
     {
         var response = await sender.Send(command);
         return TypedResults.Created($"/{nameof(Tasks)}/{response.Last().Id}", response);

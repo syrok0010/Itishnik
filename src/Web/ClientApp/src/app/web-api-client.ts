@@ -598,7 +598,7 @@ export class CoursesClient implements ICoursesClient {
 }
 
 export interface ITasksClient {
-    createTaskRequest(command: CreateTaskCommand): Observable<TaskResponse[]>;
+    createTask(command: CreateTaskCommand): Observable<TaskResponse[]>;
     getTaskList(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfTaskListResponse>;
     createTag(command: CreateTagCommand): Observable<Tag>;
     getTagList(): Observable<Tag[]>;
@@ -620,7 +620,7 @@ export class TasksClient implements ITasksClient {
         this.baseUrl = baseUrl ?? "";
     }
 
-    createTaskRequest(command: CreateTaskCommand): Observable<TaskResponse[]> {
+    createTask(command: CreateTaskCommand): Observable<TaskResponse[]> {
         let url_ = this.baseUrl + "/api/Tasks";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -637,11 +637,11 @@ export class TasksClient implements ITasksClient {
         };
 
         return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processCreateTaskRequest(response_);
+            return this.processCreateTask(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processCreateTaskRequest(response_ as any);
+                    return this.processCreateTask(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<TaskResponse[]>;
                 }
@@ -650,7 +650,7 @@ export class TasksClient implements ITasksClient {
         }));
     }
 
-    protected processCreateTaskRequest(response: HttpResponseBase): Observable<TaskResponse[]> {
+    protected processCreateTask(response: HttpResponseBase): Observable<TaskResponse[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :

@@ -69,7 +69,7 @@ export class TasksFacadeService {
     previousTaskId: string | null = null,
   ): Promise<void> {
     const response = await firstValueFrom(
-      this.tasksClient.createTaskRequest(
+      this.tasksClient.createTask(
         new CreateTaskCommand({
           name,
           text,

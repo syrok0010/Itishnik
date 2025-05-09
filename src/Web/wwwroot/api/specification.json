@@ -429,7 +429,7 @@
         "tags": [
           "Tasks"
         ],
-        "operationId": "CreateTaskRequest",
+        "operationId": "CreateTask",
         "requestBody": {
           "x-name": "command",
           "content": {
