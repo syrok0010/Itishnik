@@ -7,13 +7,23 @@ import {
   NavigationCancel,
   NavigationError,
 } from '@angular/router';
-import { BehaviorSubject, combineLatest, Observable, timer } from 'rxjs';
+import {
+  BehaviorSubject,
+  combineLatest,
+  Observable,
+  of,
+  startWith,
+  Subject,
+  switchMap,
+  takeUntil,
+  timer,
+} from 'rxjs';
 import {
   map,
   filter,
   distinctUntilChanged,
   shareReplay,
-  delayWhen,
+  tap,
 } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
@@ -27,16 +37,41 @@ export class GlobalLoadingService {
 
   private router = inject(Router);
 
-  public readonly showLoader$: Observable<boolean> = combineLatest([
+  private readonly loadStarted$ = new Subject<void>();
+
+  private readonly isLoadingActual$: Observable<boolean> = combineLatest([
     this.routerLoading,
     this.manualLoading,
   ]).pipe(
     map(([routerState, manualState]) => routerState || manualState),
     distinctUntilChanged(),
-    delayWhen((isLoading) => timer(isLoading ? 0 : 400)),
-    distinctUntilChanged(),
+    tap((isLoading) => {
+      if (isLoading) {
+        this.loadStarted$.next();
+      }
+    }),
     untilDestroyed(this),
-    shareReplay({ bufferSize: 1, refCount: false }),
+  );
+
+  public readonly showLoader$: Observable<boolean> = this.isLoadingActual$.pipe(
+    switchMap((isLoading) =>
+      isLoading
+        ? of(true)
+        : of(true).pipe(
+            switchMap(() =>
+              timer(400).pipe(
+                map(() => false),
+                startWith(true),
+                takeUntil(
+                  this.isLoadingActual$.pipe(filter((loading) => loading)),
+                ),
+              ),
+            ),
+          ),
+    ),
+    distinctUntilChanged(),
+    shareReplay({ bufferSize: 1, refCount: true }),
+    untilDestroyed(this),
   );
 
   constructor() {

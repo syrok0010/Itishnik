@@ -1,19 +1,25 @@
 import { inject, Injectable } from '@angular/core';
 import {
   CreateTaskCommand,
+  SetTaskTagsCommand,
   TaskListResponse,
+  TaskResponse,
   TasksClient,
 } from './web-api-client';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 export interface TasksState {
   taskList: TaskListResponse[];
+  tasks: TaskResponse[];
+  currentTaskId: string | null;
 }
 
 let _state: TasksState = {
   taskList: [],
+  tasks: [],
+  currentTaskId: null,
 };
 
 @UntilDestroy()
@@ -26,6 +32,21 @@ export class TasksFacadeService {
   private _store: BehaviorSubject<TasksState> = new BehaviorSubject(_state);
 
   taskList$ = this._store.pipe(map((state) => state.taskList));
+  currentTaskChain$ = this._store.pipe(
+    filter((state) => !!state.currentTaskId),
+    map((state) => {
+      const currentTask = state.tasks.find((t) => t.id === state.currentTaskId);
+      if (!currentTask) return [];
+      if (!currentTask.firstTaskId) return [currentTask];
+      return state.tasks
+        .filter(
+          (t) =>
+            t.id == currentTask.firstTaskId ||
+            t.firstTaskId == currentTask.firstTaskId,
+        )
+        .sort((a, b) => b.created.getTime() - a.created.getTime());
+    }),
+  );
 
   constructor() {
     this.tasksClient
@@ -45,13 +66,15 @@ export class TasksFacadeService {
     name: string,
     text: string,
     isPublic: boolean,
+    previousTaskId: string | null = null,
   ): Promise<void> {
     const response = await firstValueFrom(
-      this.tasksClient.createTaskRequest(
+      this.tasksClient.createTask(
         new CreateTaskCommand({
           name,
           text,
           isPublic,
+          previousTaskId,
         }),
       ),
     );
@@ -61,9 +84,76 @@ export class TasksFacadeService {
         ..._state,
         taskList: [
           ..._state.taskList,
-          new TaskListResponse({
-            ...response,
-          }),
+          ...response.map(
+            (t) =>
+              new TaskListResponse({
+                ...t,
+              }),
+          ),
+        ],
+      }),
+    );
+  }
+
+  async setCurrentTaskId(taskId: string): Promise<void> {
+    const response = await firstValueFrom(
+      this.tasksClient.getTaskWithAllVersions(taskId),
+    );
+    this._store.next(
+      (_state = {
+        ..._state,
+        currentTaskId: taskId,
+        tasks: [
+          ..._state.tasks.filter(
+            (task) => !response.some((r) => r.id === task.id),
+          ),
+          ...response,
+        ],
+        taskList: [
+          ..._state.taskList.filter(
+            (task) => !response.some((r) => r.id === task.id),
+          ),
+          new TaskListResponse({ ...response[response.length - 1] }),
+        ],
+      }),
+    );
+  }
+
+  async updateTags(taskId: string, tagIds: string[]) {
+    const response = await firstValueFrom(
+      this.tasksClient.setTaskTags(
+        taskId,
+        new SetTaskTagsCommand({ taskId, tagIds }),
+      ),
+    );
+    this._store.next(
+      (_state = {
+        ..._state,
+        tasks: [
+          ..._state.tasks.filter((t) => response.every((rt) => rt.id !== t.id)),
+          ...response,
+        ],
+      }),
+    );
+  }
+
+  async publishTask(id: string) {
+    const response = await firstValueFrom(this.tasksClient.publish(id));
+
+    this._store.next(
+      (_state = {
+        ..._state,
+        tasks: [
+          ..._state.tasks.filter(
+            (task) => !response.some((r) => r.id === task.id),
+          ),
+          ...response,
+        ],
+        taskList: [
+          ..._state.taskList.filter(
+            (task) => !response.some((r) => r.id === task.id),
+          ),
+          new TaskListResponse({ ...response[response.length - 1] }),
         ],
       }),
     );

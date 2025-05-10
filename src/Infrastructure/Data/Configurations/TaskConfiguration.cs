@@ -27,6 +27,6 @@ public class TaskConfiguration : IEntityTypeConfiguration<Task>
             .WithOne();
         builder
             .HasOne(x => x.FirstVersion)
-            .WithOne();
+            .WithMany();
     }
 }

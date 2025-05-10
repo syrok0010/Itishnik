@@ -486,7 +486,7 @@
         "tags": [
           "Tasks"
         ],
-        "operationId": "CreateTaskRequest",
+        "operationId": "CreateTask",
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -505,7 +505,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TaskResponse"
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaskResponse"
+                  }
                 }
               }
             }
@@ -557,6 +560,195 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/api/Tasks/tags": {
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "CreateTag",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateTagCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "GetTagList",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tag"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tag"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Tasks/{id}": {
+      "get": {
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "GetTaskWithAllVersions",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaskResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Tasks/{id}/tags": {
+      "patch": {
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "SetTaskTags",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetTaskTagsCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaskResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/api/Tasks/{id}/publish": {
+      "patch": {
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "Publish",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TaskResponse"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
           }
         }
       }
@@ -915,21 +1107,24 @@
           "teacherEmail": {
             "type": "string"
           },
-          "previousVersionId": {
-            "type": "string",
-            "format": "guid",
-            "nullable": true
-          },
-          "firstVersionId": {
-            "type": "string",
-            "format": "guid",
-            "nullable": true
-          },
           "tags": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Tag"
             }
+          },
+          "firstTaskId": {
+            "type": "string",
+            "format": "guid",
+            "nullable": true
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModified": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },
@@ -963,6 +1158,15 @@
             "type": "string",
             "format": "guid",
             "nullable": true
+          }
+        }
+      },
+      "CreateTagCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "text": {
+            "type": "string"
           }
         }
       },
@@ -1025,6 +1229,23 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Tag"
+            }
+          }
+        }
+      },
+      "SetTaskTagsCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "tagIds": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "guid"
             }
           }
         }
