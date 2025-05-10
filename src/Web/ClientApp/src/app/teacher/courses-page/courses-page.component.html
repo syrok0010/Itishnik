@@ -1,13 +1,13 @@
 @let data = coursesList$ | async;
 
 <div class="relative w-full grow rounded-lg bg-white p-4">
-  <table tuiTable [columns]="columns" class="w-full">
+  <table tuiTable [columns]="columns" class="w-full table-fixed">
     <thead>
       <tr tuiThGroup>
-        <th tuiTh *tuiHead="'course'">Курс</th>
-        <th tuiTh *tuiHead="'students'">Количество студентов</th>
-        <th tuiTh *tuiHead="'taskBlocks'">Количество блоков заданий</th>
-        <th tuiTh *tuiHead="'description'">Описание</th>
+        <th tuiTh class="w-3/12" *tuiHead="'course'">Курс</th>
+        <th tuiTh class="w-2/12" *tuiHead="'students'">Количество студентов</th>
+        <th tuiTh class="w-2/12" *tuiHead="'taskBlocks'">Количество блоков заданий</th>
+        <th tuiTh class="w-5/12" *tuiHead="'description'">Описание</th>
       </tr>
     </thead>
     <tbody tuiTbody [data]="data">
