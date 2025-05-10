@@ -18,7 +18,27 @@ export const routes: Routes = [
   {
     path: 'courses/:id',
     canMatch: [isAdminOrTeacherGuard],
+    canActivateChild: [isAdminOrTeacherGuard],
     loadComponent: () => import('./teacher/course-page/course-page.component'),
+    children: [
+      {
+        path: '',
+        redirectTo: 'taskBlocks',
+        pathMatch: 'full',
+      },
+      {
+        path: 'taskBlocks',
+        loadComponent: () =>
+          import(
+            './components/task-blocks-accordion/task-blocks-accordion.component'
+          ),
+      },
+      {
+        path: 'students',
+        loadComponent: () =>
+          import('./components/students-table/students-table.component'),
+      },
+    ],
   },
   {
     path: 'tasks',

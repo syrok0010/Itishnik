@@ -8,9 +8,14 @@ import {
   Signal,
 } from '@angular/core';
 import { CoursesFacadeService } from '../../courses-facade.service';
-import { ActivatedRoute } from '@angular/router';
+import {
+  ActivatedRoute,
+  RouterLink,
+  RouterLinkActive,
+  RouterOutlet,
+} from '@angular/router';
 import { TuiButton, TuiTextfield } from '@taiga-ui/core';
-import { TuiTextarea } from '@taiga-ui/kit';
+import { TuiTabs, TuiTextarea } from '@taiga-ui/kit';
 import {
   AbstractControl,
   FormControl,
@@ -43,7 +48,16 @@ export function textDifferentFromLatest(
 
 @Component({
   selector: 'app-course-page',
-  imports: [TuiTextfield, TuiTextarea, TuiButton, ReactiveFormsModule],
+  imports: [
+    TuiTextfield,
+    TuiTextarea,
+    TuiButton,
+    ReactiveFormsModule,
+    TuiTabs,
+    RouterLink,
+    RouterOutlet,
+    RouterLinkActive,
+  ],
   templateUrl: './course-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

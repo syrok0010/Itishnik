@@ -24,3 +24,28 @@
     {{descriptionControl.invalid ? 'Сохранено' : 'Сохранить'}}
   </button>
 </div>
+
+<div class="flex flex-col w-full rounded-lg grow bg-white p-4 pt-0 mt-4">
+  <tui-tabs-with-more>
+    <a
+      *tuiItem
+      routerLinkActive
+      tuiTab
+      [routerLink]="'taskBlocks'"
+    >
+      Работы
+    </a>
+
+    <a
+      *tuiItem
+      routerLinkActive
+      tuiTab
+      [routerLink]="'students'"
+    >
+      Студенты
+    </a>
+  </tui-tabs-with-more>
+
+  <router-outlet class="mt-4"/>
+
+</div>

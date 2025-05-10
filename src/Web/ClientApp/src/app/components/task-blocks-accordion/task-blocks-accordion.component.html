@@ -1,0 +1,49 @@
+<tui-accordion>
+  @let formGroups = taskBlockForms();
+  @for (taskBlock of taskBlocks(); let index = $index; track taskBlock.id) {
+    @let formGroup = formGroups[index];
+    <button [tuiAccordion]="false">{{ formGroup.value.name }}</button>
+    <tui-expand>
+      <div
+        class="flex flex-col gap-4 mb-2"
+        [formGroup]="formGroup">
+        <tui-input
+          formControlName="name">
+          Название
+        </tui-input>
+        <tui-textfield>
+          <label tuiLabel>Описание</label>
+          <textarea
+            tuiTextarea
+            [min]="3"
+            formControlName="description"
+          ></textarea>
+        </tui-textfield>
+        <div class="flex flex-row gap-4">
+          <tui-input-date-time
+            class="flex-1"
+            formControlName="startTime"
+            [min]="currentDay"
+          >
+            Дата и время начала
+          </tui-input-date-time>
+          <tui-input-date-time
+            class="flex-1"
+            formControlName="endTime"
+            [min]="formGroup.value.startTime"
+          >
+            Дата и время конца
+          </tui-input-date-time>
+          <tui-input-time
+            class="flex-1"
+            formControlName="timeAllowed"
+          >
+            Время на выполнение
+          </tui-input-time>
+        </div>
+      </div>
+
+    </tui-expand>
+  }
+</tui-accordion>
+

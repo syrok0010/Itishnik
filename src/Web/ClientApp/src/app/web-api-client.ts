@@ -1846,6 +1846,7 @@ export class TaskBlockResponse implements ITaskBlockResponse {
     id?: string;
     courseId?: string;
     name?: string;
+    description?: string | undefined;
     tasks?: TaskListDto[];
     weights?: number[];
     startTime?: Date;
@@ -1866,6 +1867,7 @@ export class TaskBlockResponse implements ITaskBlockResponse {
             this.id = _data["id"];
             this.courseId = _data["courseId"];
             this.name = _data["name"];
+            this.description = _data["description"];
             if (Array.isArray(_data["tasks"])) {
                 this.tasks = [] as any;
                 for (let item of _data["tasks"])
@@ -1894,6 +1896,7 @@ export class TaskBlockResponse implements ITaskBlockResponse {
         data["id"] = this.id;
         data["courseId"] = this.courseId;
         data["name"] = this.name;
+        data["description"] = this.description;
         if (Array.isArray(this.tasks)) {
             data["tasks"] = [];
             for (let item of this.tasks)
@@ -1915,6 +1918,7 @@ export interface ITaskBlockResponse {
     id?: string;
     courseId?: string;
     name?: string;
+    description?: string | undefined;
     tasks?: TaskListDto[];
     weights?: number[];
     startTime?: Date;
