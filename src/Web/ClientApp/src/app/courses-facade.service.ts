@@ -1,6 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import {
   ChangeCourseDescriptionCommand,
+  ChangeTaskBlockDescriptionCommand,
+  ChangeTaskBlockNameCommand,
+  ChangeTaskBlockTimelineCommand,
   CourseListResponse,
   CoursesClient,
   CreateCourseCommand,
@@ -8,6 +11,7 @@ import {
 import { BehaviorSubject, firstValueFrom, switchMap } from 'rxjs';
 import { filter, map, shareReplay } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TuiAlertService } from '@taiga-ui/core';
 
 export interface CoursesState {
   coursesList: CourseListResponse[];
@@ -25,6 +29,7 @@ let _state: CoursesState = {
 })
 export class CoursesFacadeService {
   coursesClient = inject(CoursesClient);
+  private readonly alerts = inject(TuiAlertService);
 
   private _store: BehaviorSubject<CoursesState> = new BehaviorSubject(_state);
 
@@ -60,6 +65,12 @@ export class CoursesFacadeService {
         new CreateCourseCommand({ name: name, description: '' }),
       ),
     );
+    this.alerts
+      .open('Курс успешно создан', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
     this._store.next(
       (_state = {
         ..._state,
@@ -86,6 +97,65 @@ export class CoursesFacadeService {
         new ChangeCourseDescriptionCommand({ id: courseId, description }),
       ),
     );
+    this.alerts
+      .open('Описание курса обновлено', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
+    this._store.next(_state);
+  }
+
+  async updateTaskBlock(
+    courseId: string,
+    taskBlockId: string,
+    name: string,
+    description: string,
+    startTime: Date,
+    endTime: Date,
+    timeAllowed: string,
+  ) {
+    await firstValueFrom(
+      this.coursesClient.changeTaskBlockName(
+        courseId,
+        taskBlockId,
+        new ChangeTaskBlockNameCommand({
+          name,
+          taskBlockId,
+          courseId,
+        }),
+      ),
+    );
+    await firstValueFrom(
+      this.coursesClient.changeTaskBlockDescription(
+        courseId,
+        taskBlockId,
+        new ChangeTaskBlockDescriptionCommand({
+          description,
+          taskBlockId,
+          courseId,
+        }),
+      ),
+    );
+    await firstValueFrom(
+      this.coursesClient.changeTaskBlockTimeline(
+        courseId,
+        taskBlockId,
+        new ChangeTaskBlockTimelineCommand({
+          startTime,
+          endTime,
+          timeAllowed,
+          taskBlockId,
+          courseId,
+        }),
+      ),
+    );
+    this.alerts
+      .open('Данные работы обновлены', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
     this._store.next(_state);
   }
 }

@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { TuiInputModule } from '@taiga-ui/legacy';
-import { TuiAlertService, TuiButton, TuiDialogContext } from '@taiga-ui/core';
+import { TuiButton, TuiDialogContext } from '@taiga-ui/core';
 import { injectContext } from '@taiga-ui/polymorpheus';
 import { CoursesFacadeService } from '../courses-facade.service';
 
@@ -39,7 +39,6 @@ export class CreateCourseDialogComponent {
   courseName: FormControl = new FormControl('', Validators.required);
   public readonly context = injectContext<TuiDialogContext>();
   courseFacade = inject(CoursesFacadeService);
-  private readonly alerts = inject(TuiAlertService);
 
   cancel() {
     this.context.completeWith();
@@ -47,12 +46,6 @@ export class CreateCourseDialogComponent {
 
   async create() {
     await this.courseFacade.createCourse(this.courseName.value);
-    this.alerts
-      .open('Курс успешно создан!', {
-        autoClose: 3000,
-        appearance: 'positive',
-      })
-      .subscribe();
     this.context.completeWith();
   }
 }

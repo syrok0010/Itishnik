@@ -5,7 +5,6 @@ import {
   effect,
   inject,
   OnInit,
-  Signal,
 } from '@angular/core';
 import { CoursesFacadeService } from '../../courses-facade.service';
 import {
@@ -16,35 +15,8 @@ import {
 } from '@angular/router';
 import { TuiButton, TuiTextfield } from '@taiga-ui/core';
 import { TuiTabs, TuiTextarea } from '@taiga-ui/kit';
-import {
-  AbstractControl,
-  FormControl,
-  ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
-} from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-
-export function textDifferentFromLatest(
-  latestTextSignal: Signal<string>,
-): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const newText = control.value as string | null;
-    const latestText = latestTextSignal();
-
-    if (
-      latestText === null ||
-      latestText === undefined ||
-      newText === null ||
-      newText === undefined ||
-      newText.trim() === latestText.trim()
-    ) {
-      return { textNotChanged: true }; //сохранено
-    }
-
-    return null; //сохранить
-  };
-}
 
 @Component({
   selector: 'app-course-page',
@@ -67,9 +39,7 @@ export default class CoursePageComponent implements OnInit {
   currentCourse = toSignal(this.coursesFacade.currentCourse$);
 
   description = computed(() => this.currentCourse()?.description);
-  descriptionControl = new FormControl<string | null>('', [
-    textDifferentFromLatest(this.description),
-  ]);
+  descriptionControl = new FormControl<string | null>('');
 
   constructor() {
     effect(() => {
