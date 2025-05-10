@@ -6,7 +6,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { TuiInputModule } from '@taiga-ui/legacy';
-import { TuiButton, TuiDialogContext } from '@taiga-ui/core';
+import { TuiAlertService, TuiButton, TuiDialogContext } from '@taiga-ui/core';
 import { injectContext } from '@taiga-ui/polymorpheus';
 import { CoursesFacadeService } from '../courses-facade.service';
 
@@ -17,7 +17,6 @@ import { CoursesFacadeService } from '../courses-facade.service';
     <form class="flex flex-col items-end gap-y-4 pt-4" (ngSubmit)="create()">
       <tui-input [formControl]="courseName" class="w-full">
         Название курса
-        <input tuiTextfieldLegacy />
       </tui-input>
       <div class="flex flex-row gap-x-4">
         <button appearance="outline" tuiButton type="button" (click)="cancel()">
@@ -40,13 +39,20 @@ export class CreateCourseDialogComponent {
   courseName: FormControl = new FormControl('', Validators.required);
   public readonly context = injectContext<TuiDialogContext>();
   courseFacade = inject(CoursesFacadeService);
+  private readonly alerts = inject(TuiAlertService);
 
   cancel() {
     this.context.completeWith();
   }
 
-  create() {
-    this.courseFacade.createCourse(this.courseName.value);
+  async create() {
+    await this.courseFacade.createCourse(this.courseName.value);
+    this.alerts
+      .open('Курс успешно создан!', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
     this.context.completeWith();
   }
 }
