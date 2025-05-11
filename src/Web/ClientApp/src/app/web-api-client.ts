@@ -666,7 +666,7 @@ export class CoursesClient implements ICoursesClient {
 
 export interface ITasksClient {
     createTask(command: CreateTaskCommand): Observable<TaskResponse[]>;
-    getTaskList(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfTaskListResponse>;
+    getTaskList(themeIds: string[] | null | undefined, authorIds: string[] | null | undefined, name: string | null | undefined, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfTaskListResponse>;
     createTag(command: CreateTagCommand): Observable<Tag>;
     getTagList(): Observable<Tag[]>;
     getTaskWithAllVersions(id: string): Observable<TaskResponse[]>;
@@ -746,8 +746,14 @@ export class TasksClient implements ITasksClient {
         return _observableOf(null as any);
     }
 
-    getTaskList(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfTaskListResponse> {
+    getTaskList(themeIds: string[] | null | undefined, authorIds: string[] | null | undefined, name: string | null | undefined, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfTaskListResponse> {
         let url_ = this.baseUrl + "/api/Tasks?";
+        if (themeIds !== undefined && themeIds !== null)
+            themeIds && themeIds.forEach(item => { url_ += "ThemeIds=" + encodeURIComponent("" + item) + "&"; });
+        if (authorIds !== undefined && authorIds !== null)
+            authorIds && authorIds.forEach(item => { url_ += "AuthorIds=" + encodeURIComponent("" + item) + "&"; });
+        if (name !== undefined && name !== null)
+            url_ += "Name=" + encodeURIComponent("" + name) + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)

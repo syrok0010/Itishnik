@@ -50,7 +50,7 @@ export class TasksFacadeService {
 
   constructor() {
     this.tasksClient
-      .getTaskList(1, 50)
+      .getTaskList(null, null, null, 1, 50)
       .pipe(untilDestroyed(this))
       .subscribe((x) =>
         this._store.next(
