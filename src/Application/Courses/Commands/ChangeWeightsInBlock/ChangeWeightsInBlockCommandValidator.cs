@@ -20,7 +20,7 @@ public class ChangeWeightsInBlockCommandValidator : AbstractValidator<ChangeWeig
 
     private async Task<bool> CheckLength(IApplicationDbContext context, ChangeWeightsInBlockCommand command, CancellationToken cancellationToken)
     {
-        var taskBlock = await context.TaskBlocks.Include(tb => tb.Weights).FirstAsync(tb => tb.Id == command.BlockId, cancellationToken);
+        var taskBlock = await context.TaskBlocks.FirstAsync(tb => tb.Id == command.BlockId, cancellationToken);
         return taskBlock.Weights.Count() == command.Weights.Count();
     }
 }
