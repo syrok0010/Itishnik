@@ -5,10 +5,9 @@ using Itishnik.Domain.Entities;
 
 namespace Itishnik.Application.Courses.Commands.ChangeWeightsInBlock;
 
-
 [Authorize(Policy = Policies.Owner)]
 [ResourceMetadata(nameof(Id), typeof(Course))]
-public record ChangeWeightsInBlockCommand(Guid Id, Guid BlockId, IEnumerable<int> Weights) : IRequest<TaskBlockResponse>;
+public record ChangeWeightsInBlockCommand(Guid Id, Guid BlockId, ICollection<int> Weights) : IRequest<TaskBlockResponse>;
 
 public class ChangeWeightsInBlockCommandHandler(IApplicationDbContext context, IMapper mapper) 
     : IRequestHandler<ChangeWeightsInBlockCommand, TaskBlockResponse>
@@ -22,10 +21,7 @@ public class ChangeWeightsInBlockCommandHandler(IApplicationDbContext context, I
             .Include(tb => tb.Tasks)
             .FirstAsync(tb => tb.Id == request.BlockId, cancellationToken);
 
-        foreach ((int weight, int taskNumber) in request.Weights.Zip(Enumerable.Range(1, request.Weights.Count())))
-        {
-            taskBlock.ChangeWeight(taskNumber, weight);
-        }
+        taskBlock.SetWeights(request.Weights);
 
         await _context.SaveChangesAsync(cancellationToken);
         return _mapper.Map<TaskBlockResponse>(taskBlock);

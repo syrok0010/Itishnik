@@ -71,19 +71,17 @@ public class TaskBlock
         _weights.RemoveAt(index);
     }
 
-    public void ChangeWeight(int taskNumber, int value)
+    public void SetWeights(ICollection<int> values)
     {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(taskNumber, nameof(taskNumber));
-        if (value is < 0 or > 10)
-        {
-            throw new ArgumentOutOfRangeException(nameof(value), "Значение веса должно быть от 0 до 10");
-        }
-        if (_weights.Count < taskNumber)
-        {
-            throw new ArgumentException($"В блоке всего {_weights.Count} задач");
-        }
+        if (IsPublic)
+            throw new InvalidOperationException("Нельзя удалить задачу из опубликованного блока");
+        if (values.Count != _weights.Count)
+            throw new ArgumentException("Количества весов не совпадают");
+        if (values.Any(v => v is < 0 or > 10))
+            throw new ArgumentException("Один из весов вне допустимого диапазона");
         
-        _weights[taskNumber - 1] = value;
+        _weights.Clear();
+        _weights.AddRange(values);
     }
 
     public void AddFile(File file)
