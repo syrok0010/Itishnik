@@ -3,6 +3,7 @@ using System;
 using Itishnik.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Itishnik.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250513181545_TaskBlockWeightsAdded")]
+    partial class TaskBlockWeightsAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -260,23 +263,11 @@ namespace Itishnik.Infrastructure.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTimeOffset>("Created")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("CreatedBy")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid?>("FirstVersionId")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsPublic")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTimeOffset>("LastModified")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<Guid?>("LastModifiedBy")
-                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -299,7 +290,8 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("FirstVersionId");
+                    b.HasIndex("FirstVersionId")
+                        .IsUnique();
 
                     b.HasIndex("PreviousVersionId")
                         .IsUnique();
@@ -620,8 +612,8 @@ namespace Itishnik.Infrastructure.Data.Migrations
             modelBuilder.Entity("Itishnik.Domain.Entities.Task", b =>
                 {
                     b.HasOne("Itishnik.Domain.Entities.Task", "FirstVersion")
-                        .WithMany()
-                        .HasForeignKey("FirstVersionId");
+                        .WithOne()
+                        .HasForeignKey("Itishnik.Domain.Entities.Task", "FirstVersionId");
 
                     b.HasOne("Itishnik.Domain.Entities.Task", "PreviousVersion")
                         .WithOne()

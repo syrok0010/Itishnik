@@ -95,6 +95,9 @@ export interface ICoursesClient {
     changeTaskBlockTimeline(id: string, blockId: string, command: ChangeTaskBlockTimelineCommand): Observable<TaskBlockResponse>;
     changeTaskBlockName(id: string, blockId: string, command: ChangeTaskBlockNameCommand): Observable<TaskBlockResponse>;
     changeDescription(id: string, command: ChangeCourseDescriptionCommand): Observable<CourseResponse>;
+    addTaskToBlock(id: string, blockId: string, command: AddTaskToBlockCommand): Observable<TaskBlockResponse>;
+    deleteTaskFromBlock(id: string, blockId: string, command: DeleteTaskFromBlockCommand): Observable<void>;
+    changeWeights(id: string, blockId: string, command: ChangeWeightsInBlockCommand): Observable<TaskBlockResponse>;
 }
 
 @Injectable({
@@ -654,6 +657,188 @@ export class CoursesClient implements ICoursesClient {
             let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result404 = CourseResponse.fromJS(resultData404);
             return throwException("A server side error occurred.", status, _responseText, _headers, result404);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    addTaskToBlock(id: string, blockId: string, command: AddTaskToBlockCommand): Observable<TaskBlockResponse> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/task";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (blockId === undefined || blockId === null)
+            throw new Error("The parameter 'blockId' must be defined.");
+        url_ = url_.replace("{blockId}", encodeURIComponent("" + blockId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processAddTaskToBlock(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processAddTaskToBlock(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TaskBlockResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TaskBlockResponse>;
+        }));
+    }
+
+    protected processAddTaskToBlock(response: HttpResponseBase): Observable<TaskBlockResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TaskBlockResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    deleteTaskFromBlock(id: string, blockId: string, command: DeleteTaskFromBlockCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/task";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (blockId === undefined || blockId === null)
+            throw new Error("The parameter 'blockId' must be defined.");
+        url_ = url_.replace("{blockId}", encodeURIComponent("" + blockId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("delete", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processDeleteTaskFromBlock(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processDeleteTaskFromBlock(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processDeleteTaskFromBlock(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    changeWeights(id: string, blockId: string, command: ChangeWeightsInBlockCommand): Observable<TaskBlockResponse> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/gradeWeights";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (blockId === undefined || blockId === null)
+            throw new Error("The parameter 'blockId' must be defined.");
+        url_ = url_.replace("{blockId}", encodeURIComponent("" + blockId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processChangeWeights(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processChangeWeights(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TaskBlockResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TaskBlockResponse>;
+        }));
+    }
+
+    protected processChangeWeights(response: HttpResponseBase): Observable<TaskBlockResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TaskBlockResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -1855,6 +2040,150 @@ export class ChangeCourseDescriptionCommand implements IChangeCourseDescriptionC
 export interface IChangeCourseDescriptionCommand {
     id?: string;
     description?: string | undefined;
+}
+
+export class AddTaskToBlockCommand implements IAddTaskToBlockCommand {
+    id?: string;
+    blockId?: string;
+    taskId?: string;
+    weight?: number;
+
+    constructor(data?: IAddTaskToBlockCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.blockId = _data["blockId"];
+            this.taskId = _data["taskId"];
+            this.weight = _data["weight"];
+        }
+    }
+
+    static fromJS(data: any): AddTaskToBlockCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new AddTaskToBlockCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["blockId"] = this.blockId;
+        data["taskId"] = this.taskId;
+        data["weight"] = this.weight;
+        return data;
+    }
+}
+
+export interface IAddTaskToBlockCommand {
+    id?: string;
+    blockId?: string;
+    taskId?: string;
+    weight?: number;
+}
+
+export class DeleteTaskFromBlockCommand implements IDeleteTaskFromBlockCommand {
+    id?: string;
+    blockId?: string;
+    taskId?: string;
+
+    constructor(data?: IDeleteTaskFromBlockCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.blockId = _data["blockId"];
+            this.taskId = _data["taskId"];
+        }
+    }
+
+    static fromJS(data: any): DeleteTaskFromBlockCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new DeleteTaskFromBlockCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["blockId"] = this.blockId;
+        data["taskId"] = this.taskId;
+        return data;
+    }
+}
+
+export interface IDeleteTaskFromBlockCommand {
+    id?: string;
+    blockId?: string;
+    taskId?: string;
+}
+
+export class ChangeWeightsInBlockCommand implements IChangeWeightsInBlockCommand {
+    id?: string;
+    blockId?: string;
+    weights?: number[];
+
+    constructor(data?: IChangeWeightsInBlockCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.blockId = _data["blockId"];
+            if (Array.isArray(_data["weights"])) {
+                this.weights = [] as any;
+                for (let item of _data["weights"])
+                    this.weights!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): ChangeWeightsInBlockCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ChangeWeightsInBlockCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["blockId"] = this.blockId;
+        if (Array.isArray(this.weights)) {
+            data["weights"] = [];
+            for (let item of this.weights)
+                data["weights"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IChangeWeightsInBlockCommand {
+    id?: string;
+    blockId?: string;
+    weights?: number[];
 }
 
 export class TaskResponse implements ITaskResponse {
