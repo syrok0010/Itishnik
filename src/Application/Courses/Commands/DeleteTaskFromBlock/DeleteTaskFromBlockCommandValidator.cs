@@ -11,8 +11,8 @@ public class DeleteTaskFromBlockCommandValidator : AbstractValidator<DeleteTaskF
             .WithMessage("Курса не существует");
         RuleFor(x => x.BlockId)
             .MustAsync((cmd, id, token) =>
-                context.TaskBlocks.AnyAsync(tb => tb.Id == id && tb.CourseId == cmd.Id, token))
-            .WithMessage("Блока задач не существует или не принадлежит заданному курсу");
+                context.TaskBlocks.AnyAsync(tb => tb.Id == id && tb.CourseId == cmd.Id && !tb.IsPublic, token))
+            .WithMessage("Блок задач не существует, не принадлежит заданному курсу или опубликован");
         RuleFor(x => x.TaskId)
             .MustAsync((id, token) => context.Tasks.AnyAsync(t => t.Id == id, token))
             .WithMessage("Задания не существует");

@@ -63,6 +63,9 @@ public class TaskBlock
     
     public void RemoveTask(Task task)
     {
+        if (IsPublic)
+            throw new InvalidOperationException("Нельзя удалить задачу из опубликованного блока");
+
         var index = _tasks.IndexOf(task);
         _tasks.RemoveAt(index);
         _weights.RemoveAt(index);

@@ -289,9 +289,6 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.Property<Guid?>("RightSolutionId")
                         .HasColumnType("uuid");
 
-                    b.Property<Guid?>("TaskBlockId")
-                        .HasColumnType("uuid");
-
                     b.Property<Guid>("TeacherId")
                         .HasColumnType("uuid");
 
@@ -306,8 +303,6 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.HasIndex("PreviousVersionId")
                         .IsUnique();
-
-                    b.HasIndex("TaskBlockId");
 
                     b.HasIndex("TeacherId");
 
@@ -342,6 +337,10 @@ namespace Itishnik.Infrastructure.Data.Migrations
 
                     b.Property<TimeSpan>("TimeAllowed")
                         .HasColumnType("interval");
+
+                    b.PrimitiveCollection<int[]>("Weights")
+                        .IsRequired()
+                        .HasColumnType("integer[]");
 
                     b.HasKey("Id");
 
@@ -495,6 +494,21 @@ namespace Itishnik.Infrastructure.Data.Migrations
                     b.ToTable("TagTask");
                 });
 
+            modelBuilder.Entity("TaskTaskBlock", b =>
+                {
+                    b.Property<Guid>("TaskBlockId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("TasksId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("TaskBlockId", "TasksId");
+
+                    b.HasIndex("TasksId");
+
+                    b.ToTable("TaskTaskBlock");
+                });
+
             modelBuilder.Entity("Itishnik.Domain.Entities.Student", b =>
                 {
                     b.HasBaseType("Itishnik.Domain.Entities.ApplicationUser");
@@ -613,10 +627,6 @@ namespace Itishnik.Infrastructure.Data.Migrations
                         .WithOne()
                         .HasForeignKey("Itishnik.Domain.Entities.Task", "PreviousVersionId");
 
-                    b.HasOne("Itishnik.Domain.Entities.TaskBlock", null)
-                        .WithMany("Tasks")
-                        .HasForeignKey("TaskBlockId");
-
                     b.HasOne("Itishnik.Domain.Entities.Teacher", "Teacher")
                         .WithMany()
                         .HasForeignKey("TeacherId")
@@ -707,6 +717,21 @@ namespace Itishnik.Infrastructure.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("TaskTaskBlock", b =>
+                {
+                    b.HasOne("Itishnik.Domain.Entities.TaskBlock", null)
+                        .WithMany()
+                        .HasForeignKey("TaskBlockId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Itishnik.Domain.Entities.Task", null)
+                        .WithMany()
+                        .HasForeignKey("TasksId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Itishnik.Domain.Entities.Student", b =>
                 {
                     b.HasOne("Itishnik.Domain.Entities.ApplicationUser", null)
@@ -745,8 +770,6 @@ namespace Itishnik.Infrastructure.Data.Migrations
             modelBuilder.Entity("Itishnik.Domain.Entities.TaskBlock", b =>
                 {
                     b.Navigation("Files");
-
-                    b.Navigation("Tasks");
                 });
 
             modelBuilder.Entity("Itishnik.Domain.Entities.Student", b =>

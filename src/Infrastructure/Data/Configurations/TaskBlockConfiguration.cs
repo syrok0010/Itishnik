@@ -13,6 +13,7 @@ public class TaskBlockConfiguration : IEntityTypeConfiguration<TaskBlock>
             .HasMaxLength(255);
         builder.HasMany(tb => tb.Tasks)
             .WithMany();
+        builder.PrimitiveCollection(tb => tb.Weights);
         builder.HasOne(tb => tb.Course)
             .WithMany(c => c.TaskBlocks)
             .HasForeignKey(tb => tb.CourseId);
