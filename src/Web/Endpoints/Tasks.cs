@@ -44,15 +44,9 @@ public class Tasks : EndpointGroupBase
         return response.Count == 0 ? TypedResults.NotFound(response) : TypedResults.Ok(response);
     }
     
-    public async Task<
-        Results<
-            Ok<PaginatedList<TaskListResponse>>,
-            NotFound<PaginatedList<TaskListResponse>>
-        >
-    > GetTaskList(ISender sender, [AsParameters] GetTaskListQuery query)
+    public async Task<PaginatedList<TaskListResponse>> GetTaskList(ISender sender, [AsParameters] GetTaskListQuery query)
     {
-        var response = await sender.Send(query);
-        return response.TotalCount == 0 ? TypedResults.NotFound(response) : TypedResults.Ok(response);
+        return await sender.Send(query);
     }
     
     public async Task<Ok<TaskResponse[]>> GetTaskWithAllVersions(ISender sender, Guid id)

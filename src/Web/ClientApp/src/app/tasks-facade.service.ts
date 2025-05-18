@@ -1,25 +1,49 @@
 import { inject, Injectable } from '@angular/core';
 import {
   CreateTaskCommand,
+  PaginatedListOfTaskListResponse,
   SetTaskTagsCommand,
+  SwaggerException,
   TaskListResponse,
   TaskResponse,
   TasksClient,
 } from './web-api-client';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  of,
+  switchMap,
+  throwError,
+} from 'rxjs';
+import { filter, map, distinctUntilChanged, catchError } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
+export interface FilterState {
+  authorIds: string[];
+  tagIds: string[];
+  name: string;
+  sortBy: string;
+  ascending: boolean;
+}
 
 export interface TasksState {
   taskList: TaskListResponse[];
   tasks: TaskResponse[];
   currentTaskId: string | null;
+  filterState: FilterState;
 }
 
 let _state: TasksState = {
   taskList: [],
   tasks: [],
   currentTaskId: null,
+  filterState: {
+    authorIds: [],
+    tagIds: [],
+    name: '',
+    sortBy: '',
+    ascending: true,
+  },
 };
 
 @UntilDestroy()
@@ -49,14 +73,42 @@ export class TasksFacadeService {
   );
 
   constructor() {
-    this.tasksClient
-      .getTaskList(1, 50)
-      .pipe(untilDestroyed(this))
+    this._store
+      .pipe(
+        map((state) => state.filterState),
+        distinctUntilChanged(),
+        switchMap((filters) =>
+          this.tasksClient.getTaskList(
+            filters.tagIds,
+            filters.authorIds,
+            filters.name,
+            filters.sortBy,
+            filters.ascending,
+            1,
+            50,
+          ),
+        ),
+        catchError((err) =>
+          SwaggerException.isSwaggerException(err)
+            ? of(
+                new PaginatedListOfTaskListResponse({
+                  items: [],
+                  pageNumber: 1,
+                  totalPages: 1,
+                  totalCount: 0,
+                  hasPreviousPage: false,
+                  hasNextPage: false,
+                }),
+              )
+            : throwError(() => err),
+        ),
+        untilDestroyed(this),
+      )
       .subscribe((x) =>
         this._store.next(
           (_state = {
             ..._state,
-            taskList: [..._state.taskList, ...x.items],
+            taskList: [...x?.items],
           }),
         ),
       );
@@ -155,6 +207,30 @@ export class TasksFacadeService {
           ),
           new TaskListResponse({ ...response[response.length - 1] }),
         ],
+      }),
+    );
+  }
+
+  setFilters(filters: FilterState) {
+    this._store.next(
+      (_state = {
+        ..._state,
+        filterState: { ..._state.filterState, ...filters },
+      }),
+    );
+  }
+
+  setSorting(sortBy: string, ascending: boolean) {
+    if (
+      sortBy === _state.filterState.sortBy &&
+      ascending === _state.filterState.ascending
+    )
+      return;
+
+    this._store.next(
+      (_state = {
+        ..._state,
+        filterState: { ..._state.filterState, sortBy, ascending },
       }),
     );
   }
