@@ -959,6 +959,29 @@
         }
       }
     },
+    "/api/Users/user": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "UserInfo",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Users": {
       "get": {
         "tags": [
