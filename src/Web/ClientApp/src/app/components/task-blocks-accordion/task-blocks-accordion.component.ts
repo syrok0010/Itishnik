@@ -19,10 +19,11 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { TuiButton, TuiTextfield } from '@taiga-ui/core';
+import { TuiButton, TuiIcon, TuiTextfield } from '@taiga-ui/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TuiDay, TuiTime } from '@taiga-ui/cdk';
 import { TuiTextarea } from '@taiga-ui/kit';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-task-blocks-accordion',
@@ -36,6 +37,8 @@ import { TuiTextarea } from '@taiga-ui/kit';
     TuiInputDateTimeModule,
     TuiInputTimeModule,
     TuiButton,
+    RouterLink,
+    TuiIcon,
   ],
   templateUrl: './task-blocks-accordion.component.html',
   styles: ``,
@@ -94,4 +97,6 @@ export default class TaskBlocksAccordionComponent {
       form.value.timeAllowed.toString('HH:MM:SS'),
     );
   }
+
+  async addTasksToBlock(taskBlockId: string, courseId: string) {}
 }
