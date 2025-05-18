@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TuiInputModule } from '@taiga-ui/legacy';
-import TaskTableComponent from '../../components/task-table/task-table.component';
+import TaskTableComponent from '../components/task-table/task-table.component';
 
 @Component({
   selector: 'app-tasks-page',
