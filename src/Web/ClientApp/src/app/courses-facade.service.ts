@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import {
+  AddTaskToBlockCommand,
   ChangeCourseDescriptionCommand,
   ChangeTaskBlockDescriptionCommand,
   ChangeTaskBlockNameCommand,
@@ -7,6 +8,7 @@ import {
   CourseListResponse,
   CoursesClient,
   CreateCourseCommand,
+  DeleteTaskFromBlockCommand,
 } from './web-api-client';
 import { BehaviorSubject, firstValueFrom, switchMap } from 'rxjs';
 import { filter, map, shareReplay } from 'rxjs/operators';
@@ -99,6 +101,64 @@ export class CoursesFacadeService {
     );
     this.alerts
       .open('Описание курса обновлено', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
+    this._store.next(_state);
+  }
+
+  async addTasksToTaskBlock(
+    courseId: string,
+    taskBlockId: string,
+    taskIds: string[],
+  ): Promise<void> {
+    await Promise.all(
+      taskIds.map((taskId) =>
+        firstValueFrom(
+          this.coursesClient.addTaskToBlock(
+            courseId,
+            taskBlockId,
+            new AddTaskToBlockCommand({
+              id: courseId,
+              blockId: taskBlockId,
+              taskId,
+            }),
+          ),
+        ),
+      ),
+    );
+    this.alerts
+      .open('Задачи успешно добавлены', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
+    this._store.next(_state);
+  }
+
+  async removeTasksFromTaskBlock(
+    courseId: string,
+    taskBlockId: string,
+    taskIds: string[],
+  ): Promise<void> {
+    await Promise.all(
+      taskIds.map((taskId) =>
+        firstValueFrom(
+          this.coursesClient.deleteTaskFromBlock(
+            courseId,
+            taskBlockId,
+            new DeleteTaskFromBlockCommand({
+              id: courseId,
+              blockId: taskBlockId,
+              taskId,
+            }),
+          ),
+        ),
+      ),
+    );
+    this.alerts
+      .open('Задача успешно удалена', {
         autoClose: 3000,
         appearance: 'positive',
       })

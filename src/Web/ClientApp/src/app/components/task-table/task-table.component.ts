@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   inject,
   input,
   signal,
@@ -8,16 +9,22 @@ import {
 import { FilterState, TasksFacadeService } from '../../tasks-facade.service';
 import { Role } from '../../users-facade.service';
 import {
+  FormArray,
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { TuiSortChange, TuiTable } from '@taiga-ui/addon-table';
 import { TaskListResponse } from '../../web-api-client';
-import { AsyncPipe } from '@angular/common';
-import { TuiAvatar, TuiBadge, TuiChip, TuiStatus } from '@taiga-ui/kit';
+import {
+  TuiAvatar,
+  TuiBadge,
+  TuiCheckbox,
+  TuiChip,
+  TuiStatus,
+} from '@taiga-ui/kit';
 import { TuiAutoColorPipe, TuiInitialsPipe, TuiTitle } from '@taiga-ui/core';
 import { TuiCell } from '@taiga-ui/layout';
 import { RouterLink } from '@angular/router';
@@ -29,7 +36,6 @@ import UserMultiselectInputComponent from '../user-multiselect-input.component';
   selector: 'app-task-table',
   imports: [
     TuiTable,
-    AsyncPipe,
     TuiChip,
     TuiAutoColorPipe,
     TuiAvatar,
@@ -44,6 +50,7 @@ import UserMultiselectInputComponent from '../user-multiselect-input.component';
     ReactiveFormsModule,
     TuiInputModule,
     UserMultiselectInputComponent,
+    TuiCheckbox,
   ],
   templateUrl: './task-table.component.html',
   styles: [':host { @apply flex grow flex-col gap-4}'],
@@ -51,8 +58,18 @@ import UserMultiselectInputComponent from '../user-multiselect-input.component';
 })
 export default class TaskTableComponent {
   filtering = input(true);
+  selectMode = input(false);
+  excludeTaskIds = input<string[]>([]);
 
   taskFacade = inject(TasksFacadeService);
+  tasks = toSignal(this.taskFacade.taskList$);
+  filteredTasks = computed(() =>
+    this.tasks().filter((t) => !this.excludeTaskIds()?.includes(t.id)),
+  );
+
+  selectedArray = computed(
+    () => new FormArray(this.filteredTasks().map(() => new FormControl(false))),
+  );
 
   currentSortBy = signal<string | null>(null);
   roles = ['Teacher'] as Role[];
@@ -62,7 +79,34 @@ export default class TaskTableComponent {
     tagIds: new FormControl<string[]>([]),
   });
 
-  columns = ['isPublic', 'name', 'author', 'tags'] as readonly string[];
+  columns = computed(() =>
+    this.selectMode()
+      ? ([
+          'checkBox',
+          'isPublic',
+          'name',
+          'author',
+          'tags',
+        ] as readonly string[])
+      : (['isPublic', 'name', 'author', 'tags'] as readonly string[]),
+  );
+
+  columnWidths = computed(() =>
+    this.selectMode()
+      ? {
+          checkBox: 'w-1/12',
+          isPublic: 'w-1/12',
+          name: 'w-4/12',
+          author: 'w-3/12',
+          tags: 'w-3/12',
+        }
+      : {
+          isPublic: 'w-1/12',
+          name: 'w-4/12',
+          author: 'w-3/12',
+          tags: 'w-4/12',
+        },
+  );
 
   constructor() {
     this.filterForm.valueChanges

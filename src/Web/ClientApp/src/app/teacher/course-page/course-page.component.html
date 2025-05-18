@@ -1,21 +1,21 @@
-<div class="flex flex-col w-full rounded-lg bg-white p-4 gap-4">
+<div class="flex w-full flex-col gap-4 rounded-lg bg-white p-4">
   <h1 class="text-2xl font-semibold">{{ currentCourse()?.name }}</h1>
-  <label tuiLabel class="grow w-full">
+  <label tuiLabel class="w-full grow">
     Описание курса
     <tui-textfield>
-        <textarea
-          [formControl]="descriptionControl"
-          placeholder="Введите описание курса"
-          tuiTextarea
-          [min]="3"
-        ></textarea>
+      <textarea
+        [formControl]="descriptionControl"
+        placeholder="Введите описание курса"
+        tuiTextarea
+        [min]="3"
+      ></textarea>
     </tui-textfield>
   </label>
   <button
     appearance="primary"
     tuiButton
     type="button"
-    class="shadow-sm mr-auto"
+    class="mr-auto shadow-sm"
     [iconEnd]="'@tui.save'"
     size="m"
     (click)="saveDescription()"
@@ -24,27 +24,12 @@
   </button>
 </div>
 
-<div class="flex flex-col w-full rounded-lg grow bg-white p-4 pt-0 mt-4">
+<div class="mt-4 flex w-full grow flex-col rounded-lg bg-white p-4 pt-0">
   <tui-tabs-with-more>
-    <a
-      *tuiItem
-      routerLinkActive
-      tuiTab
-      [routerLink]="'taskBlocks'"
-    >
-      Работы
-    </a>
+    <a *tuiItem routerLinkActive tuiTab [routerLink]="'taskBlocks'"> Работы </a>
 
-    <a
-      *tuiItem
-      routerLinkActive
-      tuiTab
-      [routerLink]="'students'"
-    >
-      Студенты
-    </a>
+    <a *tuiItem routerLinkActive tuiTab [routerLink]="'students'"> Студенты </a>
   </tui-tabs-with-more>
 
   <router-outlet class="mt-4" />
-
 </div>

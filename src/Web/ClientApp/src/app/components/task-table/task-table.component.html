@@ -1,26 +1,86 @@
-@let data = taskFacade.taskList$ | async;
-
-@if (filtering()) {
-  <div class="flex justify-between gap-4" [formGroup]="filterForm">
-    <app-tag-multiselect-input class="flex-1" formControlName="tagIds" />
-    <app-user-multiselect-input [roles]="roles" placeholder="Автор задачи" class="flex-1" formControlName="authorIds" />
-    <tui-input class="flex-1" formControlName="name">Название задачи</tui-input>
-  </div>
-}
-
-<div class="w-full grow rounded-lg bg-white p-4">
-  <table tuiTable [columns]="columns" [tuiSortBy]="currentSortBy()" (tuiSortChange)="sortChanged($event)" class="w-full table-fixed">
+<div class="relative flex w-full grow flex-col gap-4 rounded-lg bg-white p-4">
+  @if (filtering()) {
+    <div class="flex justify-between gap-4" [formGroup]="filterForm">
+      <app-tag-multiselect-input class="flex-1" formControlName="tagIds" />
+      <app-user-multiselect-input
+        [roles]="roles"
+        placeholder="Автор задачи"
+        class="flex-1"
+        formControlName="authorIds"
+      />
+      <tui-input class="flex-1" formControlName="name"
+        >Название задачи
+      </tui-input>
+    </div>
+  }
+  <table
+    tuiTable
+    [columns]="columns()"
+    [tuiSortBy]="currentSortBy()"
+    (tuiSortChange)="sortChanged($event)"
+    class="w-full table-fixed"
+  >
     <thead>
-    <tr tuiThGroup>
-      <th tuiTh tuiSortable class="w-1/12" *tuiHead="'isPublic'">Публичная</th>
-      <th tuiTh tuiSortable class="w-4/12" *tuiHead="'name'">Название</th>
-      <th tuiTh tuiSortable class="w-3/12" *tuiHead="'author'">Автор</th>
-      <th tuiTh [sorter]="null" class="w-4/12" *tuiHead="'tags'">Темы</th>
-    </tr>
+      <tr tuiThGroup>
+        <th
+          tuiTh
+          [sorter]="null"
+          [class]="columnWidths()['checkBox']"
+          *tuiHead="'checkBox'"
+        ></th>
+        <th
+          tuiTh
+          tuiSortable
+          [class]="columnWidths()['isPublic']"
+          *tuiHead="'isPublic'"
+        >
+          Публичная
+        </th>
+        <th
+          tuiTh
+          tuiSortable
+          [class]="columnWidths()['name']"
+          *tuiHead="'name'"
+        >
+          Название
+        </th>
+        <th
+          tuiTh
+          tuiSortable
+          [class]="columnWidths()['author']"
+          *tuiHead="'author'"
+        >
+          Автор
+        </th>
+        <th
+          tuiTh
+          [sorter]="null"
+          [class]="columnWidths()['tags']"
+          *tuiHead="'tags'"
+        >
+          Темы
+        </th>
+      </tr>
     </thead>
-    <tbody tuiTbody [data]="data">
-      @for (item of data; track item.id) {
-        <tr tuiTr class="group cursor-pointer" [routerLink]="[item.id]">
+    <tbody tuiTbody [data]="filteredTasks()">
+      @let formArray = selectedArray();
+      @for (item of filteredTasks(); let index = $index; track item.id) {
+        <tr
+          tuiTr
+          class="group cursor-pointer"
+          [routerLink]="selectMode() ? null : [item.id]"
+        >
+          <td
+            tuiTd
+            *tuiCell="'checkBox'"
+            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+          >
+            <input
+              tuiCheckbox
+              type="checkBox"
+              [formControl]="formArray.at(index)"
+            />
+          </td>
           <td
             tuiTd
             *tuiCell="'isPublic'"
@@ -28,11 +88,11 @@
           >
             <div tuiCell="l" class="flex justify-center">
               <tui-badge
-                appearance="{{item.isPublic ? 'positive' : 'negative'}}"
+                appearance="{{ item.isPublic ? 'positive' : 'negative' }}"
                 tuiStatus
                 size="xl"
               >
-                {{item.isPublic ? 'Да' : 'Нет'}}
+                {{ item.isPublic ? "Да" : "Нет" }}
               </tui-badge>
             </div>
           </td>
@@ -58,8 +118,8 @@
               <span tuiTitle class="truncate">
                 {{ item.teacherFullName }}
                 <span tuiSubtitle class="truncate">{{
-                    item.teacherEmail
-                  }}</span>
+                  item.teacherEmail
+                }}</span>
               </span>
             </div>
           </td>
@@ -84,4 +144,7 @@
       }
     </tbody>
   </table>
+  @if (!filteredTasks() || filteredTasks().length === 0) {
+    <h1 class="text-center text-2xl font-medium">Доступных задач нет</h1>
+  }
 </div>

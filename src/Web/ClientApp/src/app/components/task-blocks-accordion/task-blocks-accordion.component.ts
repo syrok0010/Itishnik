@@ -3,6 +3,8 @@ import {
   Component,
   computed,
   inject,
+  TemplateRef,
+  viewChild,
 } from '@angular/core';
 import { TuiAccordion } from '@taiga-ui/experimental';
 import { CoursesFacadeService } from '../../courses-facade.service';
@@ -19,11 +21,20 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { TuiButton, TuiIcon, TuiTextfield } from '@taiga-ui/core';
+import {
+  TuiButton,
+  TuiDialogService,
+  TuiIcon,
+  TuiTextfield,
+} from '@taiga-ui/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TuiDay, TuiTime } from '@taiga-ui/cdk';
 import { TuiTextarea } from '@taiga-ui/kit';
 import { RouterLink } from '@angular/router';
+import TaskTableComponent from '../task-table/task-table.component';
+import { SafeSubscriber } from 'rxjs/internal/Subscriber';
+import { firstValueFrom } from 'rxjs';
+import { TaskListDto } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-task-blocks-accordion',
@@ -39,13 +50,19 @@ import { RouterLink } from '@angular/router';
     TuiButton,
     RouterLink,
     TuiIcon,
+    TaskTableComponent,
   ],
   templateUrl: './task-blocks-accordion.component.html',
   styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class TaskBlocksAccordionComponent {
-  coursesFacade = inject(CoursesFacadeService);
+  private readonly coursesFacade = inject(CoursesFacadeService);
+  private readonly dialogs = inject(TuiDialogService);
+
+  addTasksDialogTemplate = viewChild<TemplateRef<any>>('addTasksDialog');
+  taskTableTemplate = viewChild<TaskTableComponent>('taskTable');
+
   taskBlocks = toSignal(
     this.coursesFacade.currentCourse$.pipe(map((course) => course.taskBlocks)),
   );
@@ -98,5 +115,44 @@ export default class TaskBlocksAccordionComponent {
     );
   }
 
-  async addTasksToBlock(taskBlockId: string, courseId: string) {}
+  async addTasksToBlock(
+    taskBlockId: string,
+    courseId: string,
+    existingTasks: TaskListDto[],
+  ) {
+    const taskIds = await firstValueFrom(
+      this.dialogs.open<string[]>(this.addTasksDialogTemplate(), {
+        size: 'auto',
+        data: {
+          taskIds: existingTasks.map((t) => t.id),
+        },
+      }),
+    );
+    await this.coursesFacade.addTasksToTaskBlock(
+      courseId,
+      taskBlockId,
+      taskIds,
+    );
+  }
+
+  addTasks(context: SafeSubscriber<string[]>) {
+    const table = this.taskTableTemplate();
+    const selected = table
+      .selectedArray()
+      .value.map((e, i) => [e, i])
+      .filter(([e]) => e)
+      .map(([, i]) => table.filteredTasks()[i as number].id);
+    context.next(selected);
+    context.complete();
+  }
+
+  async removeTaskFromBlock(
+    courseId: string,
+    taskBlockId: string,
+    taskId: string,
+  ) {
+    await this.coursesFacade.removeTasksFromTaskBlock(courseId, taskBlockId, [
+      taskId,
+    ]);
+  }
 }

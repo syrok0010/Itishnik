@@ -3,7 +3,7 @@ import { TuiTable } from '@taiga-ui/addon-table';
 import { CoursesFacadeService } from '../../courses-facade.service';
 import { AsyncPipe } from '@angular/common';
 import { TuiButton, tuiDialog, TuiIcon } from '@taiga-ui/core';
-import { CreateCourseDialogComponent } from '../create-course-dialog.component';
+import { CreateCourseDialogComponent } from '../../components/create-course-dialog.component';
 import { RouterLink } from '@angular/router';
 
 @Component({
