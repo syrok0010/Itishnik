@@ -1,0 +1,87 @@
+@let data = taskFacade.taskList$ | async;
+
+@if (filtering()) {
+  <div class="flex justify-between gap-4" [formGroup]="filterForm">
+    <app-tag-multiselect-input class="flex-1" formControlName="tagIds" />
+    <app-user-multiselect-input [roles]="roles" placeholder="Автор задачи" class="flex-1" formControlName="authorIds" />
+    <tui-input class="flex-1" formControlName="name">Название задачи</tui-input>
+  </div>
+}
+
+<div class="relative w-full grow rounded-lg bg-white p-4 mt-4">
+  <table tuiTable [columns]="columns" [tuiSortBy]="currentSortBy()" (tuiSortChange)="sortChanged($event)" class="w-full table-fixed">
+    <thead>
+    <tr tuiThGroup>
+      <th tuiTh tuiSortable class="w-1/12" *tuiHead="'isPublic'">Публичная</th>
+      <th tuiTh tuiSortable class="w-4/12" *tuiHead="'name'">Название</th>
+      <th tuiTh tuiSortable class="w-3/12" *tuiHead="'author'">Автор</th>
+      <th tuiTh [sorter]="null" class="w-4/12" *tuiHead="'tags'">Темы</th>
+    </tr>
+    </thead>
+    <tbody tuiTbody [data]="data">
+      @for (item of data; track item.id) {
+        <tr tuiTr class="group cursor-pointer" [routerLink]="[item.id]">
+          <td
+            tuiTd
+            *tuiCell="'isPublic'"
+            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+          >
+            <div tuiCell="l" class="flex justify-center">
+              <tui-badge
+                appearance="{{item.isPublic ? 'positive' : 'negative'}}"
+                tuiStatus
+                size="xl"
+              >
+                {{item.isPublic ? 'Да' : 'Нет'}}
+              </tui-badge>
+            </div>
+          </td>
+          <td
+            tuiTd
+            *tuiCell="'name'"
+            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+          >
+            <div [tuiCell]="'l'" class="overflow-hidden">
+              <span tuiTitle class="truncate">{{ item.name }}</span>
+            </div>
+          </td>
+          <td
+            tuiTd
+            *tuiCell="'author'"
+            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+          >
+            <div [tuiCell]="'l'" class="overflow-hidden">
+              <tui-avatar
+                [src]="item.teacherFullName | tuiInitials"
+                [style.background]="item.teacherFullName | tuiAutoColor"
+              />
+              <span tuiTitle class="truncate">
+                {{ item.teacherFullName }}
+                <span tuiSubtitle class="truncate">{{
+                    item.teacherEmail
+                  }}</span>
+              </span>
+            </div>
+          </td>
+          <td
+            tuiTd
+            *tuiCell="'tags'"
+            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+          >
+            <div [tuiCell]="'l'" class="flex flex-wrap gap-1">
+              @for (tag of item.tags; track tag.id) {
+                <tui-chip
+                  size="m"
+                  appearance="custom"
+                  [style.background-color]="tag.text | tuiAutoColor"
+                >
+                  {{ tag.text }}
+                </tui-chip>
+              }
+            </div>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>
