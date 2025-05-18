@@ -1,6 +1,12 @@
 @let data = taskFacade.taskList$ | async;
 
-<div class="relative w-full grow rounded-lg bg-white p-4">
+<div class="flex justify-between gap-4" [formGroup]="filterForm">
+  <app-tag-multiselect-input class="flex-1" formControlName="tagIds" />
+  <app-user-multiselect-input [roles]="roles" placeholder="Автор задачи" class="flex-1" formControlName="authorIds" />
+  <tui-input class="flex-1" formControlName="name">Название задачи</tui-input>
+</div>
+
+<div class="relative w-full grow rounded-lg bg-white p-4 mt-4">
   <table tuiTable [columns]="columns" class="w-full table-fixed">
     <thead>
       <tr tuiThGroup>

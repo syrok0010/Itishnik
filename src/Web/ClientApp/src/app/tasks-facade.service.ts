@@ -1,25 +1,45 @@
 import { inject, Injectable } from '@angular/core';
 import {
   CreateTaskCommand,
+  PaginatedListOfTaskListResponse,
   SetTaskTagsCommand,
+  SwaggerException,
   TaskListResponse,
   TaskResponse,
   TasksClient,
 } from './web-api-client';
-import { BehaviorSubject, firstValueFrom } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  of,
+  switchMap,
+  throwError,
+} from 'rxjs';
+import { filter, map, distinctUntilChanged, catchError } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+
+export interface FilterState {
+  authorIds: string[];
+  tagIds: string[];
+  name: string;
+}
 
 export interface TasksState {
   taskList: TaskListResponse[];
   tasks: TaskResponse[];
   currentTaskId: string | null;
+  filterState: FilterState;
 }
 
 let _state: TasksState = {
   taskList: [],
   tasks: [],
   currentTaskId: null,
+  filterState: {
+    authorIds: [],
+    tagIds: [],
+    name: '',
+  },
 };
 
 @UntilDestroy()
@@ -49,14 +69,40 @@ export class TasksFacadeService {
   );
 
   constructor() {
-    this.tasksClient
-      .getTaskList(null, null, null, 1, 50)
-      .pipe(untilDestroyed(this))
+    this._store
+      .pipe(
+        map((state) => state.filterState),
+        distinctUntilChanged(),
+        switchMap((filters) =>
+          this.tasksClient.getTaskList(
+            filters.tagIds,
+            filters.authorIds,
+            filters.name,
+            1,
+            50,
+          ),
+        ),
+        catchError((err) =>
+          SwaggerException.isSwaggerException(err)
+            ? of(
+                new PaginatedListOfTaskListResponse({
+                  items: [],
+                  pageNumber: 1,
+                  totalPages: 1,
+                  totalCount: 0,
+                  hasPreviousPage: false,
+                  hasNextPage: false,
+                }),
+              )
+            : throwError(() => err),
+        ),
+        untilDestroyed(this),
+      )
       .subscribe((x) =>
         this._store.next(
           (_state = {
             ..._state,
-            taskList: [..._state.taskList, ...x.items],
+            taskList: [...x?.items],
           }),
         ),
       );
@@ -157,5 +203,9 @@ export class TasksFacadeService {
         ],
       }),
     );
+  }
+
+  setFilters(filters: FilterState) {
+    this._store.next((_state = { ..._state, filterState: filters }));
   }
 }
