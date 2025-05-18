@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { AuthState, UserDto, UsersClient } from './web-api-client';
-import { shareReplay, switchMap, tap } from 'rxjs/operators';
-import { Observable, Subject, timer } from 'rxjs';
+import { shareReplay, switchMap } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
 
 export type Role = 'Teacher' | 'Student';
 
@@ -21,6 +21,10 @@ export class UsersFacadeService {
   authInfo$: Observable<AuthState> = this.usersClient
     .authInfo()
     .pipe(shareReplay(1));
+  currentUser$ = this.authInfo$.pipe(
+    switchMap((_) => this.usersClient.userInfo()),
+    shareReplay(1),
+  );
 
   selectedRoles = new Subject<Role[]>();
   selectedUsers = this.selectedRoles.pipe(
