@@ -22,6 +22,8 @@ export interface FilterState {
   authorIds: string[];
   tagIds: string[];
   name: string;
+  sortBy: string;
+  ascending: boolean;
 }
 
 export interface TasksState {
@@ -39,6 +41,8 @@ let _state: TasksState = {
     authorIds: [],
     tagIds: [],
     name: '',
+    sortBy: '',
+    ascending: true,
   },
 };
 
@@ -78,6 +82,8 @@ export class TasksFacadeService {
             filters.tagIds,
             filters.authorIds,
             filters.name,
+            filters.sortBy,
+            filters.ascending,
             1,
             50,
           ),
@@ -206,6 +212,26 @@ export class TasksFacadeService {
   }
 
   setFilters(filters: FilterState) {
-    this._store.next((_state = { ..._state, filterState: filters }));
+    this._store.next(
+      (_state = {
+        ..._state,
+        filterState: { ..._state.filterState, ...filters },
+      }),
+    );
+  }
+
+  setSorting(sortBy: string, ascending: boolean) {
+    if (
+      sortBy === _state.filterState.sortBy &&
+      ascending === _state.filterState.ascending
+    )
+      return;
+
+    this._store.next(
+      (_state = {
+        ..._state,
+        filterState: { ..._state.filterState, sortBy, ascending },
+      }),
+    );
   }
 }

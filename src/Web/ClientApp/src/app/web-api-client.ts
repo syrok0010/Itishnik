@@ -596,7 +596,7 @@ export class CoursesClient implements ICoursesClient {
 
 export interface ITasksClient {
     createTask(command: CreateTaskCommand): Observable<TaskResponse[]>;
-    getTaskList(themeIds: string[] | null | undefined, authorIds: string[] | null | undefined, name: string | null | undefined, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfTaskListResponse>;
+    getTaskList(themeIds: string[] | null | undefined, authorIds: string[] | null | undefined, name: string | null | undefined, sortBy: string | null | undefined, ascending: boolean, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfTaskListResponse>;
     createTag(command: CreateTagCommand): Observable<Tag>;
     getTagList(): Observable<Tag[]>;
     getTaskWithAllVersions(id: string): Observable<TaskResponse[]>;
@@ -676,7 +676,7 @@ export class TasksClient implements ITasksClient {
         return _observableOf(null as any);
     }
 
-    getTaskList(themeIds: string[] | null | undefined, authorIds: string[] | null | undefined, name: string | null | undefined, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfTaskListResponse> {
+    getTaskList(themeIds: string[] | null | undefined, authorIds: string[] | null | undefined, name: string | null | undefined, sortBy: string | null | undefined, ascending: boolean, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfTaskListResponse> {
         let url_ = this.baseUrl + "/api/Tasks?";
         if (themeIds !== undefined && themeIds !== null)
             themeIds && themeIds.forEach(item => { url_ += "ThemeIds=" + encodeURIComponent("" + item) + "&"; });
@@ -684,6 +684,12 @@ export class TasksClient implements ITasksClient {
             authorIds && authorIds.forEach(item => { url_ += "AuthorIds=" + encodeURIComponent("" + item) + "&"; });
         if (name !== undefined && name !== null)
             url_ += "Name=" + encodeURIComponent("" + name) + "&";
+        if (sortBy !== undefined && sortBy !== null)
+            url_ += "SortBy=" + encodeURIComponent("" + sortBy) + "&";
+        if (ascending === undefined || ascending === null)
+            throw new Error("The parameter 'ascending' must be defined and cannot be null.");
+        else
+            url_ += "Ascending=" + encodeURIComponent("" + ascending) + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)

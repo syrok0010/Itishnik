@@ -8,7 +8,14 @@ namespace Itishnik.Application.Tasks.Queries.GetTaskList;
 
 [Authorize(Roles = Roles.Teacher)]
 [Authorize(Roles = Roles.Administrator)]
-public record GetTaskListQuery(Guid[]? ThemeIds, Guid[]? AuthorIds, string? Name, int PageNumber = 1, int PageSize = 25) : IRequest<PaginatedList<TaskListResponse>>;
+public record GetTaskListQuery(
+    Guid[]? ThemeIds,
+    Guid[]? AuthorIds,
+    string? Name,
+    string? SortBy,
+    bool Ascending,
+    int PageNumber = 1,
+    int PageSize = 25) : IRequest<PaginatedList<TaskListResponse>>;
 
 public class GetTaskListQueryHandler(IApplicationDbContext context, IMapper mapper, IUser currentUser) 
     : IRequestHandler<GetTaskListQuery, PaginatedList<TaskListResponse>>
@@ -36,7 +43,18 @@ public class GetTaskListQueryHandler(IApplicationDbContext context, IMapper mapp
 
         if (!string.IsNullOrWhiteSpace(request.Name)) 
             query = query.Where(task => task.Name.ToLower().Contains(request.Name.ToLower()));
-        
+
+        query = (request.SortBy, request.Ascending) switch
+        {
+            ("name", true) => query.OrderBy(task => task.Name),
+            ("name", false) => query.OrderByDescending(task => task.Name),
+            ("author", true) => query.OrderBy(task => task.Teacher.Surname).ThenBy(x => x.Teacher.Name).ThenBy(x => x.Teacher.Patronymic),
+            ("author", false) => query.OrderByDescending(task => task.Teacher.Surname).ThenByDescending(x => x.Teacher.Name).ThenByDescending(x => x.Teacher.Patronymic),
+            ("isPublic", true) => query.OrderBy(task => task.IsPublic),
+            ("isPublic", false) => query.OrderByDescending(task => task.IsPublic),
+            _ => query
+        };
+
         return query
             .ProjectTo<TaskListResponse>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);

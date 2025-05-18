@@ -7,13 +7,13 @@
 </div>
 
 <div class="relative w-full grow rounded-lg bg-white p-4 mt-4">
-  <table tuiTable [columns]="columns" class="w-full table-fixed">
+  <table tuiTable [columns]="columns" [tuiSortBy]="currentSortBy()" (tuiSortChange)="sortChanged($event)" class="w-full table-fixed">
     <thead>
       <tr tuiThGroup>
-        <th tuiTh class="w-1/12" *tuiHead="'isPublic'">Публичная</th>
-        <th tuiTh class="w-4/12" *tuiHead="'title'">Название</th>
-        <th tuiTh class="w-3/12" *tuiHead="'author'">Автор</th>
-        <th tuiTh class="w-4/12" *tuiHead="'tags'">Темы</th>
+        <th tuiTh tuiSortable class="w-1/12" *tuiHead="'isPublic'">Публичная</th>
+        <th tuiTh tuiSortable class="w-4/12" *tuiHead="'name'">Название</th>
+        <th tuiTh tuiSortable class="w-3/12" *tuiHead="'author'">Автор</th>
+        <th tuiTh [sorter]="null" class="w-4/12" *tuiHead="'tags'">Темы</th>
       </tr>
     </thead>
     <tbody tuiTbody [data]="data">
@@ -36,7 +36,7 @@
           </td>
           <td
             tuiTd
-            *tuiCell="'title'"
+            *tuiCell="'name'"
             class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
           >
             <div [tuiCell]="'l'" class="overflow-hidden">

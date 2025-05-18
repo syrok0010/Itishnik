@@ -1,5 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { TuiTable } from '@taiga-ui/addon-table';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
+import { TuiSortChange, TuiTable } from '@taiga-ui/addon-table';
 import { FilterState, TasksFacadeService } from '../../tasks-facade.service';
 import { AsyncPipe } from '@angular/common';
 import { TuiAvatar, TuiBadge, TuiChip, TuiStatus } from '@taiga-ui/kit';
@@ -17,6 +22,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { TuiInputModule } from '@taiga-ui/legacy';
 import UserMultiselectInputComponent from '../../components/user-multiselect-input.component';
 import { Role } from '../../users-facade.service';
+import { TaskListResponse } from '../../web-api-client';
 
 @Component({
   selector: 'app-tasks-page',
@@ -44,6 +50,7 @@ import { Role } from '../../users-facade.service';
 export default class TasksPageComponent {
   taskFacade = inject(TasksFacadeService);
 
+  currentSortBy = signal<string | null>(null);
   roles = ['Teacher'] as Role[];
   filterForm = new FormGroup({
     name: new FormControl(''),
@@ -51,7 +58,7 @@ export default class TasksPageComponent {
     tagIds: new FormControl<string[]>([]),
   });
 
-  columns = ['isPublic', 'title', 'author', 'tags'] as readonly string[];
+  columns = ['isPublic', 'name', 'author', 'tags'] as readonly string[];
 
   constructor() {
     this.filterForm.valueChanges
@@ -59,5 +66,10 @@ export default class TasksPageComponent {
       .subscribe((filters) =>
         this.taskFacade.setFilters(filters as FilterState),
       );
+  }
+
+  sortChanged(e: TuiSortChange<Partial<Record<keyof TaskListResponse, any>>>) {
+    this.taskFacade.setSorting(e.sortKey, e.sortDirection === 1);
+    this.currentSortBy.set(e.sortKey);
   }
 }
