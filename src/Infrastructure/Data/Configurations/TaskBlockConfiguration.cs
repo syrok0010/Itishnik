@@ -12,7 +12,7 @@ public class TaskBlockConfiguration : IEntityTypeConfiguration<TaskBlock>
         builder.Property(tb => tb.Name)
             .HasMaxLength(255);
         builder.HasMany(tb => tb.Tasks)
-            .WithMany();
+            .WithMany(t => t.TaskBlocks);
         builder.PrimitiveCollection(tb => tb.Weights);
         builder.HasOne(tb => tb.Course)
             .WithMany(c => c.TaskBlocks)
