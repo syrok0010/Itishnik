@@ -5,37 +5,35 @@
     ViewData["Title"] = "Войти в аккаунт";
 }
 
-<div class="row">
-    <section class="col-md-6 col-sm-8 col-xs-12 offset-sm-2 offset-md-3">
-        <h1>@ViewData["Title"]</h1>
-        <form id="account" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true"
-                       placeholder="name@edu.hse.ru"/>
-                <label asp-for="Input.Email" class="form-label">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="current-password"
-                       aria-required="true" placeholder="password"/>
-                <label asp-for="Input.Password" class="form-label">Пароль</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="checkbox mb-3">
-                <label asp-for="Input.RememberMe" class="form-label">
-                    <input class="form-check-input" asp-for="Input.RememberMe"/>
-                    @Html.DisplayNameFor(m => m.Input.RememberMe)
-                </label>
-            </div>
-            <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Войти</button>
-            <div>
-                <p>
-                    <a id="forgot-password" asp-page="./ForgotPassword">Восстановить пароль</a>
-                </p>
-            </div>
-        </form>
-    </section>
+<div class="p-4">
+    <h1 class="pr-8">@ViewData["Title"]</h1>
+    <form id="account" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true"
+                   placeholder="name@edu.hse.ru"/>
+            <label asp-for="Input.Email" class="form-label">Email</label>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+        </div>
+        <div class="form-floating mb-3">
+            <input asp-for="Input.Password" class="form-control" autocomplete="current-password"
+                   aria-required="true" placeholder="password"/>
+            <label asp-for="Input.Password" class="form-label">Пароль</label>
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+        </div>
+        <div class="checkbox mb-3">
+            <label asp-for="Input.RememberMe" class="form-label">
+                <input class="form-check-input" asp-for="Input.RememberMe"/>
+                @Html.DisplayNameFor(m => m.Input.RememberMe)
+            </label>
+        </div>
+        <button id="login-submit" type="submit" class="w-100 btn btn-lg btn-primary">Войти</button>
+        <div>
+            <p>
+                <a id="forgot-password" asp-page="./ForgotPassword">Восстановить пароль</a>
+            </p>
+        </div>
+    </form>
 </div>
 
 @section Scripts {

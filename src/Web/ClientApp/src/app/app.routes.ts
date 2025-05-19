@@ -1,10 +1,9 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './home/home.component';
 import { isAdminOrTeacherGuard } from '../api-authorization/auth-guards';
 import { taskResolver } from './task-resolver';
 
 export const routes: Routes = [
-  { path: '', component: HomeComponent },
+  { path: '', redirectTo: '/courses', pathMatch: 'full' },
   {
     path: 'courses',
     canMatch: [isAdminOrTeacherGuard],
