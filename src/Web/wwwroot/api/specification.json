@@ -620,6 +620,48 @@
         }
       }
     },
+    "/api/Courses/{id}/{blockId}/publish": {
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "PublishBlock",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskBlockResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Tasks": {
       "post": {
         "tags": [
