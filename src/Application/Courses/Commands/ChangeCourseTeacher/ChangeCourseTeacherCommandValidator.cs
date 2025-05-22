@@ -19,9 +19,10 @@ public class ChangeCourseTeacherCommandValidator : AbstractValidator<ChangeCours
 
     private async Task<bool> TeacherCheck(IApplicationDbContext context, ChangeCourseTeacherCommand command, CancellationToken token)
     {
-        var course = await context.Courses
-            .Include(c => c.Teacher)
-            .FirstAsync(c => c.Id == command.CourseId, token);
-        return course.TeacherId != command.NewTeacherId;
+        var teacherId = await context.Courses
+            .Where(c => c.Id == command.CourseId)
+            .Select(x => x.TeacherId)
+            .FirstAsync(token);
+        return teacherId != command.NewTeacherId;
     }
 }

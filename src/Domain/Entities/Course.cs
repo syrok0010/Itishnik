@@ -50,6 +50,7 @@ public class Course : IOwnedResource
             throw new ArgumentException("Учитель уже является владельцем курса");
         
         Teacher = teacher;
+        TeacherId = teacher.Id;
     }
 
     public string Name

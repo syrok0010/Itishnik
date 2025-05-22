@@ -9,6 +9,4 @@ public class Teacher(string name, string surname, string? patronymic) : Applicat
     public IEnumerable<Course> Courses => _courses;
 
     public void AddCourse(Course course) => _courses.Add(course);
-
-    public void RemoveCourse(Course course) => _courses.Remove(course);
 }
