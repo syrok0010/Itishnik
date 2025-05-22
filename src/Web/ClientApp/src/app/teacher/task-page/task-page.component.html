@@ -7,10 +7,10 @@
         </h1>
 
         @if (!currentVersion().isPublic) {
-          <button tuiButton size="m" (click)="publish()">Опубликовать</button>
+          <button tuiButton size="m" (click)="publish()">Сделать публичной</button>
         } @else {
           <tui-badge appearance="positive" tuiStatus size="xl">
-            Задача опубликована
+            Задача публичная
           </tui-badge>
         }
       </div>
