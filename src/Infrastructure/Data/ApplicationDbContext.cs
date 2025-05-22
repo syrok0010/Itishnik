@@ -81,11 +81,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             _user.Id == null ||
             _user.Roles.Contains(Role.Administrator) ||
             (_user.Roles.Contains(Role.Teacher) && gtb.TaskBlock.Course.TeacherId == _user.Id) ||
-            (_user.Roles.Contains(Role.Student) &&
-                gtb.StudentId == _user.Id &&
-                gtb.TaskBlock.IsPublic &&
-                this.GradedCourses.Any(gc => gc.StudentId == _user.Id && gc.CourseId == gtb.TaskBlock.CourseId)
-            )
+            (_user.Roles.Contains(Role.Student) && gtb.StudentId == _user.Id && gtb.TaskBlock.IsPublic)
         );
 
         builder.Entity<Solution>().HasQueryFilter(s =>
