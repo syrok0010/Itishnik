@@ -135,13 +135,21 @@ export class TasksFacadeService {
       (_state = {
         ..._state,
         taskList: [
-          ..._state.taskList,
+          ..._state.taskList.filter(
+            (task) => !response.some((r) => r.id === task.id),
+          ),
           ...response.map(
             (t) =>
               new TaskListResponse({
                 ...t,
               }),
           ),
+        ],
+        tasks: [
+          ..._state.tasks.filter(
+            (task) => !response.some((r) => r.id === task.id),
+          ),
+          ...response,
         ],
       }),
     );

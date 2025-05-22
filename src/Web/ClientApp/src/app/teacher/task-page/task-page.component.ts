@@ -43,6 +43,7 @@ import {
 } from '@angular/forms';
 import TagMultiselectInputComponent from '../../components/tag-multiselect-input.component';
 import { AsyncPipe } from '@angular/common';
+import { TuiEditorSocket } from '@taiga-ui/editor';
 
 export function textDifferentFromLatest(
   latestTextSignal: Signal<string | undefined>,
@@ -84,6 +85,7 @@ export function textDifferentFromLatest(
     TuiFieldErrorPipe,
     AsyncPipe,
     RouterLink,
+    TuiEditorSocket,
   ],
   templateUrl: './task-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
