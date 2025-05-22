@@ -15,6 +15,7 @@ public class GetCoursesListQueryHandler(IApplicationDbContext context, IMapper m
     public Task<PaginatedList<CourseListResponse>> Handle(GetCoursesListQuery request, CancellationToken cancellationToken)
     {
         return _context.Courses
+            .AsNoTracking()
             .ProjectTo<CourseListResponse>(_mapper.ConfigurationProvider)
             .PaginatedListAsync(request.PageNumber, request.PageSize);
     }
