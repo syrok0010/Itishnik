@@ -1,4 +1,3 @@
-using Itishnik.Application;
 using Itishnik.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,8 +11,8 @@ builder.AddWebServices();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-
-if (app.Environment.IsDevelopment() && !Environment.CurrentDirectory.Contains("nswag"))
+var isNswagBuild = Environment.GetEnvironmentVariable("IS_NSWAG_BUILD") == "true";
+if (app.Environment.IsDevelopment() && !isNswagBuild)
 {
     try
     {

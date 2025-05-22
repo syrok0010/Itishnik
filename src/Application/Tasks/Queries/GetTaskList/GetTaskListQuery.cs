@@ -13,24 +13,22 @@ public record GetTaskListQuery(
     Guid[]? AuthorIds,
     string? Name,
     string? SortBy,
-    bool Ascending,
+    bool Ascending = true,
     int PageNumber = 1,
     int PageSize = 25) : IRequest<PaginatedList<TaskListResponse>>;
 
-public class GetTaskListQueryHandler(IApplicationDbContext context, IMapper mapper, IUser currentUser) 
+public class GetTaskListQueryHandler(IApplicationDbContext context, IMapper mapper) 
     : IRequestHandler<GetTaskListQuery, PaginatedList<TaskListResponse>>
 {
     private readonly IApplicationDbContext _context = context;
     private readonly IMapper _mapper = mapper;
-    private readonly IUser _currentUser = currentUser;
 
     public Task<PaginatedList<TaskListResponse>> Handle(GetTaskListQuery request, CancellationToken cancellationToken)
     {
-        var query = _context.Tasks.AsQueryable();
+        var query = _context.Tasks
+            .AsNoTracking()
+            .AsQueryable();
 
-        if (_currentUser.Roles.Contains(Roles.Teacher)) 
-            query = query.Where(t => t.IsPublic || t.TeacherId == _currentUser.Id);
-        
         // Только последние версии
         query = query
             .Where(t => !_context.Tasks.Any(otherTask => otherTask.PreviousVersion != null && otherTask.PreviousVersion.Id == t.Id));

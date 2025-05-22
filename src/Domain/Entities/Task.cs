@@ -6,6 +6,7 @@ public class Task : BaseAuditableEntity, IOwnedResource
     private bool _isPublic;
     private readonly string _text = null!;
     private readonly HashSet<Tag> _tags = [];
+    private readonly HashSet<TaskBlock> _taskBlocks = [];
     
     private Task() {}
 
@@ -25,6 +26,7 @@ public class Task : BaseAuditableEntity, IOwnedResource
             FirstVersion = previousVersion.FirstVersion ?? previousVersion;
     }
 
+    public IEnumerable<TaskBlock> TaskBlocks => _taskBlocks;
     public Teacher Teacher { get; private init; } = null!;
     public Guid TeacherId { get; private init; }
 

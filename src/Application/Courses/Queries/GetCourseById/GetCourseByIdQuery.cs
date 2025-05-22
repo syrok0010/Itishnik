@@ -14,6 +14,7 @@ public class GetCourseByIdQueryHandler(IApplicationDbContext context, IMapper ma
     public async Task<CourseResponse?> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
     {
         var course = await _context.Courses
+            .AsNoTracking()
             .Include(x => x.Teacher)
             .Include(x => x.TaskBlocks).ThenInclude(y => y.Tasks)
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);

@@ -13,6 +13,7 @@ public class GetTaskByIdQueryHandler(IApplicationDbContext context, IMapper mapp
     public Task<TaskResponse[]> Handle(GetTaskByIdQuery request, CancellationToken cancellationToken)
     {
         return _context.Tasks
+            .AsNoTracking()
             .GetTaskChain(_context, request.TaskId)
             .ProjectTo<TaskResponse>(_mapper.ConfigurationProvider)
             .ToArrayAsync(cancellationToken);

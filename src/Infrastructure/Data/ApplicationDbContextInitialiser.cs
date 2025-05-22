@@ -129,7 +129,7 @@ public class ApplicationDbContextInitialiser
             await _userManager.AddToRolesAsync(student, [studentRole.Name!]);
         }
 
-        if (!await _context.Courses.AnyAsync())
+        if (!await _context.Courses.IgnoreQueryFilters().AnyAsync())
         {
             List<Course> courses = [new(teacher, "Алгосы 1"), new(teacher, "Алгосы 2")];
             foreach (var course in courses)
