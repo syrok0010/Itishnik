@@ -55,7 +55,9 @@ export class TasksFacadeService {
 
   private _store: BehaviorSubject<TasksState> = new BehaviorSubject(_state);
 
-  taskList$ = this._store.pipe(map((state) => state.taskList));
+  taskList$ = this._store.pipe(
+    map((state) => state.taskList.sort((a, b) => a.name.localeCompare(b.name))),
+  );
   currentTaskChain$ = this._store.pipe(
     filter((state) => !!state.currentTaskId),
     map((state) => {
