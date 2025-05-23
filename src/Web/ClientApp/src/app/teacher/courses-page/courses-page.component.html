@@ -20,26 +20,36 @@
             class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
             *tuiCell="'course'"
           >
-            {{ item.name }}
+            <p tuiCell="l">
+              <span tuiTitle class="!whitespace-normal">{{ item.name }}</span>
+            </p>
           </td>
           <td
             tuiTd
             class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
             *tuiCell="'students'"
           >
-            {{ item.studentsCount }}
+            <p tuiCell="l">
+              <span tuiTitle class="!whitespace-normal">{{ item.studentsCount }}</span>
+            </p>
           </td>
           <td
             tuiTd
             class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
             *tuiCell="'taskBlocks'"
-          ></td>
+          >
+            <p tuiCell="l">
+              <span tuiTitle class="!whitespace-normal">{{ item.taskBlocksCount }}</span>
+            </p>
+          </td>
           <td
             tuiTd
             class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
             *tuiCell="'description'"
           >
-            {{ item.description }}
+            <p tuiCell="l">
+              <span tuiTitle class="!whitespace-normal">{{ item.description }}</span>
+            </p>
           </td>
         </tr>
       }

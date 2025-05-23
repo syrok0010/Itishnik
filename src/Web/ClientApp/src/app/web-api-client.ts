@@ -2074,6 +2074,7 @@ export class CourseListResponse implements ICourseListResponse {
     id?: string;
     name?: string;
     studentsCount?: number;
+    taskBlocksCount?: number;
     description?: string | undefined;
 
     constructor(data?: ICourseListResponse) {
@@ -2090,6 +2091,7 @@ export class CourseListResponse implements ICourseListResponse {
             this.id = _data["id"];
             this.name = _data["name"];
             this.studentsCount = _data["studentsCount"];
+            this.taskBlocksCount = _data["taskBlocksCount"];
             this.description = _data["description"];
         }
     }
@@ -2106,6 +2108,7 @@ export class CourseListResponse implements ICourseListResponse {
         data["id"] = this.id;
         data["name"] = this.name;
         data["studentsCount"] = this.studentsCount;
+        data["taskBlocksCount"] = this.taskBlocksCount;
         data["description"] = this.description;
         return data;
     }
@@ -2115,6 +2118,7 @@ export interface ICourseListResponse {
     id?: string;
     name?: string;
     studentsCount?: number;
+    taskBlocksCount?: number;
     description?: string | undefined;
 }
 
