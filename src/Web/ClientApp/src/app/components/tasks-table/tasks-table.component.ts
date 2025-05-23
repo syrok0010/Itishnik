@@ -33,7 +33,7 @@ import { TuiInputModule } from '@taiga-ui/legacy';
 import UserMultiselectInputComponent from '../user-multiselect-input.component';
 
 @Component({
-  selector: 'app-task-table',
+  selector: 'app-tasks-table',
   imports: [
     TuiTable,
     TuiChip,
@@ -52,11 +52,11 @@ import UserMultiselectInputComponent from '../user-multiselect-input.component';
     UserMultiselectInputComponent,
     TuiCheckbox,
   ],
-  templateUrl: './task-table.component.html',
+  templateUrl: './tasks-table.component.html',
   styles: [':host { @apply flex grow flex-col gap-4}'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class TaskTableComponent {
+export default class TasksTableComponent {
   filtering = input(true);
   selectMode = input(false);
   excludeTaskIds = input<string[]>([]);

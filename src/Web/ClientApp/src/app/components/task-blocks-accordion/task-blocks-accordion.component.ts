@@ -31,7 +31,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { TuiDay, TuiTime } from '@taiga-ui/cdk';
 import { TuiTextarea } from '@taiga-ui/kit';
 import { RouterLink } from '@angular/router';
-import TaskTableComponent from '../task-table/task-table.component';
+import TasksTableComponent from '../tasks-table/tasks-table.component';
 import { SafeSubscriber } from 'rxjs/internal/Subscriber';
 import { firstValueFrom } from 'rxjs';
 import { TaskListDto } from 'src/app/web-api-client';
@@ -50,7 +50,7 @@ import { TaskListDto } from 'src/app/web-api-client';
     TuiButton,
     RouterLink,
     TuiIcon,
-    TaskTableComponent,
+    TasksTableComponent,
   ],
   templateUrl: './task-blocks-accordion.component.html',
   styles: ``,
@@ -61,7 +61,7 @@ export default class TaskBlocksAccordionComponent {
   private readonly dialogs = inject(TuiDialogService);
 
   addTasksDialogTemplate = viewChild<TemplateRef<any>>('addTasksDialog');
-  taskTableTemplate = viewChild<TaskTableComponent>('taskTable');
+  taskTableTemplate = viewChild<TasksTableComponent>('taskTable');
 
   taskBlocks = toSignal(
     this.coursesFacade.currentCourse$.pipe(map((course) => course.taskBlocks)),
