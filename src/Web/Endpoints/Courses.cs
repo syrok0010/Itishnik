@@ -2,6 +2,7 @@
 using Itishnik.Application.Courses;
 using Itishnik.Application.Courses.Commands.AddTaskToBlock;
 using Itishnik.Application.Courses.Commands.ChangeCourseDescription;
+using Itishnik.Application.Courses.Commands.ChangeCourseTeacher;
 using Itishnik.Application.Courses.Commands.ChangeTaskBlockDescription;
 using Itishnik.Application.Courses.Commands.ChangeTaskBlockTimeline;
 using Itishnik.Application.Courses.Commands.ChangeTaskBlockName;
@@ -36,7 +37,8 @@ public class Courses : EndpointGroupBase
             .MapPost(AddTaskToBlock, "{id}/{blockId}/task")
             .MapDelete(DeleteTaskFromBlock, "{id}/{blockId}/task")
             .MapPatch(ChangeWeights, "{id}/{blockId}/gradeWeights")
-            .MapPost(PublishBlock, "{id}/{blockId}/publish");
+            .MapPost(PublishBlock, "{id}/{blockId}/publish")
+            .MapPatch(ChangeTeacher, "{id}/teacher");
     }
     
     public async Task<Created<CourseResponse>> CreateCourse(ISender sender, CreateCourseCommand command)
@@ -171,5 +173,11 @@ public class Courses : EndpointGroupBase
     {
         var response = await sender.Send(new PublishTaskBlockCommand(id, blockId));
         return TypedResults.Ok(response);
-    } 
+    }
+
+    public async Task<Ok<CourseResponse>> ChangeTeacher(ISender sender, Guid id, ChangeCourseTeacherCommand command)
+    {
+        var response = await sender.Send(command);
+        return TypedResults.Ok(response);
+    }
 }

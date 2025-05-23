@@ -662,6 +662,50 @@
         }
       }
     },
+    "/api/Courses/{id}/teacher": {
+      "patch": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "ChangeTeacher",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeCourseTeacherCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Tasks": {
       "post": {
         "tags": [
@@ -1428,6 +1472,20 @@
               "type": "integer",
               "format": "int32"
             }
+          }
+        }
+      },
+      "ChangeCourseTeacherCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "courseId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "newTeacherId": {
+            "type": "string",
+            "format": "guid"
           }
         }
       },

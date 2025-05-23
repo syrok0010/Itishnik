@@ -44,6 +44,15 @@ public class Course : IOwnedResource
         _gradedCourses.Add(gradedCourse);
     }
 
+    public void ChangeTeacher(Teacher teacher)
+    {
+        if (teacher.Id == TeacherId)
+            throw new ArgumentException("Учитель уже является владельцем курса");
+        
+        Teacher = teacher;
+        TeacherId = teacher.Id;
+    }
+
     public string Name
     {
         get => _name;
