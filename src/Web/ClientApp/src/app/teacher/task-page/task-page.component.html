@@ -7,10 +7,12 @@
         </h1>
 
         @if (!currentVersion().isPublic) {
-          <button tuiButton size="m" (click)="publish()">Опубликовать</button>
+          <button tuiButton size="m" (click)="publish()">
+            Сделать публичной
+          </button>
         } @else {
           <tui-badge appearance="positive" tuiStatus size="xl">
-            Задача опубликована
+            Задача публичная
           </tui-badge>
         }
       </div>
@@ -64,33 +66,32 @@
       @if (creatingNewVersion()) {
         <button tuiAccordion="true">Новая версия</button>
         <tui-expand [formGroup]="newVersionForm">
-          <label tuiLabel class="mb-2 block text-lg font-semibold"
-            >Условие задачи
-            <tui-textfield>
-              <textarea
-                tuiTextarea
-                formControlName="text"
-                [min]="6"
-                class="w-full"
-              ></textarea>
-            </tui-textfield>
-            <tui-error
-              formControlName="text"
-              [error]="[] | tuiFieldError | async"
-          /></label>
+          <ng-container *tuiItem>
+            @defer (when creatingNewVersion()) {
+              <label class="flex flex-col gap-2 text-lg font-semibold"
+                >Условие задачи
+                <tui-editor formControlName="text" />
+                <tui-error
+                  formControlName="text"
+                  [error]="[] | tuiFieldError | async"
+                />
+              </label>
 
-          <div class="flex justify-end">
-            <button
-              tuiButton
-              size="m"
-              (click)="saveNewVersion()"
-              [disabled]="
-                newVersionForm.invalid || !newVersionForm.controls.text.dirty
-              "
-            >
-              Сохранить
-            </button>
-          </div>
+              <div class="flex justify-end">
+                <button
+                  tuiButton
+                  size="m"
+                  (click)="saveNewVersion()"
+                  [disabled]="
+                    newVersionForm.invalid ||
+                    !newVersionForm.controls.text.dirty
+                  "
+                >
+                  Сохранить
+                </button>
+              </div>
+            }
+          </ng-container>
         </tui-expand>
       }
 
@@ -107,9 +108,9 @@
         <tui-expand>
           <div class="flex flex-col gap-4">
             <div>
-              <h3 class="mb-2 text-lg font-semibold">Условие задачи</h3>
-              <blockquote class="prose max-w-none border-l-2 border-l-stones-500 pl-4">
-                {{ version.text }}
+              <h3 class="mb-4 text-lg font-semibold">Условие задачи</h3>
+              <blockquote class="prose max-w-none border-l-2 pl-4">
+                <tui-editor-socket [content]="version.text" />
               </blockquote>
             </div>
 

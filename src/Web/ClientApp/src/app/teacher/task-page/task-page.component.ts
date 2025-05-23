@@ -4,6 +4,7 @@ import {
   computed,
   effect,
   inject,
+  Injector,
   Signal,
   signal,
   TemplateRef,
@@ -17,7 +18,6 @@ import {
   TuiDialogService,
   TuiError,
   TuiInitialsPipe,
-  TuiTextfield,
   TuiTitle,
 } from '@taiga-ui/core';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -27,7 +27,6 @@ import {
   TuiChip,
   TuiFieldErrorPipe,
   TuiStatus,
-  TuiTextarea,
   tuiValidationErrorsProvider,
 } from '@taiga-ui/kit';
 import { TuiAccordion } from '@taiga-ui/experimental';
@@ -43,6 +42,12 @@ import {
 } from '@angular/forms';
 import TagMultiselectInputComponent from '../../components/tag-multiselect-input.component';
 import { AsyncPipe } from '@angular/common';
+import {
+  TUI_EDITOR_DEFAULT_EXTENSIONS,
+  TUI_EDITOR_EXTENSIONS,
+  TuiEditor,
+  TuiEditorSocket,
+} from '@taiga-ui/editor';
 
 export function textDifferentFromLatest(
   latestTextSignal: Signal<string | undefined>,
@@ -79,11 +84,11 @@ export function textDifferentFromLatest(
     TagMultiselectInputComponent,
     TuiError,
     TuiAccordion,
-    TuiTextarea,
-    TuiTextfield,
     TuiFieldErrorPipe,
     AsyncPipe,
     RouterLink,
+    TuiEditorSocket,
+    TuiEditor,
   ],
   templateUrl: './task-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -93,6 +98,14 @@ export function textDifferentFromLatest(
       textNotChanged:
         'Новый текст задачи должен отличаться от предыдущей версии',
     }),
+    {
+      provide: TUI_EDITOR_EXTENSIONS,
+      deps: [Injector],
+      useFactory: (injector: Injector) => [
+        ...TUI_EDITOR_DEFAULT_EXTENSIONS,
+        import('@taiga-ui/editor').then(({ setup }) => setup({ injector })),
+      ],
+    },
   ],
 })
 export default class TaskPageComponent {

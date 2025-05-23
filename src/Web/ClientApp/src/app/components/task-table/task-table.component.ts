@@ -46,6 +46,7 @@ import UserMultiselectInputComponent from '../user-multiselect-input.component';
     UserMultiselectInputComponent,
   ],
   templateUrl: './task-table.component.html',
+  styles: [':host { @apply flex grow flex-col gap-4}'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class TaskTableComponent {
