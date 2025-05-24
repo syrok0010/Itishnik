@@ -1,9 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
 using Itishnik.Application.Common.Interfaces;
 using Itishnik.Application.Common.Models;
 using Itishnik.Domain.Entities;
 using Itishnik.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Task = System.Threading.Tasks.Task;
 
 namespace Itishnik.Infrastructure.Identity;
 
@@ -33,6 +35,18 @@ public class IdentityService : IIdentityService
         return user?.UserName;
     }
 
+    public async Task<(bool Success, string? Token)> GetPasswordResetTokenAsync(Guid userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        if (user is null)
+        {
+            return (false, null);
+        }
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        return (true, token);
+    }
+
     public async Task<(Result Result, Guid UserId)> CreateUserAsync(
         string userName,
         string password,
@@ -49,6 +63,21 @@ public class IdentityService : IIdentityService
         var result = await _userManager.CreateAsync(user, password);
 
         return (result.ToApplicationResult(), user.Id);
+    }
+    
+    public async Task<(Result Result, ApplicationUser User)> CreateUserAsync<TUser>(
+        string email) where TUser : ApplicationUser, new()
+    {
+        var user = new TUser
+        {
+            Email = email,
+            UserName = email,
+            EmailConfirmed = true
+        };
+
+        var result = await _userManager.CreateAsync(user);
+
+        return (result.ToApplicationResult(), user);
     }
 
     public async Task<bool> IsInRoleAsync(Guid userId, string role)

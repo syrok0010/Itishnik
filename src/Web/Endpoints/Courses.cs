@@ -10,6 +10,7 @@ using Itishnik.Application.Courses.Commands.ChangeWeightsInBlock;
 using Itishnik.Application.Courses.Commands.CreateCourse;
 using Itishnik.Application.Courses.Commands.CreateTaskBlock;
 using Itishnik.Application.Courses.Commands.DeleteTaskFromBlock;
+using Itishnik.Application.Courses.Commands.InviteStudentsToCourse;
 using Itishnik.Application.Courses.Commands.PublishTaskBlock;
 using Itishnik.Application.Courses.Queries.GetCourseById;
 using Itishnik.Application.Courses.Queries.GetCourseList;
@@ -38,7 +39,8 @@ public class Courses : EndpointGroupBase
             .MapDelete(DeleteTaskFromBlock, "{id}/{blockId}/task")
             .MapPatch(ChangeWeights, "{id}/{blockId}/gradeWeights")
             .MapPost(PublishBlock, "{id}/{blockId}/publish")
-            .MapPatch(ChangeTeacher, "{id}/teacher");
+            .MapPatch(ChangeTeacher, "{id}/teacher")
+            .MapPost(InviteStudents, "{id}/invite");
     }
     
     public async Task<Created<CourseResponse>> CreateCourse(ISender sender, CreateCourseCommand command)
@@ -179,5 +181,11 @@ public class Courses : EndpointGroupBase
     {
         var response = await sender.Send(command);
         return TypedResults.Ok(response);
+    }
+
+    public async Task<NoContent> InviteStudents(ISender sender, Guid id, InviteStudentsToCourseCommand command)
+    {
+        await sender.Send(command);
+        return TypedResults.NoContent();
     }
 }

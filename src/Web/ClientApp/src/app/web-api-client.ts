@@ -30,6 +30,7 @@ export interface ICoursesClient {
     changeWeights(id: string, blockId: string, command: ChangeWeightsInBlockCommand): Observable<TaskBlockResponse>;
     publishBlock(id: string, blockId: string): Observable<TaskBlockResponse>;
     changeTeacher(id: string, command: ChangeCourseTeacherCommand): Observable<CourseResponse>;
+    inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<void>;
 }
 
 @Injectable({
@@ -880,6 +881,57 @@ export class CoursesClient implements ICoursesClient {
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = CourseResponse.fromJS(resultData200);
             return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/invite";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processInviteStudents(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processInviteStudents(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processInviteStudents(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -2405,6 +2457,54 @@ export class ChangeCourseTeacherCommand implements IChangeCourseTeacherCommand {
 export interface IChangeCourseTeacherCommand {
     courseId?: string;
     newTeacherId?: string;
+}
+
+export class InviteStudentsToCourseCommand implements IInviteStudentsToCourseCommand {
+    id?: string;
+    emails?: string[];
+
+    constructor(data?: IInviteStudentsToCourseCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            if (Array.isArray(_data["emails"])) {
+                this.emails = [] as any;
+                for (let item of _data["emails"])
+                    this.emails!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): InviteStudentsToCourseCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new InviteStudentsToCourseCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        if (Array.isArray(this.emails)) {
+            data["emails"] = [];
+            for (let item of this.emails)
+                data["emails"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IInviteStudentsToCourseCommand {
+    id?: string;
+    emails?: string[];
 }
 
 export class TaskResponse implements ITaskResponse {

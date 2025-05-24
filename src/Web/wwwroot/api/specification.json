@@ -706,6 +706,43 @@
         }
       }
     },
+    "/api/Courses/{id}/invite": {
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "InviteStudents",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteStudentsToCourseCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Tasks": {
       "post": {
         "tags": [
@@ -1486,6 +1523,22 @@
           "newTeacherId": {
             "type": "string",
             "format": "guid"
+          }
+        }
+      },
+      "InviteStudentsToCourseCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
