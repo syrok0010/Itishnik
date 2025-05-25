@@ -12,12 +12,12 @@ public record InviteStudentsToCourseCommand(Guid Id, ICollection<string> Emails)
 
 public class InviteStudentsToCourseCommandHandler(
     IApplicationDbContext db,
-    IIdentityService service,
+    IIdentityService identityService,
     IResetPasswordService resetService)
     : IRequestHandler<InviteStudentsToCourseCommand>
 {
     private readonly IApplicationDbContext _db = db;
-    private readonly IIdentityService _service = service;
+    private readonly IIdentityService _identityService = identityService;
     private readonly IResetPasswordService _resetService = resetService;
 
     public async Task Handle(InviteStudentsToCourseCommand request, CancellationToken cancellationToken)
@@ -41,7 +41,7 @@ public class InviteStudentsToCourseCommandHandler(
                 100,
                 TimeProvider.System.GetLocalNow().Year
             ) { Email = newUserEmail, UserName = newUserEmail, EmailConfirmed = true };
-            var result = await _service.CreateUserAsync(student);
+            var result = await _identityService.CreateUserAsync(student);
             if (!result.Succeeded)
                 continue;
 
