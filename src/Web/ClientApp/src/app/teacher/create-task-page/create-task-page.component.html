@@ -1,17 +1,17 @@
 <form
   [formGroup]="form"
-  class="flex w-full flex-col gap-8 rounded-lg bg-white p-4"
+  class="flex w-full flex-col gap-4 rounded-lg bg-white p-4"
   (ngSubmit)="createTask()"
 >
-  <h1 [tuiTitle]="'l'">Создать новое задание</h1>
+  <h1 class="text-2xl font-bold">Создать новое задание</h1>
 
-  <div class="flex flex-col gap-6">
+  <div class="flex flex-col gap-4">
     <tui-input formControlName="name" [tuiTextfieldLabelOutside]="true">
       Название
       <input tuiTextfieldLegacy placeholder="Найдите минимум массива" />
     </tui-input>
     <div>
-      <p class="text-xl font-bold">Текст задания</p>
+      <p class="text-xl font-semibold mb-2">Текст задания</p>
       <tui-editor formControlName="text"></tui-editor>
     </div>
     <label class="flex items-center gap-4 text-base">
@@ -25,5 +25,5 @@
     </label>
   </div>
 
-  <button tuiButton iconEnd="@tui.save" type="submit" class="mr-auto" [disabled]="form.invalid">Сохранить</button>
+  <button tuiButton size="m" iconEnd="@tui.save" type="submit" class="mr-auto" [disabled]="form.invalid">Сохранить</button>
 </form>
