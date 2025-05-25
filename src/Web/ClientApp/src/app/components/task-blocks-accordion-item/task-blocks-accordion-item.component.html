@@ -1,0 +1,85 @@
+<div class="flex flex-col gap-4" [formGroup]="formGroup()">
+  <tui-input formControlName="name"> Название</tui-input>
+  <tui-textfield>
+    <label tuiLabel>Описание</label>
+    <textarea tuiTextarea [min]="3" formControlName="description"></textarea>
+  </tui-textfield>
+  <div class="flex flex-row gap-4">
+    <tui-input-date-time
+      class="flex-1"
+      formControlName="startTime"
+      [min]="currentDay"
+    >
+      Дата и время начала
+    </tui-input-date-time>
+    <tui-input-date-time
+      class="flex-1"
+      formControlName="endTime"
+      [min]="formGroup().value.startTime"
+    >
+      Дата и время конца
+    </tui-input-date-time>
+    <tui-input-time class="flex-1" formControlName="timeAllowed">
+      Время на выполнение
+    </tui-input-time>
+  </div>
+  <button
+    appearance="primary"
+    tuiButton
+    type="button"
+    class="mr-auto shadow-sm"
+    [iconEnd]="'@tui.save'"
+    [disabled]="formGroup().invalid"
+    size="m"
+    (click)="saveTaskBlock()"
+  >
+    Сохранить
+  </button>
+
+  <table tuiTable class="table w-full" [columns]="tableColumns">
+    <thead>
+      <tr tuiThGroup>
+        <th tuiTh>№</th>
+        <th tuiTh>Задачи</th>
+        <th tuiTh>Баллы</th>
+        <th tuiTh></th>
+      </tr>
+    </thead>
+    <tbody tuiTbody [data]="taskBlockTableData()">
+      @for (
+        pair of taskBlockTableData();
+        let index = $index;
+        track pair.task.id
+      ) {
+        <tr tuiTr>
+          <td tuiTd *tuiCell="'number'">{{ index + 1 }}</td>
+          <td tuiTd *tuiCell="'task'">{{ pair.task.name }}</td>
+          <td tuiTd *tuiCell="'weight'">
+            <tui-textfield>
+              <input [formControl]="weightControls()[index]" />
+            </tui-textfield>
+          </td>
+          <td tuiTd *tuiCell="'deletion'">
+            <tui-icon
+              class="text-lg text-red-300 transition-colors duration-300 hover:text-red-500"
+              icon="@tui.trash"
+              (click)="removeTaskFromBlock(pair.task.id)"
+            >
+            </tui-icon>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <button
+    appearance="primary"
+    tuiButton
+    type="button"
+    class="mr-auto"
+    size="m"
+    [iconEnd]="'@tui.plus'"
+    (click)="addTasksToBlock()"
+  >
+    Добавить
+  </button>
+</div>

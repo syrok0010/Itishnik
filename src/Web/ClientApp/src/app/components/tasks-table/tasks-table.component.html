@@ -15,10 +15,11 @@
   }
   <table
     tuiTable
+    size="l"
     [columns]="columns()"
     [tuiSortBy]="currentSortBy()"
     (tuiSortChange)="sortChanged($event)"
-    class="w-full table-fixed"
+    class="w-full"
   >
     <thead>
       <tr tuiThGroup>
@@ -115,7 +116,7 @@
                 [src]="item.teacherFullName | tuiInitials"
                 [style.background]="item.teacherFullName | tuiAutoColor"
               />
-              <span tuiTitle class="!whitespace-normal">
+              <span tuiTitle class="!ml-2 !whitespace-normal">
                 {{ item.teacherFullName }}
                 <span tuiSubtitle class="!whitespace-normal">{{
                   item.teacherEmail
@@ -128,11 +129,12 @@
             *tuiCell="'tags'"
             class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
           >
-            <div tuiCell="l" class="flex flex-wrap gap-1">
+            <div tuiCell="l" class="flex flex-wrap gap-2">
               @for (tag of item.tags; track tag.id) {
                 <tui-chip
                   size="m"
                   appearance="custom"
+                  class="!m-0"
                   [style.background-color]="tag.text | tuiAutoColor"
                 >
                   {{ tag.text }}

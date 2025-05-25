@@ -1,15 +1,19 @@
 @let data = coursesList$ | async;
 
 <div class="relative w-full grow rounded-lg bg-white p-4">
-  <table tuiTable [columns]="columns" class="w-full table-fixed">
+  <table tuiTable size="l" [columns]="columns" class="w-full">
     <thead>
       <tr tuiThGroup>
         <th tuiTh class="w-3/12" *tuiHead="'course'">Курс</th>
-        <th tuiTh class="w-2/12" *tuiHead="'students'">Количество студентов</th>
-        <th tuiTh class="w-2/12" *tuiHead="'taskBlocks'">
+        <th tuiTh class="w-2/12" [sorter]="null" *tuiHead="'students'">
+          Количество студентов
+        </th>
+        <th tuiTh class="w-2/12" [sorter]="null" *tuiHead="'taskBlocks'">
           Количество блоков заданий
         </th>
-        <th tuiTh class="w-5/12" *tuiHead="'description'">Описание</th>
+        <th tuiTh class="w-5/12" [sorter]="null" *tuiHead="'description'">
+          Описание
+        </th>
       </tr>
     </thead>
     <tbody tuiTbody [data]="data">
@@ -30,7 +34,9 @@
             *tuiCell="'students'"
           >
             <p tuiCell="l">
-              <span tuiTitle class="!whitespace-normal">{{ item.studentsCount }}</span>
+              <span tuiTitle class="!whitespace-normal">{{
+                item.studentsCount
+              }}</span>
             </p>
           </td>
           <td
@@ -39,7 +45,9 @@
             *tuiCell="'taskBlocks'"
           >
             <p tuiCell="l">
-              <span tuiTitle class="!whitespace-normal">{{ item.taskBlocksCount }}</span>
+              <span tuiTitle class="!whitespace-normal">{{
+                item.taskBlocksCount
+              }}</span>
             </p>
           </td>
           <td
@@ -48,7 +56,9 @@
             *tuiCell="'description'"
           >
             <p tuiCell="l">
-              <span tuiTitle class="!whitespace-normal">{{ item.description }}</span>
+              <span tuiTitle class="!whitespace-normal">{{
+                item.description
+              }}</span>
             </p>
           </td>
         </tr>
