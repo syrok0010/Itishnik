@@ -87,7 +87,24 @@
             Добавить
           </button>
         </div>
-        <div class="w-1/3 pl-4"></div>
+        <div class="flex flex-col gap-4 w-1/3 pl-4">
+          <h2 class="text-xl font-semibold">Баллы</h2>
+          <ol class="list-decimal pl-10">
+            @let weights = weightControls()[index];
+            @for (weight of taskBlock.weights; let weightIndex = $index; track weight) {
+              <li>
+                <tui-textfield tuiTextfieldSize="s">
+                  <input
+                    tuiInputNumber
+                    [formControl]="weights[weightIndex]"
+                    [min]="0"
+                    [max]="10"
+                  />
+                </tui-textfield>
+              </li>
+            }
+          </ol>
+        </div>
       </div>
     </tui-expand>
   }

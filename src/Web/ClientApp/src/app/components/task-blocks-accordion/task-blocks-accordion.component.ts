@@ -29,7 +29,7 @@ import {
 } from '@taiga-ui/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { TuiDay, TuiTime } from '@taiga-ui/cdk';
-import { TuiTextarea } from '@taiga-ui/kit';
+import { TuiInputNumber, TuiTextarea } from '@taiga-ui/kit';
 import { RouterLink } from '@angular/router';
 import TasksTableComponent from '../tasks-table/tasks-table.component';
 import { SafeSubscriber } from 'rxjs/internal/Subscriber';
@@ -51,6 +51,7 @@ import { TaskListDto } from 'src/app/web-api-client';
     RouterLink,
     TuiIcon,
     TasksTableComponent,
+    TuiInputNumber,
   ],
   templateUrl: './task-blocks-accordion.component.html',
   styles: ``,
@@ -93,6 +94,11 @@ export default class TaskBlocksAccordionComponent {
         }),
     ),
   );
+
+  weightControls = computed(() =>
+    this.taskBlocks().map((tb) => tb.weights.map((w) => new FormControl(w))),
+  );
+
   currentDay = TuiDay.currentLocal();
 
   async saveTaskBlock(taskBlockIndex: number) {
