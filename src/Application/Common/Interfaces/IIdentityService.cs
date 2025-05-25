@@ -14,10 +14,8 @@ public interface IIdentityService
     
     Task<bool> AuthorizeAsync(Guid userId, string policyName, object resourceId, Type resourceType);
 
-    Task<(Result Result, ApplicationUser User)> CreateUserAsync<TUser>(string email) where TUser : ApplicationUser, new();
+    Task<Result> CreateUserAsync<TUser>(TUser user) where TUser : ApplicationUser;
 
-    Task<(bool Success, string? Token)> GetPasswordResetTokenAsync(Guid userId);
-    
     Task<(Result Result, Guid UserId)> CreateUserAsync(string userName,
         string password,
         string name,
