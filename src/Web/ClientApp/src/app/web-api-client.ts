@@ -2539,6 +2539,7 @@ export class CreateTaskCommand implements ICreateTaskCommand {
     name?: string;
     text?: string;
     isPublic?: boolean;
+    solutionText?: string;
     previousTaskId?: string | undefined;
 
     constructor(data?: ICreateTaskCommand) {
@@ -2555,6 +2556,7 @@ export class CreateTaskCommand implements ICreateTaskCommand {
             this.name = _data["name"];
             this.text = _data["text"];
             this.isPublic = _data["isPublic"];
+            this.solutionText = _data["solutionText"];
             this.previousTaskId = _data["previousTaskId"];
         }
     }
@@ -2571,6 +2573,7 @@ export class CreateTaskCommand implements ICreateTaskCommand {
         data["name"] = this.name;
         data["text"] = this.text;
         data["isPublic"] = this.isPublic;
+        data["solutionText"] = this.solutionText;
         data["previousTaskId"] = this.previousTaskId;
         return data;
     }
@@ -2580,6 +2583,7 @@ export interface ICreateTaskCommand {
     name?: string;
     text?: string;
     isPublic?: boolean;
+    solutionText?: string;
     previousTaskId?: string | undefined;
 }
 

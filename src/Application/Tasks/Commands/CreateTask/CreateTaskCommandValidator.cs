@@ -29,6 +29,10 @@ public class CreateTaskCommandValidator : AbstractValidator<CreateTaskCommand>
             .WithMessage("Условие должно отличаться от прошлой версии.")
             .Unless(x => x.PreviousTaskId is null);
 
+        RuleFor(x => x.SolutionText)
+            .NotEmpty()
+            .WithMessage("Не установлено референсное решение.");
+        
         RuleFor(x => x.PreviousTaskId)
             .MustAsync((prevId, cancellationToken) =>
                 db.Tasks.AnyAsync(t => t.Id == prevId!.Value && t.TeacherId == currentUser.Id, cancellationToken)

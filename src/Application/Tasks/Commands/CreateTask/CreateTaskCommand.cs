@@ -4,7 +4,7 @@ using Itishnik.Application.Common.Security;
 namespace Itishnik.Application.Tasks.Commands.CreateTask;
 
 [Authorize(Roles = "Teacher")]
-public record CreateTaskCommand(string Name, string Text, bool IsPublic, Guid? PreviousTaskId = null) : IRequest<TaskResponse[]>;
+public record CreateTaskCommand(string Name, string Text, bool IsPublic, string SolutionText, Guid? PreviousTaskId = null) : IRequest<TaskResponse[]>;
 
 public class CreateTaskCommandHandler(IApplicationDbContext db, IMapper mapper, IUser currentUser) 
     : IRequestHandler<CreateTaskCommand, TaskResponse[]>
@@ -22,7 +22,7 @@ public class CreateTaskCommandHandler(IApplicationDbContext db, IMapper mapper, 
                 .Include(x => x.FirstVersion)
                 .FirstAsync(x => x.Id == request.PreviousTaskId, cancellationToken);
         
-        var task = new Domain.Entities.Task(request.Name, request.Text, author, previousTask, request.IsPublic);
+        var task = new Domain.Entities.Task(request.Name, request.Text, request.SolutionText, author, previousTask, request.IsPublic);
         await _db.Tasks.AddAsync(task, cancellationToken);
         await _db.SaveChangesAsync(cancellationToken);
         return previousTask is null 

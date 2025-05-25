@@ -1569,6 +1569,9 @@
           "isPublic": {
             "type": "boolean"
           },
+          "solutionText": {
+            "type": "string"
+          },
           "previousTaskId": {
             "type": "string",
             "format": "guid",
