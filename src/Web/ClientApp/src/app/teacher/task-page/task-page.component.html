@@ -71,45 +71,50 @@
       @if (creatingNewVersion()) {
         <button tuiAccordion="true">Новая версия</button>
         <tui-expand [formGroup]="newVersionForm">
-          <div class="flex gap-4 *:flex-1">
-            <label class="flex flex-col gap-2 text-lg font-semibold"
-              >Условие задачи
-              <tui-editor formControlName="text" />
-              <tui-error
-                formControlName="text"
-                [error]="[] | tuiFieldError | async"
-              />
-            </label>
-            <label class="flex flex-col gap-2 text-lg font-semibold"
-              >Решение задачи
-              <tui-editor class="grow" formControlName="solutionText" />
-              <tui-error
-                formControlName="solutionText"
-                [error]="[] | tuiFieldError | async"
-              />
-            </label>
-          </div>
+          <ng-container *tuiItem>
+            @defer (when creatingNewVersion()) {
+              <div class="flex gap-4 *:flex-1">
+                <label class="flex flex-col gap-2 text-lg font-semibold"
+                  >Условие задачи
+                  <tui-editor formControlName="text" />
+                  <tui-error
+                    formControlName="text"
+                    [error]="[] | tuiFieldError | async"
+                  />
+                </label>
+                <label class="flex flex-col gap-2 text-lg font-semibold"
+                  >Решение задачи
+                  <tui-editor class="grow" formControlName="solutionText" />
+                  <tui-error
+                    formControlName="solutionText"
+                    [error]="[] | tuiFieldError | async"
+                  />
+                </label>
+              </div>
 
-          <div class="flex justify-end gap-4">
-            <button
-              tuiButton
-              size="m"
-              appearance="secondary"
-              (click)="creatingNewVersion.set(false)"
-            >
-              Отменить
-            </button>
-            <button
-              tuiButton
-              size="m"
-              (click)="saveNewVersion()"
-              [disabled]="
-                newVersionForm.invalid || !newVersionForm.controls.text.dirty
-              "
-            >
-              Сохранить
-            </button>
-          </div>
+              <div class="flex justify-end gap-4">
+                <button
+                  tuiButton
+                  size="m"
+                  appearance="secondary"
+                  (click)="creatingNewVersion.set(false)"
+                >
+                  Отменить
+                </button>
+                <button
+                  tuiButton
+                  size="m"
+                  (click)="saveNewVersion()"
+                  [disabled]="
+                    newVersionForm.invalid ||
+                    !newVersionForm.controls.text.dirty
+                  "
+                >
+                  Сохранить
+                </button>
+              </div>
+            }
+          </ng-container>
         </tui-expand>
       }
 
