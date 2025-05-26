@@ -8,8 +8,8 @@ import {
   TuiInputTimeModule,
 } from '@taiga-ui/legacy';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import TaskBlocksAccordionItemComponent from '../task-blocks-accordion-item/task-blocks-accordion-item.component';
 import { AsyncPipe } from '@angular/common';
+import TaskBlocksAccordionItemComponent from '../task-blocks-accordion-item/task-blocks-accordion-item.component';
 
 @Component({
   selector: 'app-task-blocks-accordion',

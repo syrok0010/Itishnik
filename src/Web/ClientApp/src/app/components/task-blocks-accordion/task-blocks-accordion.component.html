@@ -1,6 +1,6 @@
-<tui-accordion>
+<tui-accordion class="!inline">
   @for (taskBlock of taskBlocks$ | async; track taskBlock.id) {
-    <button [tuiAccordion]="true">{{ taskBlock.name }}</button>
+    <button class="w-full" [tuiAccordion]="true">{{ taskBlock.name }}</button>
     <tui-expand>
       <app-task-blocks-accordion-item [taskBlock]="taskBlock" />
     </tui-expand>

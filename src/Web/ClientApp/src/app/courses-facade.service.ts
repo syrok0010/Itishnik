@@ -5,6 +5,7 @@ import {
   ChangeTaskBlockDescriptionCommand,
   ChangeTaskBlockNameCommand,
   ChangeTaskBlockTimelineCommand,
+  ChangeWeightsInBlockCommand,
   CourseListResponse,
   CoursesClient,
   CreateCourseCommand,
@@ -212,6 +213,31 @@ export class CoursesFacadeService {
     );
     this.alerts
       .open('Данные работы обновлены', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
+    this._store.next(_state);
+  }
+
+  async updateTaskBlockWeights(
+    courseId: string,
+    taskBlockId: string,
+    weights: number[],
+  ): Promise<void> {
+    await firstValueFrom(
+      this.coursesClient.changeWeights(
+        courseId,
+        taskBlockId,
+        new ChangeWeightsInBlockCommand({
+          id: courseId,
+          blockId: taskBlockId,
+          weights: weights,
+        }),
+      ),
+    );
+    this.alerts
+      .open('Задачи и баллы сохранены', {
         autoClose: 3000,
         appearance: 'positive',
       })
