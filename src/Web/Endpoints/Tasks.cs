@@ -2,6 +2,7 @@ using Itishnik.Application.Common.Models;
 using Itishnik.Application.Tasks;
 using Itishnik.Application.Tasks.Commands.CreateTag;
 using Itishnik.Application.Tasks.Commands.CreateTask;
+using Itishnik.Application.Tasks.Commands.EditReferenceSolution;
 using Itishnik.Application.Tasks.Commands.PublishTask;
 using Itishnik.Application.Tasks.Commands.SetTaskTags;
 using Itishnik.Application.Tasks.Queries.GetTagList;
@@ -23,7 +24,8 @@ public class Tasks : EndpointGroupBase
             .MapGet(GetTaskList)
             .MapGet(GetTaskWithAllVersions, "{id}")
             .MapPatch(SetTaskTags, "{id}/tags")
-            .MapPatch(Publish, "{id}/publish");
+            .MapPatch(Publish, "{id}/publish")
+            .MapPatch(EditReferenceSolution, "{id}/solution");
     }
     
     public async Task<Created<TaskResponse[]>> CreateTask(ISender sender, CreateTaskCommand command)
@@ -67,6 +69,14 @@ public class Tasks : EndpointGroupBase
     public async Task<Results<Ok<TaskResponse[]>, BadRequest>> Publish(ISender sender, Guid id)
     {
         var response = await sender.Send(new PublishTaskCommand(id));
+        return TypedResults.Ok(response);
+    }
+
+    public async Task<Results<Ok<TaskResponse>, BadRequest>> EditReferenceSolution(ISender sender, Guid id,
+        EditReferenceSolutionCommand command)
+    {
+        if (id != command.TaskId) return TypedResults.BadRequest();
+        var response = await sender.Send(command);
         return TypedResults.Ok(response);
     }
 }

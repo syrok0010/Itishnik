@@ -898,6 +898,7 @@ export interface ITasksClient {
     getTaskWithAllVersions(id: string): Observable<TaskResponse[]>;
     setTaskTags(id: string, command: SetTaskTagsCommand): Observable<TaskResponse[]>;
     publish(id: string): Observable<TaskResponse[]>;
+    editReferenceSolution(id: string, command: EditReferenceSolutionCommand): Observable<TaskResponse>;
 }
 
 @Injectable({
@@ -1333,6 +1334,65 @@ export class TasksClient implements ITasksClient {
             else {
                 result200 = <any>null;
             }
+            return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    editReferenceSolution(id: string, command: EditReferenceSolutionCommand): Observable<TaskResponse> {
+        let url_ = this.baseUrl + "/api/Tasks/{id}/solution";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditReferenceSolution(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditReferenceSolution(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<TaskResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<TaskResponse>;
+        }));
+    }
+
+    protected processEditReferenceSolution(response: HttpResponseBase): Observable<TaskResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = TaskResponse.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status === 400) {
@@ -2412,7 +2472,7 @@ export class TaskResponse implements ITaskResponse {
     name?: string;
     isPublic?: boolean;
     text?: string;
-    rightSolutionId?: string | undefined;
+    rightSolutionText?: string;
     teacherId?: string | undefined;
     teacherFullName?: string;
     teacherEmail?: string;
@@ -2436,7 +2496,7 @@ export class TaskResponse implements ITaskResponse {
             this.name = _data["name"];
             this.isPublic = _data["isPublic"];
             this.text = _data["text"];
-            this.rightSolutionId = _data["rightSolutionId"];
+            this.rightSolutionText = _data["rightSolutionText"];
             this.teacherId = _data["teacherId"];
             this.teacherFullName = _data["teacherFullName"];
             this.teacherEmail = _data["teacherEmail"];
@@ -2464,7 +2524,7 @@ export class TaskResponse implements ITaskResponse {
         data["name"] = this.name;
         data["isPublic"] = this.isPublic;
         data["text"] = this.text;
-        data["rightSolutionId"] = this.rightSolutionId;
+        data["rightSolutionText"] = this.rightSolutionText;
         data["teacherId"] = this.teacherId;
         data["teacherFullName"] = this.teacherFullName;
         data["teacherEmail"] = this.teacherEmail;
@@ -2485,7 +2545,7 @@ export interface ITaskResponse {
     name?: string;
     isPublic?: boolean;
     text?: string;
-    rightSolutionId?: string | undefined;
+    rightSolutionText?: string;
     teacherId?: string | undefined;
     teacherFullName?: string;
     teacherEmail?: string;
@@ -2801,6 +2861,46 @@ export class SetTaskTagsCommand implements ISetTaskTagsCommand {
 export interface ISetTaskTagsCommand {
     taskId?: string;
     tagIds?: string[];
+}
+
+export class EditReferenceSolutionCommand implements IEditReferenceSolutionCommand {
+    taskId?: string;
+    text?: string;
+
+    constructor(data?: IEditReferenceSolutionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.taskId = _data["taskId"];
+            this.text = _data["text"];
+        }
+    }
+
+    static fromJS(data: any): EditReferenceSolutionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditReferenceSolutionCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["taskId"] = this.taskId;
+        data["text"] = this.text;
+        return data;
+    }
+}
+
+export interface IEditReferenceSolutionCommand {
+    taskId?: string;
+    text?: string;
 }
 
 export class AuthState implements IAuthState {

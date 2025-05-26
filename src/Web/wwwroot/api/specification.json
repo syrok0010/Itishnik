@@ -1024,6 +1024,53 @@
         }
       }
     },
+    "/api/Tasks/{id}/solution": {
+      "patch": {
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "EditReferenceSolution",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditReferenceSolutionCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Users/auth-info": {
       "get": {
         "tags": [
@@ -1506,10 +1553,8 @@
           "text": {
             "type": "string"
           },
-          "rightSolutionId": {
-            "type": "string",
-            "format": "guid",
-            "nullable": true
+          "rightSolutionText": {
+            "type": "string"
           },
           "teacherId": {
             "type": "string",
@@ -1665,6 +1710,19 @@
               "type": "string",
               "format": "guid"
             }
+          }
+        }
+      },
+      "EditReferenceSolutionCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "text": {
+            "type": "string"
           }
         }
       },
