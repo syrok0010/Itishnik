@@ -2,9 +2,8 @@ namespace Itishnik.Domain.Entities;
 
 public class Task : BaseAuditableEntity, IOwnedResource
 {
-    private string _name = null!;
     private bool _isPublic;
-    private readonly string _text = null!;
+    private string _referenceSolutionText = null!;
     private readonly HashSet<Tag> _tags = [];
     private readonly HashSet<TaskBlock> _taskBlocks = [];
     
@@ -13,13 +12,18 @@ public class Task : BaseAuditableEntity, IOwnedResource
     public Task(
         string name,
         string text, 
+        string solutionText,
         Teacher teacher,
         Task? previousVersion = null,
         bool publish = false)
     {
+        ArgumentException.ThrowIfNullOrWhiteSpace(name, nameof(Name));
+        ArgumentException.ThrowIfNullOrWhiteSpace(text, nameof(Text));
+        
         Teacher = teacher;
         Name = name;
         Text = text;
+        ReferenceSolutionText = solutionText;
         IsPublic = publish;
         PreviousVersion = previousVersion;
         if (previousVersion is not null) 
@@ -30,8 +34,6 @@ public class Task : BaseAuditableEntity, IOwnedResource
     public Teacher Teacher { get; private init; } = null!;
     public Guid TeacherId { get; private init; }
 
-    public Guid? RightSolutionId { get; private init; }
-    
     public Task? FirstVersion { get; private init; }
     public Task? PreviousVersion { get; private init; }
     
@@ -54,23 +56,17 @@ public class Task : BaseAuditableEntity, IOwnedResource
     
     public IEnumerable<Tag> Tags => _tags;
 
-    public string Name
-    {
-        get => _name;
-        private set
-        {
-            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(Name));
-            _name = value;
-        }
-    }
+    public string Name { get; private init; } = null!;
 
-    public string Text
+    public string Text { get; private init; } = null!;
+
+    public string ReferenceSolutionText
     {
-        get => _text;
-        private init
+        get => _referenceSolutionText;
+        set
         {
-            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(Text));
-            _text = value;
+            ArgumentException.ThrowIfNullOrWhiteSpace(value, nameof(ReferenceSolutionText));
+            _referenceSolutionText = value;
         }
     }
 

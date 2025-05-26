@@ -8,8 +8,8 @@ public class TaskResponse
     public string Name { get; init; } = null!;
     public bool IsPublic { get; init; }
     public string Text { get; init; } = null!;
-    
-    public Guid? RightSolutionId { get; init; }
+
+    public string RightSolutionText { get; init; } = null!;
     public Guid? TeacherId { get; init; }
     public string TeacherFullName { get; init; } = null!;
     public string TeacherEmail { get; init; } = null!;
@@ -25,6 +25,7 @@ public class TaskResponse
         public Mapping()
         {
             CreateMap<Domain.Entities.Task, TaskResponse>()
+                .ForMember(cr => cr.RightSolutionText, options => options.MapFrom(c => c.ReferenceSolutionText))
                 .ForMember(cr => cr.TeacherFullName, options => options.MapFrom(c => c.Teacher.FullName))
                 .ForMember(cr => cr.TeacherEmail, options => options.MapFrom(c => c.Teacher.Email))
                 .ForMember(cr => cr.FirstTaskId, options => options.MapFrom(c => c.FirstVersion == null ? (Guid?)null : c.FirstVersion.Id));

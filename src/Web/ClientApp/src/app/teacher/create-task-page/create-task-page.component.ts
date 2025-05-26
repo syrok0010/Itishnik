@@ -17,7 +17,7 @@ import {
   TUI_EDITOR_EXTENSIONS,
   TuiEditor,
 } from '@taiga-ui/editor';
-import { TuiButton, TuiTitle } from '@taiga-ui/core';
+import { TuiButton } from '@taiga-ui/core';
 import { TuiCheckbox } from '@taiga-ui/kit';
 import { TasksFacadeService } from '../../tasks-facade.service';
 
@@ -27,7 +27,6 @@ import { TasksFacadeService } from '../../tasks-facade.service';
     TuiInputModule,
     ReactiveFormsModule,
     TuiEditor,
-    TuiTitle,
     TuiCheckbox,
     TuiButton,
     TuiTextfieldControllerModule,
@@ -52,6 +51,7 @@ export default class CreateTaskPageComponent {
   form = new FormGroup({
     name: new FormControl('', [Validators.required]),
     text: new FormControl('', [Validators.required]),
+    solutionText: new FormControl('', [Validators.required]),
     isPublic: new FormControl(true),
   });
 
@@ -59,6 +59,7 @@ export default class CreateTaskPageComponent {
     await this.taskFacade.createTask(
       this.form.value.name,
       this.form.value.text,
+      this.form.value.solutionText,
       this.form.value.isPublic,
       null,
     );

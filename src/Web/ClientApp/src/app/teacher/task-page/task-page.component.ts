@@ -10,7 +10,7 @@ import {
   TemplateRef,
   viewChild,
 } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TasksFacadeService } from '../../tasks-facade.service';
 import {
   TuiAutoColorPipe,
@@ -86,7 +86,6 @@ export function textDifferentFromLatest(
     TuiAccordion,
     TuiFieldErrorPipe,
     AsyncPipe,
-    RouterLink,
     TuiEditorSocket,
     TuiEditor,
   ],
@@ -116,9 +115,11 @@ export default class TaskPageComponent {
   id: string = this.route.snapshot.paramMap.get('id');
 
   tagControl = new FormControl<string[]>([]);
+  solutionControl = new FormControl('');
 
   currentTaskChain = toSignal(this.taskFacade.currentTaskChain$);
   creatingNewVersion = signal(false);
+  editingSolution = signal(false);
 
   currentVersion = computed(() =>
     !this.currentTaskChain()
@@ -138,7 +139,7 @@ export default class TaskPageComponent {
       Validators.required,
       textDifferentFromLatest(this.latestVersionText),
     ]),
-    solutionId: new FormControl<string | null>(null),
+    solutionText: new FormControl<string>('', Validators.required),
   });
 
   private initializeTagControl = effect(() => {
@@ -152,10 +153,11 @@ export default class TaskPageComponent {
 
   private initializeNewVersionForm = effect(() => {
     if (!this.latestVersion()) return;
+    this.solutionControl.setValue(this.latestVersion().rightSolutionText);
     this.newVersionForm.setValue(
       {
         text: this.latestVersion().text,
-        solutionId: null,
+        solutionText: this.latestVersion().rightSolutionText,
       },
       { emitEvent: false },
     );
@@ -186,6 +188,7 @@ export default class TaskPageComponent {
     await this.taskFacade.createTask(
       latest.name,
       this.newVersionForm.value.text,
+      this.newVersionForm.value.solutionText,
       latest.isPublic,
       latest.id,
     );
@@ -195,5 +198,13 @@ export default class TaskPageComponent {
 
   async publish() {
     await this.taskFacade.publishTask(this.currentVersion().id);
+  }
+
+  async saveSolution() {
+    this.editingSolution.set(false);
+    await this.taskFacade.editReferenceSolution(
+      this.latestVersion().id,
+      this.solutionControl.value,
+    );
   }
 }
