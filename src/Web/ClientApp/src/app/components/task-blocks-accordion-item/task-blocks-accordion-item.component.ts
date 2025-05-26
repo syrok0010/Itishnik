@@ -207,4 +207,6 @@ export default class TaskBlocksAccordionItemComponent {
       weights,
     );
   }
+
+  publish() {}
 }

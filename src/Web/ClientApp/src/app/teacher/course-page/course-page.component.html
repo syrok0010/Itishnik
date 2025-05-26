@@ -1,5 +1,20 @@
 <div class="flex w-full flex-col gap-4 rounded-lg bg-white p-4">
-  <h1 class="text-2xl font-bold">{{ currentCourse()?.name }}</h1>
+  <h1 class="mb-2 text-2xl font-bold">{{ currentCourse()?.name }}</h1>
+
+  <div class="flex flex-row items-center gap-2">
+    <tui-avatar
+      [src]="currentCourse()?.teacherFullName | tuiInitials"
+      [style.background]="currentCourse()?.teacherFullName | tuiAutoColor"
+      size="m"
+    />
+    <span tuiTitle class="truncate text-xl">
+      {{ currentCourse()?.teacherFullName }}
+      <span tuiSubtitle class="truncate text-base">{{
+        currentCourse()?.teacherEmail
+      }}</span>
+    </span>
+  </div>
+
   <label tuiLabel class="w-full grow">
     Описание курса
     <tui-textfield>
@@ -7,10 +22,11 @@
         [formControl]="descriptionControl"
         placeholder="Введите описание курса"
         tuiTextarea
-        [min]="3"
+        [min]="4"
       ></textarea>
     </tui-textfield>
   </label>
+
   <button
     appearance="primary"
     tuiButton

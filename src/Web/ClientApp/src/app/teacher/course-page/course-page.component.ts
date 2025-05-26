@@ -13,8 +13,14 @@ import {
   RouterLinkActive,
   RouterOutlet,
 } from '@angular/router';
-import { TuiButton, TuiTextfield } from '@taiga-ui/core';
-import { TuiTabs, TuiTextarea } from '@taiga-ui/kit';
+import {
+  TuiAutoColorPipe,
+  TuiButton,
+  TuiInitialsPipe,
+  TuiTextfield,
+  TuiTitle,
+} from '@taiga-ui/core';
+import { TuiAvatar, TuiTabs, TuiTextarea } from '@taiga-ui/kit';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
 
@@ -29,6 +35,10 @@ import { toSignal } from '@angular/core/rxjs-interop';
     RouterLink,
     RouterOutlet,
     RouterLinkActive,
+    TuiAutoColorPipe,
+    TuiInitialsPipe,
+    TuiAvatar,
+    TuiTitle,
   ],
   templateUrl: './course-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

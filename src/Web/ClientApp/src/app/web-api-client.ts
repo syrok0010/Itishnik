@@ -1852,6 +1852,7 @@ export class TaskBlockResponse implements ITaskBlockResponse {
     startTime?: Date;
     endTime?: Date;
     timeAllowed?: string;
+    isPublic?: boolean;
 
     constructor(data?: ITaskBlockResponse) {
         if (data) {
@@ -1881,6 +1882,7 @@ export class TaskBlockResponse implements ITaskBlockResponse {
             this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
             this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
             this.timeAllowed = _data["timeAllowed"];
+            this.isPublic = _data["isPublic"];
         }
     }
 
@@ -1910,6 +1912,7 @@ export class TaskBlockResponse implements ITaskBlockResponse {
         data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
         data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
         data["timeAllowed"] = this.timeAllowed;
+        data["isPublic"] = this.isPublic;
         return data;
     }
 }
@@ -1924,6 +1927,7 @@ export interface ITaskBlockResponse {
     startTime?: Date;
     endTime?: Date;
     timeAllowed?: string;
+    isPublic?: boolean;
 }
 
 export class TaskListDto implements ITaskListDto {

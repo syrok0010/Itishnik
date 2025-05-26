@@ -1348,6 +1348,9 @@
           "timeAllowed": {
             "type": "string",
             "format": "duration"
+          },
+          "isPublic": {
+            "type": "boolean"
           }
         }
       },

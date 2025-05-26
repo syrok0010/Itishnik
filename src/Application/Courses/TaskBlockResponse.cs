@@ -28,6 +28,7 @@ public class TaskBlockResponse
     public DateTime StartTime { get; init; }
     public DateTime EndTime { get; init; }
     public TimeSpan TimeAllowed { get; init; }
+    public bool IsPublic { get; init; }
 
     private class Mapping : Profile
     {
