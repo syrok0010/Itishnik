@@ -10,7 +10,7 @@ import {
   TemplateRef,
   viewChild,
 } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TasksFacadeService } from '../../tasks-facade.service';
 import {
   TuiAutoColorPipe,
@@ -86,7 +86,6 @@ export function textDifferentFromLatest(
     TuiAccordion,
     TuiFieldErrorPipe,
     AsyncPipe,
-    RouterLink,
     TuiEditorSocket,
     TuiEditor,
   ],
@@ -138,7 +137,7 @@ export default class TaskPageComponent {
       Validators.required,
       textDifferentFromLatest(this.latestVersionText),
     ]),
-    solutionId: new FormControl<string | null>(null),
+    solutionText: new FormControl<string>('', Validators.required),
   });
 
   private initializeTagControl = effect(() => {
@@ -155,7 +154,7 @@ export default class TaskPageComponent {
     this.newVersionForm.setValue(
       {
         text: this.latestVersion().text,
-        solutionId: null,
+        solutionText: this.latestVersion().rightSolutionText,
       },
       { emitEvent: false },
     );
@@ -186,6 +185,7 @@ export default class TaskPageComponent {
     await this.taskFacade.createTask(
       latest.name,
       this.newVersionForm.value.text,
+      this.newVersionForm.value.solutionText,
       latest.isPublic,
       latest.id,
     );

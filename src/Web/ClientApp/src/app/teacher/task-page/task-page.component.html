@@ -1,5 +1,5 @@
 @if (currentTaskChain(); as taskChain) {
-  <div class="flex flex-col gap-6 w-full grow rounded-lg bg-white p-4">
+  <div class="flex w-full grow flex-col gap-6 rounded-lg bg-white p-4">
     <div class="flex flex-col gap-y-4">
       <div class="flex flex-row items-start justify-between">
         <h1 class="text-2xl font-bold">
@@ -106,26 +106,15 @@
         </button>
 
         <tui-expand>
-          <div class="flex flex-col gap-4">
-            <div>
-              <h3 class="mb-4 text-lg font-semibold">Условие задачи</h3>
-              <blockquote class="prose max-w-none border-l-2 pl-4">
-                <tui-editor-socket [content]="version.text" />
-              </blockquote>
-            </div>
-
-            @if (version.rightSolutionId) {
-              <button
-                tuiButton
-                size="m"
-                appearance="outline"
-                [routerLink]="['/solutions', version.rightSolutionId]"
-              >
-                Верное решение
-              </button>
-            } @else {
-              <span>Верное решение не добавлено</span>
-            }
+          <div class="grid grid-cols-2 gap-4">
+            <h3 class="text-lg font-semibold">Условие задачи</h3>
+            <h3 class="text-lg font-semibold">Решение задачи</h3>
+            <blockquote class="border-l-2 pl-4">
+              <tui-editor-socket [content]="version.text" />
+            </blockquote>
+            <blockquote class="w-full border-l-2 pl-4">
+              <tui-editor-socket [content]="version.rightSolutionText" />
+            </blockquote>
           </div>
         </tui-expand>
       }

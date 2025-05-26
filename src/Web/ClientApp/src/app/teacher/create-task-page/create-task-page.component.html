@@ -11,8 +11,12 @@
       <input tuiTextfieldLegacy placeholder="Найдите минимум массива" />
     </tui-input>
     <div>
-      <p class="text-xl font-semibold mb-2">Текст задания</p>
+      <p class="mb-2 text-xl font-semibold">Текст задания</p>
       <tui-editor formControlName="text"></tui-editor>
+    </div>
+    <div>
+      <p class="mb-2 text-xl font-semibold">Решение задания</p>
+      <tui-editor formControlName="solutionText"></tui-editor>
     </div>
     <label class="flex items-center gap-4 text-base">
       <input
@@ -25,5 +29,14 @@
     </label>
   </div>
 
-  <button tuiButton size="m" iconEnd="@tui.save" type="submit" class="mr-auto" [disabled]="form.invalid">Сохранить</button>
+  <button
+    tuiButton
+    size="m"
+    iconEnd="@tui.save"
+    type="submit"
+    class="mr-auto"
+    [disabled]="form.invalid"
+  >
+    Сохранить
+  </button>
 </form>

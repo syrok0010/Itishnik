@@ -119,6 +119,7 @@ export class TasksFacadeService {
   async createTask(
     name: string,
     text: string,
+    solutionText: string,
     isPublic: boolean,
     previousTaskId: string | null = null,
   ): Promise<void> {
@@ -127,6 +128,7 @@ export class TasksFacadeService {
         new CreateTaskCommand({
           name,
           text,
+          solutionText,
           isPublic,
           previousTaskId,
         }),
