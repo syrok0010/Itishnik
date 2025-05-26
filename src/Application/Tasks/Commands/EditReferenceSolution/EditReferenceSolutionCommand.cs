@@ -18,7 +18,9 @@ public class EditReferenceSolutionCommandHandler(IApplicationDbContext context, 
     public async Task<TaskResponse> Handle(EditReferenceSolutionCommand request, CancellationToken cancellationToken)
     {
         var task = await _context.Tasks
+            .Include(t => t.FirstVersion)
             .Include(t => t.Teacher)
+            .Include(t => t.Tags)
             .FirstAsync(t => t.Id == request.TaskId, cancellationToken);
         task.ReferenceSolutionText = request.Text;
         await _context.SaveChangesAsync(cancellationToken);

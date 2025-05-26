@@ -18,6 +18,7 @@ public class PublishTaskCommandHandler(IApplicationDbContext db, IMapper mapper)
     public async Task<TaskResponse[]> Handle(PublishTaskCommand request, CancellationToken cancellationToken)
     {
         var versionChain = await _db.Tasks
+            .Include(t => t.FirstVersion)
             .Include(t => t.Tags)
             .GetTaskChain(_db, request.TaskId)
             .OrderBy(t => t.Created)

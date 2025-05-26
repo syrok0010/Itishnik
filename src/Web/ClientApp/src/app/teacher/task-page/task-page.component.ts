@@ -115,9 +115,11 @@ export default class TaskPageComponent {
   id: string = this.route.snapshot.paramMap.get('id');
 
   tagControl = new FormControl<string[]>([]);
+  solutionControl = new FormControl('');
 
   currentTaskChain = toSignal(this.taskFacade.currentTaskChain$);
   creatingNewVersion = signal(false);
+  editingSolution = signal(false);
 
   currentVersion = computed(() =>
     !this.currentTaskChain()
@@ -151,6 +153,7 @@ export default class TaskPageComponent {
 
   private initializeNewVersionForm = effect(() => {
     if (!this.latestVersion()) return;
+    this.solutionControl.setValue(this.latestVersion().rightSolutionText);
     this.newVersionForm.setValue(
       {
         text: this.latestVersion().text,
@@ -195,5 +198,13 @@ export default class TaskPageComponent {
 
   async publish() {
     await this.taskFacade.publishTask(this.currentVersion().id);
+  }
+
+  async saveSolution() {
+    this.editingSolution.set(false);
+    await this.taskFacade.editReferenceSolution(
+      this.latestVersion().id,
+      this.solutionControl.value,
+    );
   }
 }

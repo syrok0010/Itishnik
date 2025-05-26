@@ -56,7 +56,12 @@
             class="ml-2 shrink-0"
           ></button>
         </div>
-        <button tuiButton size="m" (click)="creatingNewVersion.set(true)" [disabled]="creatingNewVersion()">
+        <button
+          tuiButton
+          size="m"
+          (click)="creatingNewVersion.set(true)"
+          [disabled]="creatingNewVersion()"
+        >
           Добавить версию
         </button>
       </div>
@@ -68,7 +73,7 @@
         <tui-expand [formGroup]="newVersionForm">
           <div class="flex gap-4 *:flex-1">
             <label class="flex flex-col gap-2 text-lg font-semibold"
-            >Условие задачи
+              >Условие задачи
               <tui-editor formControlName="text" />
               <tui-error
                 formControlName="text"
@@ -76,7 +81,7 @@
               />
             </label>
             <label class="flex flex-col gap-2 text-lg font-semibold"
-            >Решение задачи
+              >Решение задачи
               <tui-editor class="grow" formControlName="solutionText" />
               <tui-error
                 formControlName="solutionText"
@@ -99,9 +104,8 @@
               size="m"
               (click)="saveNewVersion()"
               [disabled]="
-                    newVersionForm.invalid ||
-                    !newVersionForm.controls.text.dirty
-                  "
+                newVersionForm.invalid || !newVersionForm.controls.text.dirty
+              "
             >
               Сохранить
             </button>
@@ -120,15 +124,38 @@
         </button>
 
         <tui-expand>
-          <div class="grid grid-cols-2 gap-4">
-            <h3 class="text-lg font-semibold">Условие задачи</h3>
-            <h3 class="text-lg font-semibold">Решение задачи</h3>
-            <blockquote class="border-l-2 pl-4">
+          <div class="grid grid-cols-2 gap-4 divide-x-2 *:px-4">
+            <div>
+              <h3 class="mb-4 text-lg font-semibold">Условие задачи</h3>
               <tui-editor-socket [content]="version.text" />
-            </blockquote>
-            <blockquote class="w-full border-l-2 pl-4">
-              <tui-editor-socket [content]="version.rightSolutionText" />
-            </blockquote>
+            </div>
+            <div class="flex flex-col justify-between gap-4">
+              <div>
+                <h3 class="mb-4 text-lg font-semibold">Решение задачи</h3>
+                @if (!first || !editingSolution()) {
+                  <tui-editor-socket [content]="version.rightSolutionText" />
+                } @else {
+                  <tui-editor [formControl]="solutionControl" />
+                }
+              </div>
+
+              @if (first) {
+                <button
+                  class="ml-auto self-end"
+                  tuiButton
+                  appearance="outline"
+                  (click)="
+                    editingSolution()
+                      ? saveSolution()
+                      : editingSolution.set(true)
+                  "
+                >
+                  {{
+                    editingSolution() ? "Сохранить решение" : "Изменить решение"
+                  }}
+                </button>
+              }
+            </div>
           </div>
         </tui-expand>
       }

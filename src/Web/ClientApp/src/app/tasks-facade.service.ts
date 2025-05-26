@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import {
   CreateTaskCommand,
+  EditReferenceSolutionCommand,
   PaginatedListOfTaskListResponse,
   SetTaskTagsCommand,
   SwaggerException,
@@ -155,6 +156,24 @@ export class TasksFacadeService {
           ),
           ...response,
         ],
+      }),
+    );
+  }
+
+  async editReferenceSolution(taskId: string, solutionText: string) {
+    const response = await firstValueFrom(
+      this.tasksClient.editReferenceSolution(
+        taskId,
+        new EditReferenceSolutionCommand({
+          taskId,
+          text: solutionText,
+        }),
+      ),
+    );
+    this._store.next(
+      (_state = {
+        ..._state,
+        tasks: [..._state.tasks.filter((t) => t.id !== taskId), response],
       }),
     );
   }
