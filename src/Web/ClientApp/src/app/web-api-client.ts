@@ -17,7 +17,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface ICoursesClient {
     createCourse(command: CreateCourseCommand): Observable<CourseResponse>;
-    getCoursesList(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfCourseListResponse>;
+    getCoursesList(ascending: boolean, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfCourseListResponse>;
     getCourseById(id: string): Observable<CourseResponse>;
     createTaskBlock(id: string, command: CreateTaskBlockCommand): Observable<TaskBlockResponse>;
     getStudents(id: string): Observable<CourseStudentListResponse>;
@@ -98,8 +98,12 @@ export class CoursesClient implements ICoursesClient {
         return _observableOf(null as any);
     }
 
-    getCoursesList(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfCourseListResponse> {
+    getCoursesList(ascending: boolean, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfCourseListResponse> {
         let url_ = this.baseUrl + "/api/Courses?";
+        if (ascending === undefined || ascending === null)
+            throw new Error("The parameter 'ascending' must be defined and cannot be null.");
+        else
+            url_ += "Ascending=" + encodeURIComponent("" + ascending) + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)

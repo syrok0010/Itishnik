@@ -23,6 +23,8 @@ import {
 import { TuiAvatar, TuiTabs, TuiTextarea } from '@taiga-ui/kit';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { TuiSortChange } from '@taiga-ui/addon-table';
+import { TaskListResponse } from '../../web-api-client';
 
 @Component({
   selector: 'app-course-page',

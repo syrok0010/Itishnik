@@ -44,13 +44,22 @@
         "operationId": "GetCoursesList",
         "parameters": [
           {
+            "name": "Ascending",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 1
+          },
+          {
             "name": "PageNumber",
             "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 1
+            "x-position": 2
           },
           {
             "name": "PageSize",
@@ -59,7 +68,7 @@
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 2
+            "x-position": 3
           }
         ],
         "responses": {

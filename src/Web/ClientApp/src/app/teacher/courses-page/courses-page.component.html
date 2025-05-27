@@ -1,10 +1,10 @@
 @let data = coursesList$ | async;
 
 <div class="relative w-full grow rounded-lg bg-white p-4">
-  <table tuiTable size="l" [columns]="columns" class="w-full">
+  <table tuiTable size="l" [columns]="columns" [tuiSortBy]="'name'" (tuiSortChange)="sort($event)" class="w-full">
     <thead>
       <tr tuiThGroup>
-        <th tuiTh class="w-3/12" *tuiHead="'course'">Курс</th>
+        <th tuiTh tuiSortable class="w-3/12" *tuiHead="'course'">Курс</th>
         <th tuiTh class="w-2/12" [sorter]="null" *tuiHead="'students'">
           Количество студентов
         </th>

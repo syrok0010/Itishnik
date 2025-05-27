@@ -12,18 +12,20 @@ import {
   DeleteTaskFromBlockCommand,
 } from './web-api-client';
 import { BehaviorSubject, firstValueFrom, switchMap } from 'rxjs';
-import { filter, map, shareReplay } from 'rxjs/operators';
+import { distinctUntilChanged, filter, map, shareReplay } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TuiAlertService } from '@taiga-ui/core';
 
 export interface CoursesState {
   coursesList: CourseListResponse[];
   currentCourseId: string | null;
+  ascending: boolean;
 }
 
 let _state: CoursesState = {
   coursesList: [],
   currentCourseId: null,
+  ascending: true,
 };
 
 @UntilDestroy()
@@ -45,14 +47,18 @@ export class CoursesFacadeService {
   );
 
   constructor() {
-    this.coursesClient
-      .getCoursesList(1, 25)
-      .pipe(untilDestroyed(this))
+    this._store
+      .pipe(
+        map((s) => s.ascending),
+        distinctUntilChanged(),
+        switchMap((a) => this.coursesClient.getCoursesList(a, 1, 25)),
+        untilDestroyed(this),
+      )
       .subscribe((x) =>
         this._store.next(
           (_state = {
             ..._state,
-            coursesList: [..._state.coursesList, ...x.items],
+            coursesList: x.items,
           }),
         ),
       );
@@ -69,7 +75,7 @@ export class CoursesFacadeService {
       ),
     );
     this.alerts
-      .open('Курс успешно создан', {
+      .open('Курс создан', {
         autoClose: 3000,
         appearance: 'positive',
       })
@@ -130,7 +136,7 @@ export class CoursesFacadeService {
       ),
     );
     this.alerts
-      .open('Задачи успешно добавлены', {
+      .open('Задачи добавлены в работу', {
         autoClose: 3000,
         appearance: 'positive',
       })
@@ -159,7 +165,7 @@ export class CoursesFacadeService {
       ),
     );
     this.alerts
-      .open('Задача успешно удалена', {
+      .open('Задача удалены из работы', {
         autoClose: 3000,
         appearance: 'positive',
       })
@@ -243,5 +249,10 @@ export class CoursesFacadeService {
       })
       .subscribe();
     this._store.next(_state);
+  }
+
+  setSorting(ascending: boolean) {
+    if (ascending === _state.ascending) return;
+    this._store.next((_state = { ..._state, ascending }));
   }
 }
