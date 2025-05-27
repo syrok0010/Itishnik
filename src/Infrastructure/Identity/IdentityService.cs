@@ -1,11 +1,9 @@
-using System.Diagnostics.CodeAnalysis;
 using Itishnik.Application.Common.Interfaces;
 using Itishnik.Application.Common.Models;
 using Itishnik.Domain.Entities;
 using Itishnik.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Task = System.Threading.Tasks.Task;
 
 namespace Itishnik.Infrastructure.Identity;
 

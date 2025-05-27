@@ -1,6 +1,6 @@
 namespace Itishnik.Domain.Entities;
 
-public class Student : ApplicationUser
+public class Student : ApplicationUser, IOwnedResource
 {
     private string _educationalProgram = null!;
     private int _educationStartYear;
@@ -66,4 +66,6 @@ public class Student : ApplicationUser
             _groupNumber = value;
         }
     }
+
+    public Guid GetOwnerId() => Id;
 }

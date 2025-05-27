@@ -1404,6 +1404,7 @@ export interface IUsersClient {
     authInfo(): Observable<AuthState>;
     userInfo(): Observable<UserDto>;
     getUsers(roles: string[] | null): Observable<UserDto[]>;
+    activateStudent(command: ActivateStudentCommand): Observable<void>;
 }
 
 @Injectable({
@@ -1569,6 +1570,58 @@ export class UsersClient implements IUsersClient {
                 result200 = <any>null;
             }
             return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    activateStudent(command: ActivateStudentCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/Users/activate-student";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processActivateStudent(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processActivateStudent(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processActivateStudent(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -2953,6 +3006,9 @@ export class UserDto implements IUserDto {
     name?: string;
     patronymic?: string;
     email?: string;
+    educationStartYear?: number | undefined;
+    groupNumber?: number | undefined;
+    educationalProgram?: string | undefined;
 
     constructor(data?: IUserDto) {
         if (data) {
@@ -2970,6 +3026,9 @@ export class UserDto implements IUserDto {
             this.name = _data["name"];
             this.patronymic = _data["patronymic"];
             this.email = _data["email"];
+            this.educationStartYear = _data["educationStartYear"];
+            this.groupNumber = _data["groupNumber"];
+            this.educationalProgram = _data["educationalProgram"];
         }
     }
 
@@ -2987,6 +3046,9 @@ export class UserDto implements IUserDto {
         data["name"] = this.name;
         data["patronymic"] = this.patronymic;
         data["email"] = this.email;
+        data["educationStartYear"] = this.educationStartYear;
+        data["groupNumber"] = this.groupNumber;
+        data["educationalProgram"] = this.educationalProgram;
         return data;
     }
 }
@@ -2997,6 +3059,69 @@ export interface IUserDto {
     name?: string;
     patronymic?: string;
     email?: string;
+    educationStartYear?: number | undefined;
+    groupNumber?: number | undefined;
+    educationalProgram?: string | undefined;
+}
+
+export class ActivateStudentCommand implements IActivateStudentCommand {
+    studentId?: string;
+    name?: string;
+    surname?: string;
+    patronymic?: string | undefined;
+    educationStartYear?: number;
+    groupNumber?: number;
+    educationalProgram?: string;
+
+    constructor(data?: IActivateStudentCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.studentId = _data["studentId"];
+            this.name = _data["name"];
+            this.surname = _data["surname"];
+            this.patronymic = _data["patronymic"];
+            this.educationStartYear = _data["educationStartYear"];
+            this.groupNumber = _data["groupNumber"];
+            this.educationalProgram = _data["educationalProgram"];
+        }
+    }
+
+    static fromJS(data: any): ActivateStudentCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivateStudentCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["studentId"] = this.studentId;
+        data["name"] = this.name;
+        data["surname"] = this.surname;
+        data["patronymic"] = this.patronymic;
+        data["educationStartYear"] = this.educationStartYear;
+        data["groupNumber"] = this.groupNumber;
+        data["educationalProgram"] = this.educationalProgram;
+        return data;
+    }
+}
+
+export interface IActivateStudentCommand {
+    studentId?: string;
+    name?: string;
+    surname?: string;
+    patronymic?: string | undefined;
+    educationStartYear?: number;
+    groupNumber?: number;
+    educationalProgram?: string;
 }
 
 export class SwaggerException extends Error {

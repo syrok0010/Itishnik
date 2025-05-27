@@ -10,8 +10,9 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Itishnik.Web.Areas.Identity.Pages.Account
 {
-    public class LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger) : PageModel
+    public class LoginModel(SignInManager<ApplicationUser> signInManager, ILogger<LoginModel> logger, UserManager<ApplicationUser> userManager) : PageModel
     {
+        private readonly UserManager<ApplicationUser> _userManager = userManager;
         private readonly SignInManager<ApplicationUser> _signInManager = signInManager;
         private readonly ILogger<LoginModel> _logger = logger;
 
@@ -74,6 +75,10 @@ namespace Itishnik.Web.Areas.Identity.Pages.Account
             }
 
             ModelState.AddModelError(string.Empty, "Неверные логин или пароль");
+            var user = await _userManager.FindByEmailAsync(Input.Email);
+            if (user is Student {GroupNumber: 100})
+                return LocalRedirect("/activate");
+
             return Page();
         }
     }
