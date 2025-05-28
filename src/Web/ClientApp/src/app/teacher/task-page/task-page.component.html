@@ -145,20 +145,29 @@
               </div>
 
               @if (first) {
-                <button
-                  class="ml-auto self-end"
-                  tuiButton
-                  appearance="outline"
-                  (click)="
-                    editingSolution()
-                      ? saveSolution()
-                      : editingSolution.set(true)
-                  "
-                >
-                  {{
-                    editingSolution() ? "Сохранить решение" : "Изменить решение"
-                  }}
-                </button>
+                <div class="ml-auto flex gap-4 self-end">
+                  @if (editingSolution()) {
+                    <button
+                      tuiButton
+                      appearance="secondary"
+                      (click)="editingSolution.set(false)"
+                    >
+                      Отменить
+                    </button>
+                  }
+
+                  <button
+                    tuiButton
+                    [appearance]="editingSolution() ? 'primary' : 'outline'"
+                    (click)="
+                      editingSolution()
+                        ? saveSolution()
+                        : editingSolution.set(true)
+                    "
+                  >
+                    {{ editingSolution() ? "Сохранить" : "Изменить решение" }}
+                  </button>
+                </div>
               }
             </div>
           </div>
