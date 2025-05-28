@@ -16,7 +16,7 @@ import { TuiInputNumber } from '@taiga-ui/kit';
 import { UsersFacadeService } from '../users-facade.service';
 import { Router } from '@angular/router';
 import { ActivateStudentCommand } from '../web-api-client';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-activate-student-page',
@@ -41,8 +41,6 @@ export default class ActivateStudentPageComponent implements OnInit {
   private readonly usersFacade = inject(UsersFacadeService);
   private readonly router = inject(Router);
 
-  private readonly currentUser = toSignal(this.usersFacade.currentUser$);
-
   form = new FormGroup({
     name: new FormControl('', [Validators.required]),
     surname: new FormControl('', [Validators.required]),
@@ -53,7 +51,7 @@ export default class ActivateStudentPageComponent implements OnInit {
   });
 
   async ngOnInit() {
-    const userInfo = this.currentUser();
+    const userInfo = await firstValueFrom(this.usersFacade.currentUser$);
     if (
       userInfo.groupNumber === undefined ||
       userInfo.groupNumber === null ||
@@ -67,7 +65,7 @@ export default class ActivateStudentPageComponent implements OnInit {
     await this.usersFacade.activateUser(
       new ActivateStudentCommand({
         ...this.form.value,
-        studentId: this.currentUser().id,
+        studentId: (await firstValueFrom(this.usersFacade.currentUser$)).id,
       }),
     );
     await this.router.navigate(['/']);
