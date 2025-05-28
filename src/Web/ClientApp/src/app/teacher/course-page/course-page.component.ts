@@ -5,6 +5,7 @@ import {
   effect,
   inject,
   OnInit,
+  signal,
 } from '@angular/core';
 import { CoursesFacadeService } from '../../courses-facade.service';
 import {
@@ -20,11 +21,23 @@ import {
   TuiTextfield,
   TuiTitle,
 } from '@taiga-ui/core';
-import { TuiAvatar, TuiTabs, TuiTextarea } from '@taiga-ui/kit';
+import {
+  TuiAvatar,
+  TuiChevron,
+  TuiComboBox,
+  TuiDataListWrapperComponent,
+  TuiFilterByInputPipe,
+  TuiTabs,
+  TuiTextarea,
+} from '@taiga-ui/kit';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TuiSortChange } from '@taiga-ui/addon-table';
-import { TaskListResponse } from '../../web-api-client';
+import { UsersFacadeService } from '../../users-facade.service';
+import { map } from 'rxjs/operators';
+import { AsyncPipe } from '@angular/common';
+import { UserDto } from '../../web-api-client';
+import { tuiPure, TuiStringMatcher } from '@taiga-ui/cdk';
+import { TuiMultiSelectModule } from '@taiga-ui/legacy';
 
 @Component({
   selector: 'app-course-page',
@@ -41,6 +54,12 @@ import { TaskListResponse } from '../../web-api-client';
     TuiInitialsPipe,
     TuiAvatar,
     TuiTitle,
+    AsyncPipe,
+    TuiChevron,
+    TuiDataListWrapperComponent,
+    TuiMultiSelectModule,
+    TuiFilterByInputPipe,
+    TuiComboBox,
   ],
   templateUrl: './course-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -48,10 +67,19 @@ import { TaskListResponse } from '../../web-api-client';
 export default class CoursePageComponent implements OnInit {
   coursesFacade = inject(CoursesFacadeService);
   route = inject(ActivatedRoute);
+  usersFacade = inject(UsersFacadeService);
+
   currentCourse = toSignal(this.coursesFacade.currentCourse$);
+  allTeachers = toSignal(this.usersFacade.selectedUsers);
 
   description = computed(() => this.currentCourse()?.description);
   descriptionControl = new FormControl<string | null>('');
+
+  teacherControl = new FormControl<UserDto | null>(null);
+  editTeacherMode = signal(false);
+  isAdmin$ = this.usersFacade.authInfo$.pipe(
+    map((info) => info.roles.includes('Administrator')),
+  );
 
   constructor() {
     effect(() => {
@@ -64,6 +92,7 @@ export default class CoursePageComponent implements OnInit {
 
   ngOnInit(): void {
     this.coursesFacade.setCurrentCourseId(this.route.snapshot.params['id']);
+    this.usersFacade.selectRoles(['Teacher']);
   }
 
   async saveDescription() {
@@ -72,5 +101,30 @@ export default class CoursePageComponent implements OnInit {
       this.descriptionControl.value,
     );
     this.descriptionControl.markAsPristine();
+  }
+
+  matcher: TuiStringMatcher<UserDto> = (user, search): boolean => {
+    if (
+      `${user.surname.toLowerCase()} ${user.name.toLowerCase()} ${user.patronymic.toLowerCase()}`.includes(
+        search.toLowerCase(),
+      )
+    )
+      return true;
+    return user.email.toLowerCase().includes(search.toLowerCase());
+  };
+
+  @tuiPure
+  getTeacherFullName(author: UserDto) {
+    return `${author.surname} ${author.name} ${author.patronymic}`;
+  }
+
+  async saveSelectedAuthor() {
+    await this.coursesFacade.updateCourseTeacher(
+      this.currentCourse().id,
+      this.teacherControl.value.id,
+    );
+    this.editTeacherMode.set(false);
+    this.teacherControl.reset();
+    this.teacherControl.markAsPristine();
   }
 }

@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import {
   AddTaskToBlockCommand,
   ChangeCourseDescriptionCommand,
+  ChangeCourseTeacherCommand,
   ChangeTaskBlockDescriptionCommand,
   ChangeTaskBlockNameCommand,
   ChangeTaskBlockTimelineCommand,
@@ -254,5 +255,24 @@ export class CoursesFacadeService {
   setSorting(ascending: boolean) {
     if (ascending === _state.ascending) return;
     this._store.next((_state = { ..._state, ascending }));
+  }
+
+  async updateCourseTeacher(
+    courseId: string,
+    teacherId: string,
+  ): Promise<void> {
+    await firstValueFrom(
+      this.coursesClient.changeTeacher(
+        courseId,
+        new ChangeCourseTeacherCommand({ courseId, newTeacherId: teacherId }),
+      ),
+    );
+    this.alerts
+      .open('Преподаватель на курсе изменен', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
+    this._store.next(_state);
   }
 }

@@ -6,7 +6,6 @@ import { TuiButton, tuiDialog, TuiIcon, TuiTitle } from '@taiga-ui/core';
 import { CreateCourseDialogComponent } from '../../components/create-course-dialog.component';
 import { RouterLink } from '@angular/router';
 import { TuiCell } from '@taiga-ui/layout';
-import { CourseListResponse } from 'src/app/web-api-client';
 
 @Component({
   selector: 'app-courses-page',
@@ -39,6 +38,5 @@ export default class CoursesPageComponent {
 
   sort(e: TuiSortChange<{ name: any }>) {
     this.coursesFacade.setSorting(e.sortDirection === 1);
-    console.log('кукуша');
   }
 }
