@@ -30,7 +30,6 @@ export interface ICoursesClient {
     changeWeights(id: string, blockId: string, command: ChangeWeightsInBlockCommand): Observable<TaskBlockResponse>;
     publishBlock(id: string, blockId: string): Observable<TaskBlockResponse>;
     changeTeacher(id: string, command: ChangeCourseTeacherCommand): Observable<CourseResponse>;
-    getCoursesForStudent(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfGradedCourseResponse>;
 }
 
 @Injectable({
@@ -889,9 +888,27 @@ export class CoursesClient implements ICoursesClient {
         }
         return _observableOf(null as any);
     }
+}
 
-    getCoursesForStudent(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfGradedCourseResponse> {
-        let url_ = this.baseUrl + "/api/Courses/studentCourses?";
+export interface IStudentsClient {
+    getCourses(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfGradedCourseResponse>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class StudentsClient implements IStudentsClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    getCourses(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfGradedCourseResponse> {
+        let url_ = this.baseUrl + "/api/Students/courses?";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -911,11 +928,11 @@ export class CoursesClient implements ICoursesClient {
         };
 
         return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
-            return this.processGetCoursesForStudent(response_);
+            return this.processGetCourses(response_);
         })).pipe(_observableCatch((response_: any) => {
             if (response_ instanceof HttpResponseBase) {
                 try {
-                    return this.processGetCoursesForStudent(response_ as any);
+                    return this.processGetCourses(response_ as any);
                 } catch (e) {
                     return _observableThrow(e) as any as Observable<PaginatedListOfGradedCourseResponse>;
                 }
@@ -924,7 +941,7 @@ export class CoursesClient implements ICoursesClient {
         }));
     }
 
-    protected processGetCoursesForStudent(response: HttpResponseBase): Observable<PaginatedListOfGradedCourseResponse> {
+    protected processGetCourses(response: HttpResponseBase): Observable<PaginatedListOfGradedCourseResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -2592,6 +2609,8 @@ export class GradedCourseResponse implements IGradedCourseResponse {
     id?: string;
     name?: string;
     grade?: number;
+    nearestTaskBlockStart?: Date;
+    nearestTaskBlockEnd?: Date;
 
     constructor(data?: IGradedCourseResponse) {
         if (data) {
@@ -2607,6 +2626,8 @@ export class GradedCourseResponse implements IGradedCourseResponse {
             this.id = _data["id"];
             this.name = _data["name"];
             this.grade = _data["grade"];
+            this.nearestTaskBlockStart = _data["nearestTaskBlockStart"] ? new Date(_data["nearestTaskBlockStart"].toString()) : <any>undefined;
+            this.nearestTaskBlockEnd = _data["nearestTaskBlockEnd"] ? new Date(_data["nearestTaskBlockEnd"].toString()) : <any>undefined;
         }
     }
 
@@ -2622,6 +2643,8 @@ export class GradedCourseResponse implements IGradedCourseResponse {
         data["id"] = this.id;
         data["name"] = this.name;
         data["grade"] = this.grade;
+        data["nearestTaskBlockStart"] = this.nearestTaskBlockStart ? this.nearestTaskBlockStart.toISOString() : <any>undefined;
+        data["nearestTaskBlockEnd"] = this.nearestTaskBlockEnd ? this.nearestTaskBlockEnd.toISOString() : <any>undefined;
         return data;
     }
 }
@@ -2630,6 +2653,8 @@ export interface IGradedCourseResponse {
     id?: string;
     name?: string;
     grade?: number;
+    nearestTaskBlockStart?: Date;
+    nearestTaskBlockEnd?: Date;
 }
 
 export class TaskResponse implements ITaskResponse {

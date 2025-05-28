@@ -706,12 +706,12 @@
         }
       }
     },
-    "/api/Courses/studentCourses": {
+    "/api/Students/courses": {
       "get": {
         "tags": [
-          "Courses"
+          "Students"
         ],
-        "operationId": "GetCoursesForStudent",
+        "operationId": "GetCourses",
         "parameters": [
           {
             "name": "PageNumber",
@@ -1620,6 +1620,14 @@
           "grade": {
             "type": "integer",
             "format": "int32"
+          },
+          "nearestTaskBlockStart": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "nearestTaskBlockEnd": {
+            "type": "string",
+            "format": "date-time"
           }
         }
       },

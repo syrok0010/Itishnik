@@ -13,7 +13,6 @@ using Itishnik.Application.Courses.Commands.DeleteTaskFromBlock;
 using Itishnik.Application.Courses.Commands.PublishTaskBlock;
 using Itishnik.Application.Courses.Queries.GetCourseById;
 using Itishnik.Application.Courses.Queries.GetCourseList;
-using Itishnik.Application.Courses.Queries.GetCoursesForStudentById;
 using Itishnik.Application.Courses.Queries.GetStudentsOnCourse;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -39,8 +38,7 @@ public class Courses : EndpointGroupBase
             .MapDelete(DeleteTaskFromBlock, "{id}/{blockId}/task")
             .MapPatch(ChangeWeights, "{id}/{blockId}/gradeWeights")
             .MapPost(PublishBlock, "{id}/{blockId}/publish")
-            .MapPatch(ChangeTeacher, "{id}/teacher")
-            .MapGet(GetCoursesForStudent, "/studentCourses");
+            .MapPatch(ChangeTeacher, "{id}/teacher");
     }
     
     public async Task<Created<CourseResponse>> CreateCourse(ISender sender, CreateCourseCommand command)
@@ -178,13 +176,6 @@ public class Courses : EndpointGroupBase
     }
 
     public async Task<Ok<CourseResponse>> ChangeTeacher(ISender sender, Guid id, ChangeCourseTeacherCommand command)
-    {
-        var response = await sender.Send(command);
-        return TypedResults.Ok(response);
-    }
-
-    public async Task<Ok<PaginatedList<GradedCourseResponse>>> GetCoursesForStudent(ISender sender,
-        [AsParameters] GetCoursesForStudentByIdCommand command)
     {
         var response = await sender.Send(command);
         return TypedResults.Ok(response);
