@@ -14,6 +14,7 @@ public static class DependencyInjection
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
         builder.Services.AddScoped<IUser, CurrentUser>();
+        builder.Services.AddScoped<IResetPasswordService, EmailResetPasswordService>();
 
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddHealthChecks()

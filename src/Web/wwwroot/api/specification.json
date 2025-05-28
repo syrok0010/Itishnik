@@ -706,6 +706,50 @@
         }
       }
     },
+    "/api/Courses/{id}/invite": {
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "InviteStudents",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteStudentsToCourseCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseStudentListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Tasks": {
       "post": {
         "tags": [
@@ -1156,6 +1200,34 @@
           }
         }
       }
+    },
+    "/api/Users/activate-student": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "ActivateStudent",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateStudentCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1375,13 +1447,13 @@
             "type": "string",
             "format": "guid"
           },
+          "email": {
+            "type": "string"
+          },
           "fullName": {
             "type": "string"
           },
           "group": {
-            "type": "string"
-          },
-          "email": {
             "type": "string"
           }
         }
@@ -1533,6 +1605,22 @@
           "newTeacherId": {
             "type": "string",
             "format": "guid"
+          }
+        }
+      },
+      "InviteStudentsToCourseCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       },
@@ -1761,6 +1849,51 @@
             "type": "string"
           },
           "email": {
+            "type": "string"
+          },
+          "educationStartYear": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "groupNumber": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "educationalProgram": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "ActivateStudentCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "studentId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "patronymic": {
+            "type": "string",
+            "nullable": true
+          },
+          "educationStartYear": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "groupNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "educationalProgram": {
             "type": "string"
           }
         }

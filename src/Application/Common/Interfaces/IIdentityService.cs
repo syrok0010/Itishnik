@@ -1,4 +1,6 @@
 ﻿using Itishnik.Application.Common.Models;
+using Itishnik.Domain.Entities;
+using Task = System.Threading.Tasks.Task;
 
 namespace Itishnik.Application.Common.Interfaces;
 
@@ -11,6 +13,8 @@ public interface IIdentityService
     Task<bool> AuthorizeAsync(Guid userId, string policyName);
     
     Task<bool> AuthorizeAsync(Guid userId, string policyName, object resourceId, Type resourceType);
+
+    Task<Result> CreateUserAsync<TUser>(TUser user) where TUser : ApplicationUser;
 
     Task<(Result Result, Guid UserId)> CreateUserAsync(string userName,
         string password,

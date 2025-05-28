@@ -5,6 +5,11 @@ import { taskResolver } from './task-resolver';
 export const routes: Routes = [
   { path: '', redirectTo: '/courses', pathMatch: 'full' },
   {
+    path: 'activate',
+    loadComponent: () =>
+      import('./activate-student-page/activate-student-page.component'),
+  },
+  {
     path: 'courses',
     canMatch: [isAdminOrTeacherGuard],
     loadComponent: () =>
