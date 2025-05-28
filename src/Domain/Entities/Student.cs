@@ -68,4 +68,6 @@ public class Student : ApplicationUser, IOwnedResource
     }
 
     public Guid GetOwnerId() => Id;
+    
+    public new string FullName => GroupNumber == 100 ? Email! : base.FullName;
 }

@@ -2,25 +2,26 @@ using Itishnik.Application.Common.Interfaces;
 using Itishnik.Application.Common.Security;
 using Itishnik.Domain.Constants;
 using Itishnik.Domain.Entities;
-using Task = System.Threading.Tasks.Task;
 
 namespace Itishnik.Application.Courses.Commands.InviteStudentsToCourse;
 
 [Authorize(Policy = Policies.OwnerOrAdmin)]
 [ResourceMetadata(nameof(Id), typeof(Course))]
-public record InviteStudentsToCourseCommand(Guid Id, ICollection<string> Emails) : IRequest;
+public record InviteStudentsToCourseCommand(Guid Id, ICollection<string> Emails) : IRequest<CourseStudentListResponse>;
 
 public class InviteStudentsToCourseCommandHandler(
     IApplicationDbContext db,
     IIdentityService identityService,
-    IResetPasswordService resetService)
-    : IRequestHandler<InviteStudentsToCourseCommand>
+    IResetPasswordService resetService,
+    IMapper mapper)
+    : IRequestHandler<InviteStudentsToCourseCommand, CourseStudentListResponse>
 {
     private readonly IApplicationDbContext _db = db;
     private readonly IIdentityService _identityService = identityService;
     private readonly IResetPasswordService _resetService = resetService;
+    private readonly IMapper _mapper = mapper;
 
-    public async Task Handle(InviteStudentsToCourseCommand request, CancellationToken cancellationToken)
+    public async Task<CourseStudentListResponse> Handle(InviteStudentsToCourseCommand request, CancellationToken cancellationToken)
     {
         const string notSet = "Не установлено";
         var course = await _db.Courses
@@ -53,5 +54,6 @@ public class InviteStudentsToCourseCommandHandler(
             existingStudents.Select(s => new GradedCourse(course, s)), cancellationToken
         );
         await _db.SaveChangesAsync(cancellationToken);
+        return new CourseStudentListResponse { Students = _mapper.Map<List<StudentDto>>(existingStudents) };
     }
 }

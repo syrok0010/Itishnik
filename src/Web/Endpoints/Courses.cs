@@ -183,9 +183,9 @@ public class Courses : EndpointGroupBase
         return TypedResults.Ok(response);
     }
 
-    public async Task<NoContent> InviteStudents(ISender sender, Guid id, InviteStudentsToCourseCommand command)
+    public async Task<Ok<CourseStudentListResponse>> InviteStudents(ISender sender, Guid id, InviteStudentsToCourseCommand command)
     {
-        await sender.Send(command);
-        return TypedResults.NoContent();
+        var response = await sender.Send(command);
+        return TypedResults.Ok(response);
     }
 }

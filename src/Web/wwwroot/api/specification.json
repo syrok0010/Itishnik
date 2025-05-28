@@ -737,8 +737,15 @@
           "x-position": 2
         },
         "responses": {
-          "204": {
-            "description": ""
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CourseStudentListResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -1393,13 +1400,13 @@
             "type": "string",
             "format": "guid"
           },
+          "email": {
+            "type": "string"
+          },
           "fullName": {
             "type": "string"
           },
           "group": {
-            "type": "string"
-          },
-          "email": {
             "type": "string"
           }
         }

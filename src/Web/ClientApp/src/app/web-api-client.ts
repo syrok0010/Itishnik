@@ -30,7 +30,7 @@ export interface ICoursesClient {
     changeWeights(id: string, blockId: string, command: ChangeWeightsInBlockCommand): Observable<TaskBlockResponse>;
     publishBlock(id: string, blockId: string): Observable<TaskBlockResponse>;
     changeTeacher(id: string, command: ChangeCourseTeacherCommand): Observable<CourseResponse>;
-    inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<void>;
+    inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<CourseStudentListResponse>;
 }
 
 @Injectable({
@@ -890,7 +890,7 @@ export class CoursesClient implements ICoursesClient {
         return _observableOf(null as any);
     }
 
-    inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<void> {
+    inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<CourseStudentListResponse> {
         let url_ = this.baseUrl + "/api/Courses/{id}/invite";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
@@ -905,6 +905,7 @@ export class CoursesClient implements ICoursesClient {
             responseType: "blob",
             headers: new HttpHeaders({
                 "Content-Type": "application/json",
+                "Accept": "application/json"
             })
         };
 
@@ -915,23 +916,26 @@ export class CoursesClient implements ICoursesClient {
                 try {
                     return this.processInviteStudents(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<void>;
+                    return _observableThrow(e) as any as Observable<CourseStudentListResponse>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<void>;
+                return _observableThrow(response_) as any as Observable<CourseStudentListResponse>;
         }));
     }
 
-    protected processInviteStudents(response: HttpResponseBase): Observable<void> {
+    protected processInviteStudents(response: HttpResponseBase): Observable<CourseStudentListResponse> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 204) {
+        if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return _observableOf(null as any);
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CourseStudentListResponse.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -2102,9 +2106,9 @@ export interface ICourseStudentListResponse {
 
 export class StudentDto implements IStudentDto {
     id?: string;
+    email?: string;
     fullName?: string;
     group?: string;
-    email?: string;
 
     constructor(data?: IStudentDto) {
         if (data) {
@@ -2118,9 +2122,9 @@ export class StudentDto implements IStudentDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.email = _data["email"];
             this.fullName = _data["fullName"];
             this.group = _data["group"];
-            this.email = _data["email"];
         }
     }
 
@@ -2134,18 +2138,18 @@ export class StudentDto implements IStudentDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["email"] = this.email;
         data["fullName"] = this.fullName;
         data["group"] = this.group;
-        data["email"] = this.email;
         return data;
     }
 }
 
 export interface IStudentDto {
     id?: string;
+    email?: string;
     fullName?: string;
     group?: string;
-    email?: string;
 }
 
 export class ChangeTaskBlockDescriptionCommand implements IChangeTaskBlockDescriptionCommand {
