@@ -18,6 +18,7 @@ import {
 } from 'rxjs';
 import { filter, map, distinctUntilChanged, catchError } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { TuiAlertService } from '@taiga-ui/core';
 
 export interface FilterState {
   authorIds: string[];
@@ -53,6 +54,7 @@ let _state: TasksState = {
 })
 export class TasksFacadeService {
   private readonly tasksClient = inject(TasksClient);
+  private readonly alerts = inject(TuiAlertService);
 
   private _store: BehaviorSubject<TasksState> = new BehaviorSubject(_state);
 
@@ -158,6 +160,18 @@ export class TasksFacadeService {
         ],
       }),
     );
+
+    this.alerts
+      .open(
+        previousTaskId === null
+          ? 'Задача создана'
+          : 'Новая версия задачи создана',
+        {
+          autoClose: 3000,
+          appearance: 'positive',
+        },
+      )
+      .subscribe();
   }
 
   async editReferenceSolution(taskId: string, solutionText: string) {
@@ -176,6 +190,13 @@ export class TasksFacadeService {
         tasks: [..._state.tasks.filter((t) => t.id !== taskId), response],
       }),
     );
+
+    this.alerts
+      .open('Решение изменено', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
   }
 
   async setCurrentTaskId(taskId: string): Promise<void> {
@@ -218,6 +239,12 @@ export class TasksFacadeService {
         ],
       }),
     );
+    this.alerts
+      .open('Теги установлены', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
   }
 
   async publishTask(id: string) {
@@ -240,6 +267,13 @@ export class TasksFacadeService {
         ],
       }),
     );
+
+    this.alerts
+      .open('Задача опубликована', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
   }
 
   setFilters(filters: FilterState) {
