@@ -1853,9 +1853,9 @@ export class TaskBlockResponse implements ITaskBlockResponse {
     description?: string | undefined;
     tasks?: TaskListDto[];
     weights?: number[];
-    startTime?: Date;
-    endTime?: Date;
-    timeAllowed?: string;
+    startTime?: Date | undefined;
+    endTime?: Date | undefined;
+    timeAllowed?: string | undefined;
     isPublic?: boolean;
 
     constructor(data?: ITaskBlockResponse) {
@@ -1928,9 +1928,9 @@ export interface ITaskBlockResponse {
     description?: string | undefined;
     tasks?: TaskListDto[];
     weights?: number[];
-    startTime?: Date;
-    endTime?: Date;
-    timeAllowed?: string;
+    startTime?: Date | undefined;
+    endTime?: Date | undefined;
+    timeAllowed?: string | undefined;
     isPublic?: boolean;
 }
 

@@ -26,62 +26,69 @@
         ) {
           <tr tuiTr>
             <td tuiTd *tuiCell="'number'">{{ index + 1 }}</td>
-            <td
-              tuiTd
-              [routerLink]="['/tasks', pair.task.id]"
-              *tuiCell="'task'"
-              class="cursor-pointer"
-            >
+            <td tuiTd *tuiCell="'task'">
               <div class="flex items-center justify-between pr-3.5">
-                <span>{{ pair.task.name }}</span>
-                <tui-icon
-                  class="cursor-pointer text-lg text-red-300 transition-colors duration-300 hover:text-red-500"
-                  icon="@tui.trash"
-                  (click)="removeTaskFromBlock(pair.task.id)"
+                <span
+                  [routerLink]="['/tasks', pair.task.id]"
+                  class="cursor-pointer hover:underline hover:underline-offset-4"
+                  >{{ pair.task.name }}</span
                 >
-                </tui-icon>
+                @if (!taskBlock().isPublic) {
+                  <tui-icon
+                    class="cursor-pointer text-lg text-red-300 transition-colors duration-300 hover:text-red-500"
+                    icon="@tui.trash"
+                    (click)="removeTaskFromBlock(pair.task.id)"
+                  >
+                  </tui-icon>
+                }
               </div>
             </td>
             <td tuiTd *tuiCell="'weight'">
-              <tui-textfield>
-                <input
-                  tuiInputNumber
-                  [min]="1"
-                  [formControl]="weightControls()[index]"
-                />
-              </tui-textfield>
+              @if (!taskBlock().isPublic) {
+                <tui-textfield>
+                  <input
+                    tuiInputNumber
+                    [min]="1"
+                    [formControl]="weightControls()[index]"
+                  />
+                </tui-textfield>
+              } @else {
+                {{ taskBlock().weights[index] }}
+              }
             </td>
           </tr>
         }
-        <tr tuiTr class="*:!py-2">
-          <td tuiTd *tuiCell="'number'" class="!border-r-0"></td>
-          <td tuiTd *tuiCell="'task'">
-            <div class="flex flex-row justify-end">
+        @if (!taskBlock().isPublic) {
+          <tr tuiTr class="*:!py-2">
+            <td tuiTd *tuiCell="'number'" class="!border-r-0"></td>
+            <td tuiTd *tuiCell="'task'">
+              <div class="flex flex-row justify-end">
+                <button
+                  appearance="outline"
+                  tuiButton
+                  type="button"
+                  class="ml-auto"
+                  size="m"
+                  (click)="addTasksToBlock()"
+                >
+                  <tui-icon icon="@tui.plus" />
+                </button>
+              </div>
+            </td>
+            <td tuiTd *tuiCell="'weight'">
               <button
                 appearance="outline"
                 tuiButton
                 type="button"
-                class="ml-auto"
+                class="mr-auto"
                 size="m"
-                (click)="addTasksToBlock()"
+                (click)="saveWeights()"
               >
-                <tui-icon icon="@tui.plus" />
+                Сохранить
               </button>
-            </div>
-          </td>
-          <td tuiTd *tuiCell="'weight'">
-            <button
-              appearance="outline"
-              tuiButton
-              type="button"
-              class="mr-auto"
-              size="m"
-              (click)="saveWeights()"
-            >
-              Сохранить
-            </button>
-          </td>
-        </tr>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>

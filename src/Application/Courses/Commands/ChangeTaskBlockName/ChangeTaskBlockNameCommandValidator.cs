@@ -14,7 +14,10 @@ public class ChangeTaskBlockNameCommandValidator : AbstractValidator<ChangeTaskB
             .MustAsync((id, token) => context.Courses.AnyAsync(c => c.Id == id, token))
             .WithMessage("Курса не существует");
         RuleFor(x => x.TaskBlockId)
+            .Cascade(CascadeMode.Stop)
             .MustAsync((cmd, id, token) => context.TaskBlocks.AnyAsync(tb => tb.Id == id && tb.CourseId == cmd.CourseId, token))
-            .WithMessage("Блока задач не существует или не принадлежит заданному курсу");
+            .WithMessage("Работа не существует или не принадлежит заданному курсу")
+            .MustAsync((cmd, id, token) => context.TaskBlocks.AnyAsync(tb => tb.Id == id && (!tb.IsPublic || cmd.Name == tb.Name), token))
+            .WithMessage("Работа уже опубликована");
     }
 }

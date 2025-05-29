@@ -1348,15 +1348,18 @@
           },
           "startTime": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "endTime": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "timeAllowed": {
             "type": "string",
-            "format": "duration"
+            "format": "duration",
+            "nullable": true
           },
           "isPublic": {
             "type": "boolean"

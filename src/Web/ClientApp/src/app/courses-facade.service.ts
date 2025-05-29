@@ -122,21 +122,19 @@ export class CoursesFacadeService {
     taskBlockId: string,
     taskIds: string[],
   ): Promise<void> {
-    await Promise.all(
-      taskIds.map((taskId) =>
-        firstValueFrom(
-          this.coursesClient.addTaskToBlock(
-            courseId,
-            taskBlockId,
-            new AddTaskToBlockCommand({
-              id: courseId,
-              blockId: taskBlockId,
-              taskId,
-            }),
-          ),
+    for (const taskId of taskIds) {
+      await firstValueFrom(
+        this.coursesClient.addTaskToBlock(
+          courseId,
+          taskBlockId,
+          new AddTaskToBlockCommand({
+            id: courseId,
+            blockId: taskBlockId,
+            taskId,
+          }),
         ),
-      ),
-    );
+      );
+    }
     this.alerts
       .open('Задачи добавлены в работу', {
         autoClose: 3000,

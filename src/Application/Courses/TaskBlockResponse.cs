@@ -25,9 +25,9 @@ public class TaskBlockResponse
     public string? Description { get; init; }
     public ICollection<TaskListDto> Tasks { get; init; } = null!;
     public ICollection<int> Weights { get; init; } = null!;
-    public DateTime StartTime { get; init; }
-    public DateTime EndTime { get; init; }
-    public TimeSpan TimeAllowed { get; init; }
+    public DateTime? StartTime { get; init; }
+    public DateTime? EndTime { get; init; }
+    public TimeSpan? TimeAllowed { get; init; }
     public bool IsPublic { get; init; }
 
     private class Mapping : Profile

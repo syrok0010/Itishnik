@@ -10,9 +10,11 @@ public class ChangeWeightsInBlockCommandValidator : AbstractValidator<ChangeWeig
             .MustAsync((id, token) => context.Courses.AnyAsync(c => c.Id == id, token))
             .WithMessage("Курса не существует");
         RuleFor(x => x.BlockId)
-            .MustAsync((cmd, id, token) =>
-                context.TaskBlocks.AnyAsync(tb => tb.Id == id && tb.CourseId == cmd.Id && !tb.IsPublic, token))
-            .WithMessage("Блок задач не существует, не принадлежит заданному курсу или опубликован");
+            .Cascade(CascadeMode.Stop)
+            .MustAsync((cmd, id, token) => context.TaskBlocks.AnyAsync(tb => tb.Id == id && tb.CourseId == cmd.Id, token))
+            .WithMessage("Работа не существует или не принадлежит заданному курсу")
+            .MustAsync((id, token) => context.TaskBlocks.AnyAsync(tb => tb.Id == id && !tb.IsPublic, token))
+            .WithMessage("Нельзя менять баллы в опубликованной работе");
         RuleFor(x => x.Weights)
             .MustAsync((cmd, list, token) => CheckLength(context, cmd, token))
             .WithMessage("Количество весов не совпадает с количеством заданий");
