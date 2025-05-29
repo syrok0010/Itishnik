@@ -2,7 +2,7 @@ namespace Itishnik.Domain.Entities;
 
 public class GradedCourse : IOwnedResource
 {
-    private int _grade;
+    private int? _grade;
     private readonly HashSet<GradedTaskBlock> _gradedTaskBlocks = [];
     
     private GradedCourse() {}
@@ -28,17 +28,16 @@ public class GradedCourse : IOwnedResource
         _gradedTaskBlocks.Add(gradedTaskBlock);
     }
 
-    public int Grade
+    public int? Grade
     {
         get => _grade;
-        set
-        {
-            if (value is < 0 or > 10)
-            {
-                throw new ArgumentOutOfRangeException(nameof(Grade), "Оценка должна быть в диапазоне от 0 до 10 включительно");
-            }
-            _grade = value;
-        }
+        set => 
+            _grade = value switch 
+            { 
+                null => throw new ArgumentNullException(nameof(value), nameof(Grade)), 
+                < 0 or > 10 => throw new ArgumentOutOfRangeException(nameof(Grade), "Оценка должна быть в диапазоне от 0 до 10 включительно"), 
+                _ => value 
+            };
     }
 
     public Guid GetOwnerId() => StudentId;

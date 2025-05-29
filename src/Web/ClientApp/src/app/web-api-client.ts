@@ -946,6 +946,80 @@ export class CoursesClient implements ICoursesClient {
     }
 }
 
+export interface IStudentsClient {
+    getCourses(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfGradedCourseResponse>;
+}
+
+@Injectable({
+    providedIn: 'root'
+})
+export class StudentsClient implements IStudentsClient {
+    private http: HttpClient;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(@Inject(HttpClient) http: HttpClient, @Optional() @Inject(API_BASE_URL) baseUrl?: string) {
+        this.http = http;
+        this.baseUrl = baseUrl ?? "";
+    }
+
+    getCourses(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfGradedCourseResponse> {
+        let url_ = this.baseUrl + "/api/Students/courses?";
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "PageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "PageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCourses(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCourses(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PaginatedListOfGradedCourseResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PaginatedListOfGradedCourseResponse>;
+        }));
+    }
+
+    protected processGetCourses(response: HttpResponseBase): Observable<PaginatedListOfGradedCourseResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfGradedCourseResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+}
+
 export interface ITasksClient {
     createTask(command: CreateTaskCommand): Observable<TaskResponse[]>;
     getTaskList(themeIds: string[] | null | undefined, authorIds: string[] | null | undefined, name: string | null | undefined, sortBy: string | null | undefined, ascending: boolean | undefined, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfTaskListResponse>;
@@ -2622,6 +2696,122 @@ export class InviteStudentsToCourseCommand implements IInviteStudentsToCourseCom
 export interface IInviteStudentsToCourseCommand {
     id?: string;
     emails?: string[];
+}
+
+export class PaginatedListOfGradedCourseResponse implements IPaginatedListOfGradedCourseResponse {
+    items?: GradedCourseResponse[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfGradedCourseResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(GradedCourseResponse.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfGradedCourseResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfGradedCourseResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfGradedCourseResponse {
+    items?: GradedCourseResponse[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class GradedCourseResponse implements IGradedCourseResponse {
+    id?: string;
+    name?: string;
+    grade?: number | undefined;
+    nearestTaskBlockStart?: Date | undefined;
+    nearestTaskBlockEnd?: Date | undefined;
+
+    constructor(data?: IGradedCourseResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.grade = _data["grade"];
+            this.nearestTaskBlockStart = _data["nearestTaskBlockStart"] ? new Date(_data["nearestTaskBlockStart"].toString()) : <any>undefined;
+            this.nearestTaskBlockEnd = _data["nearestTaskBlockEnd"] ? new Date(_data["nearestTaskBlockEnd"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): GradedCourseResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GradedCourseResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["grade"] = this.grade;
+        data["nearestTaskBlockStart"] = this.nearestTaskBlockStart ? this.nearestTaskBlockStart.toISOString() : <any>undefined;
+        data["nearestTaskBlockEnd"] = this.nearestTaskBlockEnd ? this.nearestTaskBlockEnd.toISOString() : <any>undefined;
+        return data;
+    }
+}
+
+export interface IGradedCourseResponse {
+    id?: string;
+    name?: string;
+    grade?: number | undefined;
+    nearestTaskBlockStart?: Date | undefined;
+    nearestTaskBlockEnd?: Date | undefined;
 }
 
 export class TaskResponse implements ITaskResponse {

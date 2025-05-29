@@ -701,7 +701,7 @@
                   "$ref": "#/components/schemas/CourseResponse"
                 }
               }
-            }
+             }
           }
         }
       }
@@ -743,6 +743,46 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CourseStudentListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Students/courses": {
+      "get": {
+        "tags": [
+          "Students"
+        ],
+        "operationId": "GetCourses",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfGradedCourseResponse"
                 }
               }
             }
@@ -1621,6 +1661,64 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "PaginatedListOfGradedCourseResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GradedCourseResponse"
+            }
+          },
+          "pageNumber": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalPages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "hasPreviousPage": {
+            "type": "boolean"
+          },
+          "hasNextPage": {
+            "type": "boolean"
+          }
+        }
+      },
+      "GradedCourseResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "nearestTaskBlockStart": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "nearestTaskBlockEnd": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
           }
         }
       },

@@ -2,7 +2,7 @@ namespace Itishnik.Domain.Entities;
 
 public class Solution : IOwnedResource
 {
-    private int _grade;
+    private int? _grade;
     private string _text = null!;
     
     public Guid Id { get; private init; }
@@ -32,14 +32,16 @@ public class Solution : IOwnedResource
     public Student Student { get; private init; } = null!;
     public Guid StudentId { get; private init; }
 
-    public int Grade
+    public int? Grade
     {
         get => _grade;
-        set
-        {
-            ArgumentOutOfRangeException.ThrowIfNegative(value, nameof(Grade));
-            _grade = value;
-        }
+        set =>
+            _grade = value switch
+            {
+                null => throw new ArgumentNullException(nameof(value), nameof(Grade)),
+                < 0 or > 10 => throw new ArgumentOutOfRangeException(nameof(Grade), "Оценка должна быть в диапазоне от 0 до 10 включительно"),
+                _ => value
+            };
     }
 
     public Guid GetOwnerId() => StudentId;
