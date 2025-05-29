@@ -2608,9 +2608,9 @@ export interface IPaginatedListOfGradedCourseResponse {
 export class GradedCourseResponse implements IGradedCourseResponse {
     id?: string;
     name?: string;
-    grade?: number;
-    nearestTaskBlockStart?: Date;
-    nearestTaskBlockEnd?: Date;
+    grade?: number | undefined;
+    nearestTaskBlockStart?: Date | undefined;
+    nearestTaskBlockEnd?: Date | undefined;
 
     constructor(data?: IGradedCourseResponse) {
         if (data) {
@@ -2652,9 +2652,9 @@ export class GradedCourseResponse implements IGradedCourseResponse {
 export interface IGradedCourseResponse {
     id?: string;
     name?: string;
-    grade?: number;
-    nearestTaskBlockStart?: Date;
-    nearestTaskBlockEnd?: Date;
+    grade?: number | undefined;
+    nearestTaskBlockStart?: Date | undefined;
+    nearestTaskBlockEnd?: Date | undefined;
 }
 
 export class TaskResponse implements ITaskResponse {
