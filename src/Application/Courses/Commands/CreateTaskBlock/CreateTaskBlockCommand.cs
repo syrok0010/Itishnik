@@ -5,7 +5,7 @@ using Itishnik.Domain.Entities;
 
 namespace Itishnik.Application.Courses.Commands.CreateTaskBlock;
 
-[Authorize(Policy = Policies.Owner)]
+[Authorize(Policy = Policies.OwnerOrAdmin)]
 [ResourceMetadata(nameof(CourseId), typeof(Course))]
 public record CreateTaskBlockCommand(Guid CourseId, string Name, IList<Guid> TaskIds, IList<int> Weights, string? Description = null)
     : IRequest<TaskBlockResponse>;
