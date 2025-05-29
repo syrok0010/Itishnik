@@ -1,5 +1,4 @@
 <div class="flex w-full flex-col gap-4 rounded-lg bg-white p-4">
-
   @if (currentCourse()) {
     <h1 class="mb-2 text-2xl font-bold">{{ currentCourse().name }}</h1>
 
@@ -16,9 +15,13 @@
             currentCourse().teacherEmail
           }}</span>
         </span>
-      }
-      @else {
-        <tui-textfield tuiChevron tuiTextfieldSize="m" [content]="selectedOptionContent" class="w-1/3">
+      } @else {
+        <tui-textfield
+          tuiChevron
+          tuiTextfieldSize="m"
+          [content]="selectedOptionContent"
+          class="w-1/3"
+        >
           <input
             placeholder="Выберите преподавателя"
             tuiComboBox
@@ -32,29 +35,23 @@
           />
         </tui-textfield>
 
-        <ng-template
-          #dropdownOptionContent
-          let-author
-        >
+        <ng-template #dropdownOptionContent let-author>
           <tui-avatar
             [src]="getTeacherFullName(author) | tuiInitials"
             [style.background]="getTeacherFullName(author) | tuiAutoColor"
             size="m"
           />
           <span tuiTitle class="whitespace-normal text-xl">
-          {{ getTeacherFullName(author) }}
+            {{ getTeacherFullName(author) }}
             <span tuiSubtitle class="whitespace-normal text-base">{{
-                author.email
-              }}</span>
+              author.email
+            }}</span>
           </span>
         </ng-template>
 
-        <ng-template
-          #selectedOptionContent
-          let-author
-        >
+        <ng-template #selectedOptionContent let-author>
           <span tuiTitle class="whitespace-normal text-xl">
-          {{ getTeacherFullName(author) }}
+            {{ getTeacherFullName(author) }}
           </span>
         </ng-template>
       }
@@ -106,7 +103,7 @@
     appearance="primary"
     tuiButton
     type="button"
-    class="mr-auto shadow-sm"
+    class="mr-auto"
     size="m"
     (click)="saveDescription()"
   >
@@ -117,9 +114,7 @@
 <div class="mt-4 flex w-full grow flex-col rounded-lg bg-white p-4 pt-0">
   <tui-tabs-with-more>
     <a *tuiItem routerLinkActive tuiTab [routerLink]="'taskBlocks'"> Работы </a>
-
     <a *tuiItem routerLinkActive tuiTab [routerLink]="'students'"> Студенты </a>
   </tui-tabs-with-more>
-
   <router-outlet class="mt-4" />
 </div>

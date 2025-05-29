@@ -10,6 +10,7 @@ import {
   CourseListResponse,
   CoursesClient,
   CreateCourseCommand,
+  CreateTaskBlockCommand,
   DeleteTaskFromBlockCommand,
 } from './web-api-client';
 import { BehaviorSubject, firstValueFrom, switchMap } from 'rxjs';
@@ -269,6 +270,40 @@ export class CoursesFacadeService {
     );
     this.alerts
       .open('Преподаватель на курсе изменен', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
+    this._store.next(_state);
+  }
+
+  async publishTaskBlock(courseId: string, taskBlockId: string) {
+    await firstValueFrom(
+      this.coursesClient.publishBlock(courseId, taskBlockId),
+    );
+    this.alerts
+      .open('Работа опубликована для студентов', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
+    this._store.next(_state);
+  }
+
+  async createTaskBlock(courseId: string, name: string) {
+    await firstValueFrom(
+      this.coursesClient.createTaskBlock(
+        courseId,
+        new CreateTaskBlockCommand({
+          courseId,
+          name,
+          taskIds: [],
+          weights: [],
+        }),
+      ),
+    );
+    this.alerts
+      .open('Работа создана', {
         autoClose: 3000,
         appearance: 'positive',
       })

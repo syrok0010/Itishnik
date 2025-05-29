@@ -1,6 +1,23 @@
+<div class="mb-4 flex w-1/2 flex-row justify-stretch gap-4">
+  <tui-input tuiTextfieldSize="m" [formControl]="nameControl" class="flex-1"
+    >Введите название работы</tui-input
+  >
+
+  <button
+    appearance="primary"
+    tuiButton
+    type="button"
+    size="m"
+    (click)="createTaskBlock()"
+    [disabled]="nameControl.invalid"
+  >
+    Добавить работу
+  </button>
+</div>
+
 <tui-accordion class="!inline">
   @for (taskBlock of taskBlocks$ | async; track taskBlock.id) {
-    <button class="w-full" [tuiAccordion]="true">{{ taskBlock.name }}</button>
+    <button class="w-full" [tuiAccordion]="false">{{ taskBlock.name }}</button>
     <tui-expand>
       <app-task-blocks-accordion-item [taskBlock]="taskBlock" />
     </tui-expand>

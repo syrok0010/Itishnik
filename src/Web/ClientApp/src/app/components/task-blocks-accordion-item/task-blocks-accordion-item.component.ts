@@ -76,6 +76,7 @@ import { AsyncPipe } from '@angular/common';
     tuiValidationErrorsProvider({
       required: 'Заполните поле',
       beforeStart: 'Дата конца должна быть позднее начала',
+      timeOverflow: 'Время выполнения превышает конец',
     }),
   ],
 })
@@ -90,6 +91,8 @@ export default class TaskBlocksAccordionItemComponent {
     return (control: AbstractControl): ValidationErrors | null => {
       const start = control.get('startTime');
       const end = control.get('endTime');
+      const timeAllowed = control.get('timeAllowed');
+      const timeAllowedValue: TuiTime = timeAllowed.value;
       if (!start.value || !end.value) return null;
       const [startDay, startTime]: [TuiDay, TuiTime] = start.value;
       const [endDay, endTime]: [TuiDay, TuiTime] = end.value;
@@ -105,6 +108,19 @@ export default class TaskBlocksAccordionItemComponent {
       ) {
         end.setErrors({ beforeStart: true });
         end.markAsTouched();
+      } else {
+        end.setErrors(null);
+      }
+      if (
+        startDay.toLocalNativeDate().getTime() +
+          startTime.toAbsoluteMilliseconds() +
+          timeAllowedValue.toAbsoluteMilliseconds() >
+        endDay.toLocalNativeDate().getTime() + endTime.toAbsoluteMilliseconds()
+      ) {
+        timeAllowed.setErrors({ timeOverflow: true });
+        timeAllowed.markAsTouched();
+      } else {
+        timeAllowed.setErrors(null);
       }
       return null;
     };
@@ -208,5 +224,10 @@ export default class TaskBlocksAccordionItemComponent {
     );
   }
 
-  publish() {}
+  async publish() {
+    await this.coursesFacade.publishTaskBlock(
+      this.taskBlock().courseId,
+      this.taskBlock().id,
+    );
+  }
 }

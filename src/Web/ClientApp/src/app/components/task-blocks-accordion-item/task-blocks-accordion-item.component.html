@@ -115,9 +115,15 @@
           [error]="[] | tuiFieldError | async"
         />
       </label>
-      <tui-input-time class="flex-1" formControlName="timeAllowed">
-        Время на выполнение
-      </tui-input-time>
+      <label tuiLabel class="flex-1">
+        <tui-input-time formControlName="timeAllowed">
+          Время на выполнение
+        </tui-input-time>
+        <tui-error
+          formControlName="timeAllowed"
+          [error]="[] | tuiFieldError | async"
+        />
+      </label>
     </div>
     <button
       appearance="primary"
