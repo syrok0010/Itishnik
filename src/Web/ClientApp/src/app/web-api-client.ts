@@ -2650,6 +2650,54 @@ export interface IChangeCourseTeacherCommand {
     newTeacherId?: string;
 }
 
+export class InviteStudentsToCourseCommand implements IInviteStudentsToCourseCommand {
+    id?: string;
+    emails?: string[];
+
+    constructor(data?: IInviteStudentsToCourseCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            if (Array.isArray(_data["emails"])) {
+                this.emails = [] as any;
+                for (let item of _data["emails"])
+                    this.emails!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): InviteStudentsToCourseCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new InviteStudentsToCourseCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        if (Array.isArray(this.emails)) {
+            data["emails"] = [];
+            for (let item of this.emails)
+                data["emails"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IInviteStudentsToCourseCommand {
+    id?: string;
+    emails?: string[];
+}
+
 export class PaginatedListOfGradedCourseResponse implements IPaginatedListOfGradedCourseResponse {
     items?: GradedCourseResponse[];
     pageNumber?: number;
@@ -2764,54 +2812,6 @@ export interface IGradedCourseResponse {
     grade?: number | undefined;
     nearestTaskBlockStart?: Date | undefined;
     nearestTaskBlockEnd?: Date | undefined;
-}
-
-export class InviteStudentsToCourseCommand implements IInviteStudentsToCourseCommand {
-    id?: string;
-    emails?: string[];
-
-    constructor(data?: IInviteStudentsToCourseCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            if (Array.isArray(_data["emails"])) {
-                this.emails = [] as any;
-                for (let item of _data["emails"])
-                    this.emails!.push(item);
-            }
-        }
-    }
-
-    static fromJS(data: any): InviteStudentsToCourseCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new InviteStudentsToCourseCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        if (Array.isArray(this.emails)) {
-            data["emails"] = [];
-            for (let item of this.emails)
-                data["emails"].push(item);
-        }
-        return data;
-    }
-}
-
-export interface IInviteStudentsToCourseCommand {
-    id?: string;
-    emails?: string[];
 }
 
 export class TaskResponse implements ITaskResponse {

@@ -701,47 +701,7 @@
                   "$ref": "#/components/schemas/CourseResponse"
                 }
               }
-            }
-          }
-        }
-      }
-    },
-    "/api/Students/courses": {
-      "get": {
-        "tags": [
-          "Students"
-        ],
-        "operationId": "GetCourses",
-        "parameters": [
-          {
-            "name": "PageNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 1
-          },
-          {
-            "name": "PageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 2
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfGradedCourseResponse"
-                }
-              }
-            }
+             }
           }
         }
       }
@@ -783,6 +743,46 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/CourseStudentListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Students/courses": {
+      "get": {
+        "tags": [
+          "Students"
+        ],
+        "operationId": "GetCourses",
+        "parameters": [
+          {
+            "name": "PageNumber",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedListOfGradedCourseResponse"
                 }
               }
             }
@@ -1648,6 +1648,22 @@
           }
         }
       },
+      "InviteStudentsToCourseCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
       "PaginatedListOfGradedCourseResponse": {
         "type": "object",
         "additionalProperties": false,
@@ -1703,22 +1719,6 @@
             "type": "string",
             "format": "date-time",
             "nullable": true
-          }
-        }
-      },
-      "InviteStudentsToCourseCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "emails": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
           }
         }
       },
