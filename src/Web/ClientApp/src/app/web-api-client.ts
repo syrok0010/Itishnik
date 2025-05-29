@@ -2135,9 +2135,6 @@ export class CreateTaskBlockCommand implements ICreateTaskBlockCommand {
     name?: string;
     taskIds?: string[];
     weights?: number[];
-    startTime?: Date;
-    endTime?: Date;
-    timeAllowed?: string;
     description?: string | undefined;
 
     constructor(data?: ICreateTaskBlockCommand) {
@@ -2163,9 +2160,6 @@ export class CreateTaskBlockCommand implements ICreateTaskBlockCommand {
                 for (let item of _data["weights"])
                     this.weights!.push(item);
             }
-            this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
-            this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
-            this.timeAllowed = _data["timeAllowed"];
             this.description = _data["description"];
         }
     }
@@ -2191,9 +2185,6 @@ export class CreateTaskBlockCommand implements ICreateTaskBlockCommand {
             for (let item of this.weights)
                 data["weights"].push(item);
         }
-        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
-        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
-        data["timeAllowed"] = this.timeAllowed;
         data["description"] = this.description;
         return data;
     }
@@ -2204,9 +2195,6 @@ export interface ICreateTaskBlockCommand {
     name?: string;
     taskIds?: string[];
     weights?: number[];
-    startTime?: Date;
-    endTime?: Date;
-    timeAllowed?: string;
     description?: string | undefined;
 }
 
@@ -2351,7 +2339,7 @@ export class ChangeTaskBlockTimelineCommand implements IChangeTaskBlockTimelineC
     taskBlockId?: string;
     startTime?: Date;
     endTime?: Date;
-    timeAllowed?: string;
+    timeAllowed?: string | undefined;
 
     constructor(data?: IChangeTaskBlockTimelineCommand) {
         if (data) {
@@ -2395,7 +2383,7 @@ export interface IChangeTaskBlockTimelineCommand {
     taskBlockId?: string;
     startTime?: Date;
     endTime?: Date;
-    timeAllowed?: string;
+    timeAllowed?: string | undefined;
 }
 
 export class ChangeTaskBlockNameCommand implements IChangeTaskBlockNameCommand {

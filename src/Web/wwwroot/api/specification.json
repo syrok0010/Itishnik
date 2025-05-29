@@ -710,7 +710,7 @@
                   "$ref": "#/components/schemas/CourseResponse"
                 }
               }
-             }
+            }
           }
         }
       }
@@ -1469,18 +1469,6 @@
               "format": "int32"
             }
           },
-          "startTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "endTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "timeAllowed": {
-            "type": "string",
-            "format": "duration"
-          },
           "description": {
             "type": "string",
             "nullable": true
@@ -1558,7 +1546,8 @@
           },
           "timeAllowed": {
             "type": "string",
-            "format": "duration"
+            "format": "duration",
+            "nullable": true
           }
         }
       },
