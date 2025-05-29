@@ -4,7 +4,8 @@ namespace Itishnik.Application.Courses.Commands.AddTaskToBlock;
 
 public class AddTaskToBlockCommandValidator : AbstractValidator<AddTaskToBlockCommand>
 {
-    public AddTaskToBlockCommandValidator(IApplicationDbContext context){
+    public AddTaskToBlockCommandValidator(IApplicationDbContext context) 
+    {
         RuleFor(x => x.Id)
             .MustAsync((id, token) => context.Courses.AnyAsync(c => c.Id == id, token))
             .WithMessage("Курса не существует");
