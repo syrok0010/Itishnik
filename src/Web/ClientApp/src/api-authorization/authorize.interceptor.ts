@@ -1,35 +1,19 @@
-import { Inject, Injectable } from '@angular/core';
-import {
-  HttpInterceptor,
-  HttpRequest,
-  HttpHandler,
-  HttpEvent,
-  HttpErrorResponse,
-} from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { HttpInterceptorFn, HttpErrorResponse } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
+import { inject } from '@angular/core';
+import { baseUrlToken } from '../app/app.config';
 
-@Injectable({
-  providedIn: 'root',
-})
-export class AuthorizeInterceptor implements HttpInterceptor {
-  loginUrl: string;
+export const authorizeInterceptor: HttpInterceptorFn = (req, next) => {
+  const baseUrl = inject(baseUrlToken);
+  const loginUrl = `${baseUrl}Identity/Account/Login`;
 
-  constructor(@Inject('BASE_URL') baseUrl: string) {
-    this.loginUrl = `${baseUrl}Identity/Account/Login`;
-  }
-
-  intercept(
-    req: HttpRequest<any>,
-    next: HttpHandler,
-  ): Observable<HttpEvent<any>> {
-    return next.handle(req).pipe(
-      catchError((error) => {
-        if (error instanceof HttpErrorResponse && error.status === 401) {
-          window.location.href = `${this.loginUrl}?ReturnUrl=${window.location.pathname}`;
-        }
-        return throwError(() => error);
-      }),
-    );
-  }
-}
+  return next(req).pipe(
+    catchError((error: HttpErrorResponse) => {
+      if (error.status === 401) {
+        window.location.href = `${loginUrl}?ReturnUrl=${window.location.pathname}`;
+      }
+      return throwError(() => error);
+    }),
+  );
+};

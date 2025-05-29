@@ -30,6 +30,7 @@ export interface ICoursesClient {
     changeWeights(id: string, blockId: string, command: ChangeWeightsInBlockCommand): Observable<TaskBlockResponse>;
     publishBlock(id: string, blockId: string): Observable<TaskBlockResponse>;
     changeTeacher(id: string, command: ChangeCourseTeacherCommand): Observable<CourseResponse>;
+    inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<CourseStudentListResponse>;
 }
 
 @Injectable({
@@ -888,6 +889,61 @@ export class CoursesClient implements ICoursesClient {
         }
         return _observableOf(null as any);
     }
+
+    inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<CourseStudentListResponse> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/invite";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processInviteStudents(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processInviteStudents(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<CourseStudentListResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<CourseStudentListResponse>;
+        }));
+    }
+
+    protected processInviteStudents(response: HttpResponseBase): Observable<CourseStudentListResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = CourseStudentListResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export interface IStudentsClient {
@@ -1486,6 +1542,7 @@ export interface IUsersClient {
     authInfo(): Observable<AuthState>;
     userInfo(): Observable<UserDto>;
     getUsers(roles: string[] | null): Observable<UserDto[]>;
+    activateStudent(command: ActivateStudentCommand): Observable<void>;
 }
 
 @Injectable({
@@ -1651,6 +1708,58 @@ export class UsersClient implements IUsersClient {
                 result200 = <any>null;
             }
             return _observableOf(result200);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    activateStudent(command: ActivateStudentCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/Users/activate-student";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processActivateStudent(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processActivateStudent(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processActivateStudent(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
             }));
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -2131,9 +2240,9 @@ export interface ICourseStudentListResponse {
 
 export class StudentDto implements IStudentDto {
     id?: string;
+    email?: string;
     fullName?: string;
     group?: string;
-    email?: string;
 
     constructor(data?: IStudentDto) {
         if (data) {
@@ -2147,9 +2256,9 @@ export class StudentDto implements IStudentDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.email = _data["email"];
             this.fullName = _data["fullName"];
             this.group = _data["group"];
-            this.email = _data["email"];
         }
     }
 
@@ -2163,18 +2272,18 @@ export class StudentDto implements IStudentDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["email"] = this.email;
         data["fullName"] = this.fullName;
         data["group"] = this.group;
-        data["email"] = this.email;
         return data;
     }
 }
 
 export interface IStudentDto {
     id?: string;
+    email?: string;
     fullName?: string;
     group?: string;
-    email?: string;
 }
 
 export class ChangeTaskBlockDescriptionCommand implements IChangeTaskBlockDescriptionCommand {
@@ -2655,6 +2764,54 @@ export interface IGradedCourseResponse {
     grade?: number | undefined;
     nearestTaskBlockStart?: Date | undefined;
     nearestTaskBlockEnd?: Date | undefined;
+}
+
+export class InviteStudentsToCourseCommand implements IInviteStudentsToCourseCommand {
+    id?: string;
+    emails?: string[];
+
+    constructor(data?: IInviteStudentsToCourseCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            if (Array.isArray(_data["emails"])) {
+                this.emails = [] as any;
+                for (let item of _data["emails"])
+                    this.emails!.push(item);
+            }
+        }
+    }
+
+    static fromJS(data: any): InviteStudentsToCourseCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new InviteStudentsToCourseCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        if (Array.isArray(this.emails)) {
+            data["emails"] = [];
+            for (let item of this.emails)
+                data["emails"].push(item);
+        }
+        return data;
+    }
+}
+
+export interface IInviteStudentsToCourseCommand {
+    id?: string;
+    emails?: string[];
 }
 
 export class TaskResponse implements ITaskResponse {
@@ -3147,6 +3304,9 @@ export class UserDto implements IUserDto {
     name?: string;
     patronymic?: string;
     email?: string;
+    educationStartYear?: number | undefined;
+    groupNumber?: number | undefined;
+    educationalProgram?: string | undefined;
 
     constructor(data?: IUserDto) {
         if (data) {
@@ -3164,6 +3324,9 @@ export class UserDto implements IUserDto {
             this.name = _data["name"];
             this.patronymic = _data["patronymic"];
             this.email = _data["email"];
+            this.educationStartYear = _data["educationStartYear"];
+            this.groupNumber = _data["groupNumber"];
+            this.educationalProgram = _data["educationalProgram"];
         }
     }
 
@@ -3181,6 +3344,9 @@ export class UserDto implements IUserDto {
         data["name"] = this.name;
         data["patronymic"] = this.patronymic;
         data["email"] = this.email;
+        data["educationStartYear"] = this.educationStartYear;
+        data["groupNumber"] = this.groupNumber;
+        data["educationalProgram"] = this.educationalProgram;
         return data;
     }
 }
@@ -3191,6 +3357,69 @@ export interface IUserDto {
     name?: string;
     patronymic?: string;
     email?: string;
+    educationStartYear?: number | undefined;
+    groupNumber?: number | undefined;
+    educationalProgram?: string | undefined;
+}
+
+export class ActivateStudentCommand implements IActivateStudentCommand {
+    studentId?: string;
+    name?: string;
+    surname?: string;
+    patronymic?: string | undefined;
+    educationStartYear?: number;
+    groupNumber?: number;
+    educationalProgram?: string;
+
+    constructor(data?: IActivateStudentCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.studentId = _data["studentId"];
+            this.name = _data["name"];
+            this.surname = _data["surname"];
+            this.patronymic = _data["patronymic"];
+            this.educationStartYear = _data["educationStartYear"];
+            this.groupNumber = _data["groupNumber"];
+            this.educationalProgram = _data["educationalProgram"];
+        }
+    }
+
+    static fromJS(data: any): ActivateStudentCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new ActivateStudentCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["studentId"] = this.studentId;
+        data["name"] = this.name;
+        data["surname"] = this.surname;
+        data["patronymic"] = this.patronymic;
+        data["educationStartYear"] = this.educationStartYear;
+        data["groupNumber"] = this.groupNumber;
+        data["educationalProgram"] = this.educationalProgram;
+        return data;
+    }
+}
+
+export interface IActivateStudentCommand {
+    studentId?: string;
+    name?: string;
+    surname?: string;
+    patronymic?: string | undefined;
+    educationStartYear?: number;
+    groupNumber?: number;
+    educationalProgram?: string;
 }
 
 export class SwaggerException extends Error {

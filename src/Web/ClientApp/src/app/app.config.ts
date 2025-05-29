@@ -1,21 +1,24 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import {
+  ApplicationConfig,
+  InjectionToken,
+  provideZoneChangeDetection,
+} from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
 
 import { routes } from './app.routes';
-import {
-  HTTP_INTERCEPTORS,
-  provideHttpClient,
-  withInterceptorsFromDi,
-} from '@angular/common/http';
-import { AuthorizeInterceptor } from '../api-authorization/authorize.interceptor';
-import { NG_EVENT_PLUGINS } from '@taiga-ui/event-plugins';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authorizeInterceptor } from '../api-authorization/authorize.interceptor';
+import { provideEventPlugins } from '@taiga-ui/event-plugins';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { TUI_LANGUAGE, TUI_RUSSIAN_LANGUAGE } from '@taiga-ui/i18n';
 import { of } from 'rxjs';
+import { errorInterceptor } from './error.interceptor';
 
 export function getBaseUrl() {
   return document.getElementsByTagName('base')[0].href;
 }
+export const baseUrlToken = new InjectionToken<string>('BASE_URL');
+
 export const appConfig: ApplicationConfig = {
   providers: [
     {
@@ -25,9 +28,10 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes, withViewTransitions()),
     provideAnimations(),
-    { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] },
-    { provide: HTTP_INTERCEPTORS, useClass: AuthorizeInterceptor, multi: true },
-    provideHttpClient(withInterceptorsFromDi()),
-    NG_EVENT_PLUGINS,
+    { provide: baseUrlToken, useFactory: getBaseUrl, deps: [] },
+    provideHttpClient(
+      withInterceptors([authorizeInterceptor, errorInterceptor]),
+    ),
+    provideEventPlugins(),
   ],
 };

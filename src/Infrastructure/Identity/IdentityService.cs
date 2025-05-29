@@ -50,6 +50,12 @@ public class IdentityService : IIdentityService
 
         return (result.ToApplicationResult(), user.Id);
     }
+    
+    public async Task<Result> CreateUserAsync<TUser>(TUser user) where TUser : ApplicationUser
+    {
+        var result = await _userManager.CreateAsync(user);
+        return result.ToApplicationResult();
+    }
 
     public async Task<bool> IsInRoleAsync(Guid userId, string role)
     {

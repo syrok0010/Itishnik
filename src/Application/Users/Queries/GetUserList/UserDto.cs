@@ -10,10 +10,15 @@ public class UserDto
     public string Patronymic { get; set; } = null!;
     public string Email { get; set; } = null!;
     
+    public int? EducationStartYear { get; set; }
+    public int? GroupNumber { get; set; }
+    public string? EducationalProgram { get; set; }
+    
     private class Mapping : Profile
     {
         public Mapping()
         {
+            CreateMap<ApplicationUser, UserDto>();
             CreateMap<Student, UserDto>();
             CreateMap<Teacher, UserDto>();
         }

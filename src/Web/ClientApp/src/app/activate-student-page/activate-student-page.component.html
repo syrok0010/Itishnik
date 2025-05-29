@@ -1,0 +1,33 @@
+<form
+  [formGroup]="form"
+  (ngSubmit)="save()"
+  class="flex w-full flex-col gap-4 rounded-lg bg-white p-4 sm:w-2/3 md:w-1/2"
+>
+  <h1 class="text-2xl font-bold">Заполните данные</h1>
+
+  <tui-input formControlName="surname">Фамилия</tui-input>
+  <tui-input formControlName="name">Имя</tui-input>
+  <tui-input formControlName="patronymic">Отчество</tui-input>
+
+  <tui-input formControlName="educationalProgram"
+    >Образовательная программа</tui-input
+  >
+  <tui-textfield>
+    <label tuiLabel>Номер группы</label>
+    <input tuiInputNumber formControlName="groupNumber" />
+  </tui-textfield>
+  <tui-textfield>
+    <label tuiLabel>Год начала обучения</label>
+    <input
+      tuiInputNumber
+      [min]="2015"
+      [max]="2080"
+      [tuiNumberFormat]="{ thousandSeparator: '' }"
+      formControlName="educationStartYear"
+    />
+  </tui-textfield>
+
+  <button tuiButton type="submit" iconEnd="@tui.save" size="m">
+    Сохранить
+  </button>
+</form>

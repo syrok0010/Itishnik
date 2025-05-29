@@ -1,7 +1,12 @@
 import { inject, Injectable } from '@angular/core';
-import { AuthState, UserDto, UsersClient } from './web-api-client';
+import {
+  ActivateStudentCommand,
+  AuthState,
+  UserDto,
+  UsersClient,
+} from './web-api-client';
 import { shareReplay, switchMap } from 'rxjs/operators';
-import { Observable, Subject } from 'rxjs';
+import { firstValueFrom, Observable, startWith, Subject } from 'rxjs';
 
 export type Role = 'Teacher' | 'Student';
 
@@ -17,10 +22,14 @@ export function getFullName(user: UserDto) {
 })
 export class UsersFacadeService {
   private readonly usersClient = inject(UsersClient);
+  private readonly refetchSubject = new Subject<void>();
 
-  authInfo$: Observable<AuthState> = this.usersClient
-    .authInfo()
-    .pipe(shareReplay(1));
+  authInfo$: Observable<AuthState> = this.refetchSubject.pipe(
+    startWith(undefined),
+    switchMap(() => this.usersClient.authInfo()),
+    shareReplay(1),
+  );
+
   currentUser$ = this.authInfo$.pipe(
     switchMap((_) => this.usersClient.userInfo()),
     shareReplay(1),
@@ -33,5 +42,10 @@ export class UsersFacadeService {
 
   selectRoles(roles: Role[]) {
     this.selectedRoles.next(roles);
+  }
+
+  async activateUser(activationInfo: ActivateStudentCommand) {
+    await firstValueFrom(this.usersClient.activateStudent(activationInfo));
+    this.refetchSubject.next();
   }
 }
