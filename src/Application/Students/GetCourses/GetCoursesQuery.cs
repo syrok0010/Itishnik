@@ -1,9 +1,12 @@
 using Itishnik.Application.Common.Interfaces;
 using Itishnik.Application.Common.Mappings;
 using Itishnik.Application.Common.Models;
+using Itishnik.Application.Common.Security;
+using Itishnik.Domain.Constants;
 
 namespace Itishnik.Application.Students.GetCourses;
 
+[Authorize(Roles = Roles.Student)]
 public record GetCoursesQuery(int PageNumber = 1, int PageSize = 10) : IRequest<PaginatedList<GradedCourseResponse>>;
 
 public class GetCoursesQueryHandler(IApplicationDbContext context, IMapper mapper)
