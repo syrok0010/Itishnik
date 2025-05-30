@@ -18,15 +18,21 @@ import { distinctUntilChanged, filter, map, shareReplay } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TuiAlertService } from '@taiga-ui/core';
 
+export const coursesPageSize = 20;
+
 export interface CoursesState {
   coursesList: CourseListResponse[];
   currentCourseId: string | null;
+  totalPages: number | null;
+  currentPage: number | null;
   ascending: boolean;
 }
 
 let _state: CoursesState = {
   coursesList: [],
   currentCourseId: null,
+  currentPage: null,
+  totalPages: null,
   ascending: true,
 };
 
@@ -53,13 +59,17 @@ export class CoursesFacadeService {
       .pipe(
         map((s) => s.ascending),
         distinctUntilChanged(),
-        switchMap((a) => this.coursesClient.getCoursesList(a, 1, 25)),
+        switchMap((a) =>
+          this.coursesClient.getCoursesList(a, 1, coursesPageSize),
+        ),
         untilDestroyed(this),
       )
       .subscribe((x) =>
         this._store.next(
           (_state = {
             ..._state,
+            totalPages: x.totalPages,
+            currentPage: x.pageNumber,
             coursesList: x.items,
           }),
         ),
@@ -307,5 +317,23 @@ export class CoursesFacadeService {
       })
       .subscribe();
     this._store.next(_state);
+  }
+
+  async nextPage() {
+    if (_state.currentPage === _state.totalPages) return;
+    const response = await firstValueFrom(
+      this.coursesClient.getCoursesList(
+        _state.ascending,
+        _state.currentPage + 1,
+        coursesPageSize,
+      ),
+    );
+    this._store.next(
+      (_state = {
+        ..._state,
+        coursesList: [..._state.coursesList, ...response.items],
+        currentPage: _state.currentPage + 1,
+      }),
+    );
   }
 }

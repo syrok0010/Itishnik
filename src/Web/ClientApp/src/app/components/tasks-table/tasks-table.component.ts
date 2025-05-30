@@ -6,7 +6,11 @@ import {
   input,
   signal,
 } from '@angular/core';
-import { FilterState, TasksFacadeService } from '../../tasks-facade.service';
+import {
+  FilterState,
+  pageSize,
+  TasksFacadeService,
+} from '../../tasks-facade.service';
 import { Role } from '../../users-facade.service';
 import {
   FormArray,
@@ -25,12 +29,23 @@ import {
   TuiChip,
   TuiStatus,
 } from '@taiga-ui/kit';
-import { TuiAutoColorPipe, TuiInitialsPipe, TuiTitle } from '@taiga-ui/core';
+import {
+  TuiAutoColorPipe,
+  TuiInitialsPipe,
+  TuiScrollable,
+  TuiScrollbar,
+  TuiTitle,
+} from '@taiga-ui/core';
 import { TuiCell } from '@taiga-ui/layout';
 import { RouterLink } from '@angular/router';
 import TagMultiselectInputComponent from '../tag-multiselect-input.component';
 import { TuiInputModule } from '@taiga-ui/legacy';
 import UserMultiselectInputComponent from '../user-multiselect-input.component';
+import {
+  CdkFixedSizeVirtualScroll,
+  CdkVirtualForOf,
+  CdkVirtualScrollViewport,
+} from '@angular/cdk/scrolling';
 
 @Component({
   selector: 'app-tasks-table',
@@ -51,15 +66,20 @@ import UserMultiselectInputComponent from '../user-multiselect-input.component';
     TuiInputModule,
     UserMultiselectInputComponent,
     TuiCheckbox,
+    TuiScrollbar,
+    CdkVirtualScrollViewport,
+    CdkFixedSizeVirtualScroll,
+    CdkVirtualForOf,
+    TuiScrollable,
   ],
   templateUrl: './tasks-table.component.html',
   styles: [':host { @apply flex grow flex-col gap-4}'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class TasksTableComponent {
-  filtering = input(true);
-  selectMode = input(false);
-  excludeTaskIds = input<string[]>([]);
+  readonly filtering = input(true);
+  readonly selectMode = input(false);
+  readonly excludeTaskIds = input<string[]>([]);
 
   taskFacade = inject(TasksFacadeService);
   tasks = toSignal(this.taskFacade.taskList$);
@@ -119,5 +139,11 @@ export default class TasksTableComponent {
   sortChanged(e: TuiSortChange<Partial<Record<keyof TaskListResponse, any>>>) {
     this.taskFacade.setSorting(e.sortKey, e.sortDirection === 1);
     this.currentSortBy.set(e.sortKey);
+  }
+
+  async scrollChanged(currentElement: number) {
+    const totalLoadedElements = this.filteredTasks().length;
+    if (totalLoadedElements - currentElement <= pageSize)
+      await this.taskFacade.nextPage();
   }
 }

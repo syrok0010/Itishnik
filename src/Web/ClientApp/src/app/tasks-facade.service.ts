@@ -20,6 +20,8 @@ import { filter, map, distinctUntilChanged, catchError } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TuiAlertService } from '@taiga-ui/core';
 
+export const pageSize = 20;
+
 export interface FilterState {
   authorIds: string[];
   tagIds: string[];
@@ -30,6 +32,8 @@ export interface FilterState {
 
 export interface TasksState {
   taskList: TaskListResponse[];
+  totalPages: number | null;
+  currentPage: number | null;
   tasks: TaskResponse[];
   currentTaskId: string | null;
   filterState: FilterState;
@@ -37,6 +41,8 @@ export interface TasksState {
 
 let _state: TasksState = {
   taskList: [],
+  currentPage: null,
+  totalPages: null,
   tasks: [],
   currentTaskId: null,
   filterState: {
@@ -58,9 +64,7 @@ export class TasksFacadeService {
 
   private _store: BehaviorSubject<TasksState> = new BehaviorSubject(_state);
 
-  taskList$ = this._store.pipe(
-    map((state) => state.taskList.sort((a, b) => a.name.localeCompare(b.name))),
-  );
+  taskList$ = this._store.pipe(map((state) => state.taskList));
   currentTaskChain$ = this._store.pipe(
     filter((state) => !!state.currentTaskId),
     map((state) => {
@@ -90,7 +94,7 @@ export class TasksFacadeService {
             filters.sortBy,
             filters.ascending,
             1,
-            50,
+            pageSize,
           ),
         ),
         catchError((err) =>
@@ -113,7 +117,9 @@ export class TasksFacadeService {
         this._store.next(
           (_state = {
             ..._state,
-            taskList: [...x?.items],
+            totalPages: x.totalPages,
+            currentPage: x.pageNumber,
+            taskList: x?.items,
           }),
         ),
       );
@@ -145,12 +151,7 @@ export class TasksFacadeService {
           ..._state.taskList.filter(
             (task) => !response.some((r) => r.id === task.id),
           ),
-          ...response.map(
-            (t) =>
-              new TaskListResponse({
-                ...t,
-              }),
-          ),
+          new TaskListResponse({ ...response[response.length - 1] }),
         ],
         tasks: [
           ..._state.tasks.filter(
@@ -213,12 +214,6 @@ export class TasksFacadeService {
           ),
           ...response,
         ],
-        taskList: [
-          ..._state.taskList.filter(
-            (task) => !response.some((r) => r.id === task.id),
-          ),
-          new TaskListResponse({ ...response[response.length - 1] }),
-        ],
       }),
     );
   }
@@ -236,6 +231,12 @@ export class TasksFacadeService {
         tasks: [
           ..._state.tasks.filter((t) => response.every((rt) => rt.id !== t.id)),
           ...response,
+        ],
+        taskList: [
+          ..._state.taskList.filter((t) =>
+            response.every((rt) => rt.id !== t.id),
+          ),
+          new TaskListResponse({ ...response[response.length - 1] }),
         ],
       }),
     );
@@ -296,6 +297,28 @@ export class TasksFacadeService {
       (_state = {
         ..._state,
         filterState: { ..._state.filterState, sortBy, ascending },
+      }),
+    );
+  }
+
+  async nextPage() {
+    if (_state.currentPage === _state.totalPages) return;
+    const response = await firstValueFrom(
+      this.tasksClient.getTaskList(
+        _state.filterState.authorIds,
+        _state.filterState.authorIds,
+        _state.filterState.name,
+        _state.filterState.sortBy,
+        _state.filterState.ascending,
+        _state.currentPage + 1,
+        pageSize,
+      ),
+    );
+    this._store.next(
+      (_state = {
+        ..._state,
+        taskList: [..._state.taskList, ...response.items],
+        currentPage: _state.currentPage + 1,
       }),
     );
   }
