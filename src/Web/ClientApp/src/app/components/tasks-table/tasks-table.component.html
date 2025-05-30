@@ -13,139 +13,158 @@
       </tui-input>
     </div>
   }
-  <table
-    tuiTable
-    size="l"
-    [columns]="columns()"
-    [tuiSortBy]="currentSortBy()"
-    (tuiSortChange)="sortChanged($event)"
-    class="w-full"
-  >
-    <thead>
-      <tr tuiThGroup>
-        <th
-          tuiTh
-          [sorter]="null"
-          [class]="columnWidths()['checkBox']"
-          *tuiHead="'checkBox'"
-        ></th>
-        <th
-          tuiTh
-          tuiSortable
-          [class]="columnWidths()['isPublic']"
-          *tuiHead="'isPublic'"
-        >
-          Публичная
-        </th>
-        <th
-          tuiTh
-          tuiSortable
-          [class]="columnWidths()['name']"
-          *tuiHead="'name'"
-        >
-          Название
-        </th>
-        <th
-          tuiTh
-          tuiSortable
-          [class]="columnWidths()['author']"
-          *tuiHead="'author'"
-        >
-          Автор
-        </th>
-        <th
-          tuiTh
-          [sorter]="null"
-          [class]="columnWidths()['tags']"
-          *tuiHead="'tags'"
-        >
-          Темы
-        </th>
-      </tr>
-    </thead>
-    <tbody tuiTbody [data]="filteredTasks()">
-      @let formArray = selectedArray();
-      @for (item of filteredTasks(); let index = $index; track item.id) {
-        <tr
-          tuiTr
-          class="group cursor-pointer"
-          [routerLink]="selectMode() ? null : [item.id]"
-        >
-          <td
-            tuiTd
-            *tuiCell="'checkBox'"
-            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+  <tui-scrollbar>
+    <cdk-virtual-scroll-viewport
+      #viewport
+      class="h-[calc(100dvh-60px-56px-5rem)] tui-zero-scrollbar"
+      appendOnly
+      tuiScrollable
+      itemSize="73"
+      (scrolledIndexChange)="scrollChanged($event)"
+    >
+      <table
+        tuiTable
+        size="l"
+        [columns]="columns()"
+        [tuiSortBy]="currentSortBy()"
+        (tuiSortChange)="sortChanged($event)"
+      >
+        <thead>
+          <tr tuiThGroup>
+            <th
+              tuiTh
+              [sorter]="null"
+              [sticky]="true"
+              [style.top.px]="-(viewport.getOffsetToRenderedContentStart() || 0)"
+              [class]="columnWidths()['checkBox']"
+              *tuiHead="'checkBox'"
+            ></th>
+            <th
+              tuiTh
+              tuiSortable
+              [sticky]="true"
+              [style.top.px]="-(viewport.getOffsetToRenderedContentStart() || 0)"
+              [class]="columnWidths()['isPublic']"
+              *tuiHead="'isPublic'"
+            >
+              Публичная
+            </th>
+            <th
+              tuiTh
+              tuiSortable
+              [sticky]="true"
+              [style.top.px]="-(viewport.getOffsetToRenderedContentStart() || 0)"
+              [class]="columnWidths()['name']"
+              *tuiHead="'name'"
+            >
+              Название
+            </th>
+            <th
+              tuiTh
+              tuiSortable
+              [sticky]="true"
+              [style.top.px]="-(viewport.getOffsetToRenderedContentStart() || 0)"
+              [class]="columnWidths()['author']"
+              *tuiHead="'author'"
+            >
+              Автор
+            </th>
+            <th
+              tuiTh
+              [sorter]="null"
+              [sticky]="true"
+              [style.top.px]="-(viewport.getOffsetToRenderedContentStart() || 0)"
+              [class]="columnWidths()['tags']"
+              *tuiHead="'tags'"
+            >
+              Темы
+            </th>
+          </tr>
+        </thead>
+        <tbody tuiTbody [data]="filteredTasks()">
+          @let formArray = selectedArray();
+          <tr
+            *cdkVirtualFor="let item of filteredTasks(); let index = $index"
+            tuiTr
+            class="group cursor-pointer"
+            [routerLink]="selectMode() ? null : [item.id]"
           >
-            <input
-              tuiCheckbox
-              type="checkBox"
-              [formControl]="formArray.at(index)"
-            />
-          </td>
-          <td
-            tuiTd
-            *tuiCell="'isPublic'"
-            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
-          >
-            <div tuiCell="l" class="flex justify-center">
-              <tui-badge
-                appearance="{{ item.isPublic ? 'positive' : 'negative' }}"
-                tuiStatus
-                size="xl"
-              >
-                {{ item.isPublic ? "Да" : "Нет" }}
-              </tui-badge>
-            </div>
-          </td>
-          <td
-            tuiTd
-            *tuiCell="'name'"
-            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
-          >
-            <div tuiCell="l" class="overflow-hidden">
-              <span tuiTitle class="!whitespace-normal">{{ item.name }}</span>
-            </div>
-          </td>
-          <td
-            tuiTd
-            *tuiCell="'author'"
-            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
-          >
-            <div tuiCell="l" class="overflow-hidden">
-              <tui-avatar
-                [src]="item.teacherFullName | tuiInitials"
-                [style.background]="item.teacherFullName | tuiAutoColor"
+            <td
+              tuiTd
+              *tuiCell="'checkBox'"
+              class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+            >
+              <input
+                tuiCheckbox
+                type="checkBox"
+                [formControl]="formArray.at(index)"
               />
-              <span tuiTitle class="!ml-2 !whitespace-normal">
-                {{ item.teacherFullName }}
-                <span tuiSubtitle class="!whitespace-normal">{{
-                  item.teacherEmail
-                }}</span>
-              </span>
-            </div>
-          </td>
-          <td
-            tuiTd
-            *tuiCell="'tags'"
-            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
-          >
-            <div tuiCell="l" class="flex flex-wrap gap-2">
-              @for (tag of item.tags; track tag.id) {
-                <tui-chip
-                  size="m"
-                  appearance="custom"
-                  class="!m-0"
-                  [style.background-color]="tag.text | tuiAutoColor"
+            </td>
+            <td
+              tuiTd
+              *tuiCell="'isPublic'"
+              class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+            >
+              <div tuiCell="l" class="flex justify-center">
+                <tui-badge
+                  appearance="{{ item.isPublic ? 'positive' : 'negative' }}"
+                  tuiStatus
+                  size="xl"
                 >
-                  {{ tag.text }}
-                </tui-chip>
-              }
-            </div>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+                  {{ item.isPublic ? "Да" : "Нет" }}
+                </tui-badge>
+              </div>
+            </td>
+            <td
+              tuiTd
+              *tuiCell="'name'"
+              class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+            >
+              <div tuiCell="l" class="overflow-hidden">
+                <span tuiTitle class="!whitespace-normal">{{ item.name }}</span>
+              </div>
+            </td>
+            <td
+              tuiTd
+              *tuiCell="'author'"
+              class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+            >
+              <div tuiCell="l" class="overflow-hidden">
+                <tui-avatar
+                  [src]="item.teacherFullName | tuiInitials"
+                  [style.background]="item.teacherFullName | tuiAutoColor"
+                />
+                <span tuiTitle class="!ml-2 !whitespace-normal">
+                  {{ item.teacherFullName }}
+                  <span tuiSubtitle class="!whitespace-normal">{{
+                    item.teacherEmail
+                  }}</span>
+                </span>
+              </div>
+            </td>
+            <td
+              tuiTd
+              *tuiCell="'tags'"
+              class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+            >
+              <div tuiCell="l" class="flex flex-wrap gap-2">
+                @for (tag of item.tags; track tag.id) {
+                  <tui-chip
+                    size="m"
+                    appearance="custom"
+                    class="!m-0"
+                    [style.background-color]="tag.text | tuiAutoColor"
+                  >
+                    {{ tag.text }}
+                  </tui-chip>
+                }
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </cdk-virtual-scroll-viewport>
+  </tui-scrollbar>
   @if (!filteredTasks() || filteredTasks().length === 0) {
     <h1 class="text-center text-2xl font-medium">Доступных задач нет</h1>
   }
