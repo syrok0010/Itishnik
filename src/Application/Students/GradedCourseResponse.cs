@@ -22,17 +22,17 @@ public class GradedCourseResponse
                     gc.Grade.HasValue
                         ? null
                         : gc.GradedTaskBlocks
-                            .Where(gtb => DateTime.Now <= gtb.TaskBlock.EndTime)
+                            .Where(gtb => TimeProvider.System.GetUtcNow() <= gtb.TaskBlock.EndTime)
                             .OrderBy(gtb => gtb.TaskBlock.StartTime)
-                            .Select(gtb => (DateTime?)gtb.TaskBlock.StartTime)
+                            .Select(gtb => gtb.TaskBlock.StartTime)
                             .FirstOrDefault()))
                 .ForMember(gcr => gcr.NearestTaskBlockEnd, options => options.MapFrom(gc =>
                     gc.Grade.HasValue
                         ? null
                         : gc.GradedTaskBlocks
-                            .Where(gtb => DateTime.Now <= gtb.TaskBlock.EndTime)
+                            .Where(gtb => TimeProvider.System.GetUtcNow() <= gtb.TaskBlock.EndTime)
                             .OrderBy(gtb => gtb.TaskBlock.StartTime)
-                            .Select(gtb => (DateTime?)gtb.TaskBlock.EndTime)
+                            .Select(gtb => gtb.TaskBlock.EndTime)
                             .FirstOrDefault()));
         }
     }
