@@ -1,4 +1,8 @@
-<div class="relative flex w-full grow flex-col gap-4 rounded-lg bg-white {{ selectMode() ? 'min-w-[70dvw]' : 'p-4'}}">
+<div
+  class="relative flex w-full grow flex-col gap-4 rounded-lg bg-white {{
+    selectMode() ? 'min-w-[70dvw]' : 'p-4'
+  }}"
+>
   @if (filtering()) {
     <div class="flex justify-between gap-4" [formGroup]="filterForm">
       <app-tag-multiselect-input class="flex-1" formControlName="tagIds" />
@@ -16,7 +20,7 @@
   <tui-scrollbar>
     <cdk-virtual-scroll-viewport
       #viewport
-      class="tui-zero-scrollbar {{tableHeightClass()}}"
+      class="tui-zero-scrollbar {{ tableHeightClass() }}"
       appendOnly
       tuiScrollable
       itemSize="73"
@@ -35,7 +39,9 @@
               tuiTh
               [sorter]="null"
               [sticky]="true"
-              [style.top.px]="-(viewport.getOffsetToRenderedContentStart() || 0)"
+              [style.top.px]="
+                -(viewport.getOffsetToRenderedContentStart() || 0)
+              "
               [class]="columnWidths()['checkBox']"
               *tuiHead="'checkBox'"
             ></th>
@@ -43,7 +49,9 @@
               tuiTh
               tuiSortable
               [sticky]="true"
-              [style.top.px]="-(viewport.getOffsetToRenderedContentStart() || 0)"
+              [style.top.px]="
+                -(viewport.getOffsetToRenderedContentStart() || 0)
+              "
               [class]="columnWidths()['isPublic']"
               *tuiHead="'isPublic'"
             >
@@ -53,7 +61,9 @@
               tuiTh
               tuiSortable
               [sticky]="true"
-              [style.top.px]="-(viewport.getOffsetToRenderedContentStart() || 0)"
+              [style.top.px]="
+                -(viewport.getOffsetToRenderedContentStart() || 0)
+              "
               [class]="columnWidths()['name']"
               *tuiHead="'name'"
             >
@@ -63,7 +73,9 @@
               tuiTh
               tuiSortable
               [sticky]="true"
-              [style.top.px]="-(viewport.getOffsetToRenderedContentStart() || 0)"
+              [style.top.px]="
+                -(viewport.getOffsetToRenderedContentStart() || 0)
+              "
               [class]="columnWidths()['author']"
               *tuiHead="'author'"
             >
@@ -73,7 +85,9 @@
               tuiTh
               [sorter]="null"
               [sticky]="true"
-              [style.top.px]="-(viewport.getOffsetToRenderedContentStart() || 0)"
+              [style.top.px]="
+                -(viewport.getOffsetToRenderedContentStart() || 0)
+              "
               [class]="columnWidths()['tags']"
               *tuiHead="'tags'"
             >
@@ -122,7 +136,12 @@
               class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
             >
               <div tuiCell="l" class="overflow-hidden">
-                <span tuiTitle class="!whitespace-normal">{{ item.name }}</span>
+                <span
+                  tuiTitle
+                  class="!whitespace-normal"
+                  style="view-transition-name: task-name-{{ item.id }}"
+                  >{{ item.name }}</span
+                >
               </div>
             </td>
             <td
@@ -130,7 +149,11 @@
               *tuiCell="'author'"
               class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
             >
-              <div tuiCell="l" class="overflow-hidden">
+              <div
+                tuiCell="l"
+                class="overflow-hidden"
+                style="view-transition-name: task-author-{{ item.id }}"
+              >
                 <tui-avatar
                   [src]="item.teacherFullName | tuiInitials"
                   [style.background]="item.teacherFullName | tuiAutoColor"
@@ -148,7 +171,11 @@
               *tuiCell="'tags'"
               class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
             >
-              <div tuiCell="l" class="flex flex-wrap gap-2">
+              <div
+                tuiCell="l"
+                class="flex flex-wrap gap-2"
+                style="view-transition-name: task-tags-{{ item.id }}"
+              >
                 @for (tag of item.tags; track tag.id) {
                   <tui-chip
                     size="m"

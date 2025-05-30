@@ -13,18 +13,11 @@ import {
   Observable,
   of,
   startWith,
-  Subject,
   switchMap,
   takeUntil,
   timer,
 } from 'rxjs';
-import {
-  map,
-  filter,
-  distinctUntilChanged,
-  shareReplay,
-  tap,
-} from 'rxjs/operators';
+import { map, filter, distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 @UntilDestroy()
@@ -37,7 +30,7 @@ export class GlobalLoadingService {
 
   private router = inject(Router);
 
-  private readonly loadStarted$ = new Subject<void>();
+  private readonly LOADER_DELAY_MS = 200;
 
   private readonly isLoadingActual$: Observable<boolean> = combineLatest([
     this.routerLoading,
@@ -45,28 +38,19 @@ export class GlobalLoadingService {
   ]).pipe(
     map(([routerState, manualState]) => routerState || manualState),
     distinctUntilChanged(),
-    tap((isLoading) => {
-      if (isLoading) {
-        this.loadStarted$.next();
-      }
-    }),
     untilDestroyed(this),
   );
 
   public readonly showLoader$: Observable<boolean> = this.isLoadingActual$.pipe(
     switchMap((isLoading) =>
-      isLoading
-        ? of(true)
-        : of(true).pipe(
-            switchMap(() =>
-              timer(400).pipe(
-                map(() => false),
-                startWith(true),
-                takeUntil(
-                  this.isLoadingActual$.pipe(filter((loading) => loading)),
-                ),
-              ),
+      !isLoading
+        ? of(false)
+        : timer(this.LOADER_DELAY_MS).pipe(
+            map(() => true),
+            takeUntil(
+              this.isLoadingActual$.pipe(filter((loading) => !loading)),
             ),
+            startWith(false),
           ),
     ),
     distinctUntilChanged(),
