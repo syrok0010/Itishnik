@@ -1,4 +1,4 @@
-<div class="relative flex w-full grow flex-col gap-4 rounded-lg bg-white p-4">
+<div class="relative flex w-full grow flex-col gap-4 rounded-lg bg-white p-4 {{ selectMode() ? 'min-w-[70dvw]' : ''}}">
   @if (filtering()) {
     <div class="flex justify-between gap-4" [formGroup]="filterForm">
       <app-tag-multiselect-input class="flex-1" formControlName="tagIds" />
@@ -16,7 +16,7 @@
   <tui-scrollbar>
     <cdk-virtual-scroll-viewport
       #viewport
-      class="h-[calc(100dvh-60px-56px-5rem)] tui-zero-scrollbar"
+      class="tui-zero-scrollbar {{!selectMode() ? 'h-[calc(100dvh-60px-56px-5rem)]' : 'h-[70dvh]'}}"
       appendOnly
       tuiScrollable
       itemSize="73"
@@ -82,9 +82,8 @@
           </tr>
         </thead>
         <tbody tuiTbody [data]="filteredTasks()">
-          @let formArray = selectedArray();
           <tr
-            *cdkVirtualFor="let item of filteredTasks(); let index = $index"
+            *cdkVirtualFor="let item of filteredTasks(); index as i"
             tuiTr
             class="group cursor-pointer"
             [routerLink]="selectMode() ? null : [item.id]"
@@ -94,11 +93,13 @@
               *tuiCell="'checkBox'"
               class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
             >
-              <input
-                tuiCheckbox
-                type="checkBox"
-                [formControl]="formArray.at(index)"
-              />
+              <div class="flex items-center">
+                <input
+                  tuiCheckbox
+                  type="checkBox"
+                  [formControl]="selectedArray().at(i)"
+                />
+              </div>
             </td>
             <td
               tuiTd

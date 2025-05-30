@@ -77,9 +77,9 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class TasksTableComponent {
-  filtering = input(true);
-  selectMode = input(false);
-  excludeTaskIds = input<string[]>([]);
+  readonly filtering = input(true);
+  readonly selectMode = input(false);
+  readonly excludeTaskIds = input<string[]>([]);
 
   taskFacade = inject(TasksFacadeService);
   tasks = toSignal(this.taskFacade.taskList$);
