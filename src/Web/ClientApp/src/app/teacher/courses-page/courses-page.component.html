@@ -1,70 +1,125 @@
 @let data = coursesList$ | async;
 
 <div class="relative w-full grow rounded-lg bg-white p-4">
-  <table tuiTable size="l" [columns]="columns" [tuiSortBy]="'name'" (tuiSortChange)="sort($event)" class="w-full">
-    <thead>
-      <tr tuiThGroup>
-        <th tuiTh tuiSortable class="w-3/12" *tuiHead="'course'">Курс</th>
-        <th tuiTh class="w-2/12" [sorter]="null" *tuiHead="'students'">
-          Количество студентов
-        </th>
-        <th tuiTh class="w-2/12" [sorter]="null" *tuiHead="'taskBlocks'">
-          Количество блоков заданий
-        </th>
-        <th tuiTh class="w-5/12" [sorter]="null" *tuiHead="'description'">
-          Описание
-        </th>
-      </tr>
-    </thead>
-    <tbody tuiTbody [data]="data">
-      @for (item of data; track item.id) {
-        <tr tuiTr class="group cursor-pointer" [routerLink]="[item.id]">
-          <td
-            tuiTd
-            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
-            *tuiCell="'course'"
+  <tui-scrollbar>
+    <cdk-virtual-scroll-viewport
+      #viewport
+      class="tui-zero-scrollbar h-[calc(100dvh-60px-4rem)]"
+      appendOnly
+      tuiScrollable
+      itemSize="73"
+      (scrolledIndexChange)="scrollChanged($event, data.length)"
+    >
+      <table
+        tuiTable
+        size="l"
+        [columns]="columns"
+        [tuiSortBy]="'name'"
+        (tuiSortChange)="sort($event)"
+        class="w-full"
+      >
+        <thead>
+          <tr tuiThGroup>
+            <th
+              tuiTh
+              [style.top.px]="
+                -(viewport.getOffsetToRenderedContentStart() || 0)
+              "
+              tuiSortable
+              class="w-3/12"
+              *tuiHead="'course'"
+            >
+              Курс
+            </th>
+            <th
+              tuiTh
+              [style.top.px]="
+                -(viewport.getOffsetToRenderedContentStart() || 0)
+              "
+              class="w-2/12"
+              [sorter]="null"
+              *tuiHead="'students'"
+            >
+              Количество студентов
+            </th>
+            <th
+              tuiTh
+              [style.top.px]="
+                -(viewport.getOffsetToRenderedContentStart() || 0)
+              "
+              class="w-2/12"
+              [sorter]="null"
+              *tuiHead="'taskBlocks'"
+            >
+              Количество блоков заданий
+            </th>
+            <th
+              tuiTh
+              [style.top.px]="
+                -(viewport.getOffsetToRenderedContentStart() || 0)
+              "
+              class="w-5/12"
+              [sorter]="null"
+              *tuiHead="'description'"
+            >
+              Описание
+            </th>
+          </tr>
+        </thead>
+        <tbody tuiTbody [data]="data">
+          <tr
+            tuiTr
+            class="group cursor-pointer"
+            [routerLink]="[item.id]"
+            *cdkVirtualFor="let item of data"
           >
-            <p tuiCell="l">
-              <span tuiTitle class="!whitespace-normal">{{ item.name }}</span>
-            </p>
-          </td>
-          <td
-            tuiTd
-            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
-            *tuiCell="'students'"
-          >
-            <p tuiCell="l">
-              <span tuiTitle class="!whitespace-normal">{{
-                item.studentsCount
-              }}</span>
-            </p>
-          </td>
-          <td
-            tuiTd
-            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
-            *tuiCell="'taskBlocks'"
-          >
-            <p tuiCell="l">
-              <span tuiTitle class="!whitespace-normal">{{
-                item.taskBlocksCount
-              }}</span>
-            </p>
-          </td>
-          <td
-            tuiTd
-            class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
-            *tuiCell="'description'"
-          >
-            <p tuiCell="l">
-              <span tuiTitle class="!whitespace-normal">{{
-                item.description
-              }}</span>
-            </p>
-          </td>
-        </tr>
-      }
-    </tbody>
-  </table>
+            <td
+              tuiTd
+              class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+              *tuiCell="'course'"
+            >
+              <p tuiCell="l">
+                <span tuiTitle class="!whitespace-normal">{{ item.name }}</span>
+              </p>
+            </td>
+            <td
+              tuiTd
+              class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+              *tuiCell="'students'"
+            >
+              <p tuiCell="l">
+                <span tuiTitle class="!whitespace-normal">{{
+                  item.studentsCount
+                }}</span>
+              </p>
+            </td>
+            <td
+              tuiTd
+              class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+              *tuiCell="'taskBlocks'"
+            >
+              <p tuiCell="l">
+                <span tuiTitle class="!whitespace-normal">{{
+                  item.taskBlocksCount
+                }}</span>
+              </p>
+            </td>
+            <td
+              tuiTd
+              class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
+              *tuiCell="'description'"
+            >
+              <p tuiCell="l">
+                <span tuiTitle class="!whitespace-normal">{{
+                  item.description
+                }}</span>
+              </p>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </cdk-virtual-scroll-viewport>
+  </tui-scrollbar>
 
   <button
     appearance="primary"
