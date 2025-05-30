@@ -5,7 +5,7 @@ using Task = Itishnik.Domain.Entities.Task;
 
 namespace Itishnik.Application.Tasks.Commands.EditReferenceSolution;
 
-[Authorize(Policy = Policies.OwnerOrAdmin)]
+[Authorize(Policy = Policies.Owner)]
 [ResourceMetadata(nameof(TaskId), typeof(Task))]
 public record EditReferenceSolutionCommand(Guid TaskId, string Text) : IRequest<TaskResponse>;
 

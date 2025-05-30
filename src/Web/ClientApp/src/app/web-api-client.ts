@@ -17,7 +17,7 @@ export const API_BASE_URL = new InjectionToken<string>('API_BASE_URL');
 
 export interface ICoursesClient {
     createCourse(command: CreateCourseCommand): Observable<CourseResponse>;
-    getCoursesList(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfCourseListResponse>;
+    getCoursesList(ascending: boolean, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfCourseListResponse>;
     getCourseById(id: string): Observable<CourseResponse>;
     createTaskBlock(id: string, command: CreateTaskBlockCommand): Observable<TaskBlockResponse>;
     getStudents(id: string): Observable<CourseStudentListResponse>;
@@ -98,8 +98,12 @@ export class CoursesClient implements ICoursesClient {
         return _observableOf(null as any);
     }
 
-    getCoursesList(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfCourseListResponse> {
+    getCoursesList(ascending: boolean, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfCourseListResponse> {
         let url_ = this.baseUrl + "/api/Courses?";
+        if (ascending === undefined || ascending === null)
+            throw new Error("The parameter 'ascending' must be defined and cannot be null.");
+        else
+            url_ += "Ascending=" + encodeURIComponent("" + ascending) + "&";
         if (pageNumber === null)
             throw new Error("The parameter 'pageNumber' cannot be null.");
         else if (pageNumber !== undefined)
@@ -1846,11 +1850,13 @@ export class TaskBlockResponse implements ITaskBlockResponse {
     id?: string;
     courseId?: string;
     name?: string;
+    description?: string | undefined;
     tasks?: TaskListDto[];
     weights?: number[];
-    startTime?: Date;
-    endTime?: Date;
-    timeAllowed?: string;
+    startTime?: Date | undefined;
+    endTime?: Date | undefined;
+    timeAllowed?: string | undefined;
+    isPublic?: boolean;
 
     constructor(data?: ITaskBlockResponse) {
         if (data) {
@@ -1866,6 +1872,7 @@ export class TaskBlockResponse implements ITaskBlockResponse {
             this.id = _data["id"];
             this.courseId = _data["courseId"];
             this.name = _data["name"];
+            this.description = _data["description"];
             if (Array.isArray(_data["tasks"])) {
                 this.tasks = [] as any;
                 for (let item of _data["tasks"])
@@ -1879,6 +1886,7 @@ export class TaskBlockResponse implements ITaskBlockResponse {
             this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
             this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
             this.timeAllowed = _data["timeAllowed"];
+            this.isPublic = _data["isPublic"];
         }
     }
 
@@ -1894,6 +1902,7 @@ export class TaskBlockResponse implements ITaskBlockResponse {
         data["id"] = this.id;
         data["courseId"] = this.courseId;
         data["name"] = this.name;
+        data["description"] = this.description;
         if (Array.isArray(this.tasks)) {
             data["tasks"] = [];
             for (let item of this.tasks)
@@ -1907,6 +1916,7 @@ export class TaskBlockResponse implements ITaskBlockResponse {
         data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
         data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
         data["timeAllowed"] = this.timeAllowed;
+        data["isPublic"] = this.isPublic;
         return data;
     }
 }
@@ -1915,11 +1925,13 @@ export interface ITaskBlockResponse {
     id?: string;
     courseId?: string;
     name?: string;
+    description?: string | undefined;
     tasks?: TaskListDto[];
     weights?: number[];
-    startTime?: Date;
-    endTime?: Date;
-    timeAllowed?: string;
+    startTime?: Date | undefined;
+    endTime?: Date | undefined;
+    timeAllowed?: string | undefined;
+    isPublic?: boolean;
 }
 
 export class TaskListDto implements ITaskListDto {
@@ -2070,6 +2082,7 @@ export class CourseListResponse implements ICourseListResponse {
     id?: string;
     name?: string;
     studentsCount?: number;
+    taskBlocksCount?: number;
     description?: string | undefined;
 
     constructor(data?: ICourseListResponse) {
@@ -2086,6 +2099,7 @@ export class CourseListResponse implements ICourseListResponse {
             this.id = _data["id"];
             this.name = _data["name"];
             this.studentsCount = _data["studentsCount"];
+            this.taskBlocksCount = _data["taskBlocksCount"];
             this.description = _data["description"];
         }
     }
@@ -2102,6 +2116,7 @@ export class CourseListResponse implements ICourseListResponse {
         data["id"] = this.id;
         data["name"] = this.name;
         data["studentsCount"] = this.studentsCount;
+        data["taskBlocksCount"] = this.taskBlocksCount;
         data["description"] = this.description;
         return data;
     }
@@ -2111,6 +2126,7 @@ export interface ICourseListResponse {
     id?: string;
     name?: string;
     studentsCount?: number;
+    taskBlocksCount?: number;
     description?: string | undefined;
 }
 
@@ -2119,9 +2135,6 @@ export class CreateTaskBlockCommand implements ICreateTaskBlockCommand {
     name?: string;
     taskIds?: string[];
     weights?: number[];
-    startTime?: Date;
-    endTime?: Date;
-    timeAllowed?: string;
     description?: string | undefined;
 
     constructor(data?: ICreateTaskBlockCommand) {
@@ -2147,9 +2160,6 @@ export class CreateTaskBlockCommand implements ICreateTaskBlockCommand {
                 for (let item of _data["weights"])
                     this.weights!.push(item);
             }
-            this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
-            this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
-            this.timeAllowed = _data["timeAllowed"];
             this.description = _data["description"];
         }
     }
@@ -2175,9 +2185,6 @@ export class CreateTaskBlockCommand implements ICreateTaskBlockCommand {
             for (let item of this.weights)
                 data["weights"].push(item);
         }
-        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
-        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
-        data["timeAllowed"] = this.timeAllowed;
         data["description"] = this.description;
         return data;
     }
@@ -2188,9 +2195,6 @@ export interface ICreateTaskBlockCommand {
     name?: string;
     taskIds?: string[];
     weights?: number[];
-    startTime?: Date;
-    endTime?: Date;
-    timeAllowed?: string;
     description?: string | undefined;
 }
 
@@ -2335,7 +2339,7 @@ export class ChangeTaskBlockTimelineCommand implements IChangeTaskBlockTimelineC
     taskBlockId?: string;
     startTime?: Date;
     endTime?: Date;
-    timeAllowed?: string;
+    timeAllowed?: string | undefined;
 
     constructor(data?: IChangeTaskBlockTimelineCommand) {
         if (data) {
@@ -2379,7 +2383,7 @@ export interface IChangeTaskBlockTimelineCommand {
     taskBlockId?: string;
     startTime?: Date;
     endTime?: Date;
-    timeAllowed?: string;
+    timeAllowed?: string | undefined;
 }
 
 export class ChangeTaskBlockNameCommand implements IChangeTaskBlockNameCommand {

@@ -13,14 +13,10 @@ public class TaskBlock
     public TaskBlock(
         string name, 
         Course course,
-        DateTime startTime,
-        DateTime endTime,
-        TimeSpan timeAllowed,
         string? description = null)
     {
         Name = name;
         Course = course;
-        ChangeTimes(startTime, endTime, timeAllowed);
         Description = description;
     }
     
@@ -33,11 +29,11 @@ public class TaskBlock
     public IEnumerable<File> Files => _files;
     public IEnumerable<int> Weights => _weights;
 
-    public DateTime StartTime { get; private set; }
-    public DateTime EndTime { get; private set; }
-    public TimeSpan TimeAllowed { get; private set; }
+    public DateTime? StartTime { get; private set; }
+    public DateTime? EndTime { get; private set; }
+    public TimeSpan? TimeAllowed { get; private set; }
 
-    public void ChangeTimes(DateTime startTime, DateTime endTime, TimeSpan timeAllowed)
+    public void ChangeTimes(DateTime startTime, DateTime endTime, TimeSpan? timeAllowed)
     {
         if (startTime > endTime)
         {
@@ -113,6 +109,12 @@ public class TaskBlock
             {
                 throw new InvalidOperationException("Сумма весов должна равняться 10");
             }
+
+            if (StartTime is null || EndTime is null || TimeAllowed is null || StartTime < TimeProvider.System.GetLocalNow())
+            {
+                throw new InvalidOperationException("Некорректно задано время выполнения работы");
+            }
+            
             _isPublic = true;
         }
     }

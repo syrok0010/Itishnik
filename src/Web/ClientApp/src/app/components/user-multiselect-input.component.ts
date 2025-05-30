@@ -20,7 +20,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { tuiItemsHandlersProvider } from '@taiga-ui/kit';
 import { TuiContext } from '@taiga-ui/cdk';
-import { Tag, UserDto } from '../web-api-client';
+import { UserDto } from '../web-api-client';
 import { getFullName, Role, UsersFacadeService } from '../users-facade.service';
 
 @UntilDestroy()

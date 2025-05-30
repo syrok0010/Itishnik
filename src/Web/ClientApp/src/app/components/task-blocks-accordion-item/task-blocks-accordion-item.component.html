@@ -1,0 +1,175 @@
+<div class="flex flex-col gap-8">
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-row items-center justify-between">
+      <h3 class="text-lg font-semibold">Задания</h3>
+      @if (!taskBlock().isPublic) {
+        <button tuiButton size="m" (click)="publish()">Опубликовать</button>
+      } @else {
+        <tui-badge appearance="positive" tuiStatus size="xl">
+          Опубликовано
+        </tui-badge>
+      }
+    </div>
+    <table tuiTable size="l" class="table w-full" [columns]="tableColumns">
+      <thead>
+        <tr tuiThGroup>
+          <th tuiTh class="w-1/12">№</th>
+          <th tuiTh class="w-9/12">Задачи</th>
+          <th tuiTh class="w-2/12">Баллы</th>
+        </tr>
+      </thead>
+      <tbody tuiTbody [data]="taskBlockTableData()">
+        @for (
+          pair of taskBlockTableData();
+          let index = $index;
+          track pair.task.id
+        ) {
+          <tr tuiTr>
+            <td tuiTd *tuiCell="'number'">{{ index + 1 }}</td>
+            <td tuiTd *tuiCell="'task'">
+              <div class="flex items-center justify-between pr-3.5">
+                <span
+                  [routerLink]="['/tasks', pair.task.id]"
+                  class="cursor-pointer hover:underline hover:underline-offset-4"
+                  >{{ pair.task.name }}</span
+                >
+                @if (!taskBlock().isPublic) {
+                  <tui-icon
+                    class="cursor-pointer text-lg text-red-300 transition-colors duration-300 hover:text-red-500"
+                    icon="@tui.trash"
+                    (click)="removeTaskFromBlock(pair.task.id)"
+                  >
+                  </tui-icon>
+                }
+              </div>
+            </td>
+            <td tuiTd *tuiCell="'weight'">
+              @if (!taskBlock().isPublic) {
+                <tui-textfield>
+                  <input
+                    tuiInputNumber
+                    [min]="1"
+                    [formControl]="weightControls()[index]"
+                  />
+                </tui-textfield>
+              } @else {
+                {{ taskBlock().weights[index] }}
+              }
+            </td>
+          </tr>
+        }
+        @if (!taskBlock().isPublic) {
+          <tr tuiTr class="*:!py-2">
+            <td tuiTd *tuiCell="'number'" class="!border-r-0"></td>
+            <td tuiTd *tuiCell="'task'">
+              <div class="flex flex-row justify-end">
+                <button
+                  appearance="outline"
+                  tuiButton
+                  type="button"
+                  class="ml-auto"
+                  size="m"
+                  (click)="addTasksToBlock()"
+                >
+                  <tui-icon icon="@tui.plus" />
+                </button>
+              </div>
+            </td>
+            <td tuiTd *tuiCell="'weight'">
+              <button
+                appearance="outline"
+                tuiButton
+                type="button"
+                class="mr-auto"
+                size="m"
+                (click)="saveWeights()"
+              >
+                Сохранить
+              </button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="flex flex-col gap-4" [formGroup]="formGroup()">
+    <h3 class="text-lg font-semibold">Основная информация</h3>
+    <tui-input formControlName="name">Название</tui-input>
+    <tui-textfield>
+      <label tuiLabel>Описание</label>
+      <textarea tuiTextarea [min]="4" formControlName="description"></textarea>
+    </tui-textfield>
+    <div class="flex flex-row gap-4">
+      <label tuiLabel class="flex-1">
+        <tui-input-date-time formControlName="startTime" [min]="currentDay">
+          Дата и время начала
+        </tui-input-date-time>
+        <tui-error
+          formControlName="startTime"
+          [error]="[] | tuiFieldError | async"
+        />
+      </label>
+      <label tuiLabel class="flex-1">
+        <tui-input-date-time
+          formControlName="endTime"
+          [min]="formGroup().value.startTime"
+        >
+          Дата и время конца
+        </tui-input-date-time>
+        <tui-error
+          formControlName="endTime"
+          [error]="[] | tuiFieldError | async"
+        />
+      </label>
+      <label tuiLabel class="flex-1">
+        <tui-input-time formControlName="timeAllowed">
+          Время на выполнение
+        </tui-input-time>
+        <tui-error
+          formControlName="timeAllowed"
+          [error]="[] | tuiFieldError | async"
+        />
+      </label>
+    </div>
+    <button
+      appearance="primary"
+      tuiButton
+      type="button"
+      class="mr-auto shadow-sm"
+      [disabled]="formGroup().invalid"
+      size="m"
+      (click)="saveTaskBlock()"
+    >
+      Сохранить
+    </button>
+  </div>
+
+  <div class="flex flex-col gap-4">
+    <h3 class="text-lg font-semibold">Фидбек студентов</h3>
+    <tui-carousel
+      [(index)]="index"
+      [itemsCount]="taskBlockComments().length > 1 ? 2 : 1"
+    >
+      @for (comment of taskBlockComments(); track comment) {
+        <div *tuiItem class="rounded-xl border-2 border-gray-200">
+          <tui-scrollbar class="p-4">
+            <p class="h-24">
+              {{ comment }}
+            </p>
+          </tui-scrollbar>
+        </div>
+      } @empty {
+        <h2 *tuiItem class="mx-auto text-xl font-semibold">
+          Комментариев пока нет
+        </h2>
+      }
+    </tui-carousel>
+    <tui-pagination
+      size="s"
+      class="pagination"
+      [length]="taskBlockComments().length"
+      [(index)]="index"
+    />
+  </div>
+</div>

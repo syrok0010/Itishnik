@@ -1,0 +1,120 @@
+<div class="flex w-full flex-col gap-4 rounded-lg bg-white p-4">
+  @if (currentCourse()) {
+    <h1 class="mb-2 text-2xl font-bold">{{ currentCourse().name }}</h1>
+
+    <div class="flex flex-row items-center gap-2">
+      @if (!editTeacherMode()) {
+        <tui-avatar
+          [src]="currentCourse().teacherFullName | tuiInitials"
+          [style.background]="currentCourse().teacherFullName | tuiAutoColor"
+          size="m"
+        />
+        <span tuiTitle class="truncate text-xl">
+          {{ currentCourse().teacherFullName }}
+          <span tuiSubtitle class="truncate text-base">{{
+            currentCourse().teacherEmail
+          }}</span>
+        </span>
+      } @else {
+        <tui-textfield
+          tuiChevron
+          tuiTextfieldSize="m"
+          [content]="selectedOptionContent"
+          class="w-1/3"
+        >
+          <input
+            placeholder="Выберите преподавателя"
+            tuiComboBox
+            [formControl]="teacherControl"
+          />
+          <tui-data-list-wrapper
+            *tuiTextfieldDropdown
+            new
+            [itemContent]="dropdownOptionContent"
+            [items]="allTeachers() | tuiFilterByInput: matcher"
+          />
+        </tui-textfield>
+
+        <ng-template #dropdownOptionContent let-author>
+          <tui-avatar
+            [src]="getTeacherFullName(author) | tuiInitials"
+            [style.background]="getTeacherFullName(author) | tuiAutoColor"
+            size="m"
+          />
+          <span tuiTitle class="whitespace-normal text-xl">
+            {{ getTeacherFullName(author) }}
+            <span tuiSubtitle class="whitespace-normal text-base">{{
+              author.email
+            }}</span>
+          </span>
+        </ng-template>
+
+        <ng-template #selectedOptionContent let-author>
+          <span tuiTitle class="whitespace-normal text-xl">
+            {{ getTeacherFullName(author) }}
+          </span>
+        </ng-template>
+      }
+
+      @if (isAdmin$ | async) {
+        @if (!editTeacherMode()) {
+          <button
+            tuiIconButton
+            iconStart="@tui.pen"
+            size="m"
+            appearance="outline"
+            (click)="editTeacherMode.set(true)"
+            class="ml-2"
+          ></button>
+        } @else {
+          <button
+            tuiIconButton
+            iconStart="@tui.save"
+            size="m"
+            appearance="primary"
+            (click)="saveSelectedAuthor()"
+            class="ml-2"
+          ></button>
+          <button
+            tuiIconButton
+            iconStart="@tui.x"
+            size="m"
+            appearance="secondary"
+            (click)="editTeacherMode.set(false)"
+          ></button>
+        }
+      }
+    </div>
+  }
+
+  <label tuiLabel class="w-full grow">
+    Описание курса
+    <tui-textfield>
+      <textarea
+        [formControl]="descriptionControl"
+        placeholder="Введите описание курса"
+        tuiTextarea
+        [min]="4"
+      ></textarea>
+    </tui-textfield>
+  </label>
+
+  <button
+    appearance="primary"
+    tuiButton
+    type="button"
+    class="mr-auto"
+    size="m"
+    (click)="saveDescription()"
+  >
+    Сохранить
+  </button>
+</div>
+
+<div class="mt-4 flex w-full grow flex-col rounded-lg bg-white p-4 pt-0">
+  <tui-tabs-with-more>
+    <a *tuiItem routerLinkActive tuiTab [routerLink]="'taskBlocks'"> Работы </a>
+    <a *tuiItem routerLinkActive tuiTab [routerLink]="'students'"> Студенты </a>
+  </tui-tabs-with-more>
+  <router-outlet class="mt-4" />
+</div>

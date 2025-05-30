@@ -22,11 +22,13 @@ public class TaskBlockResponse
     public Guid Id { get; init; }
     public Guid CourseId { get; init; }
     public string Name { get; init; } = null!;
+    public string? Description { get; init; }
     public ICollection<TaskListDto> Tasks { get; init; } = null!;
     public ICollection<int> Weights { get; init; } = null!;
-    public DateTime StartTime { get; init; }
-    public DateTime EndTime { get; init; }
-    public TimeSpan TimeAllowed { get; init; }
+    public DateTime? StartTime { get; init; }
+    public DateTime? EndTime { get; init; }
+    public TimeSpan? TimeAllowed { get; init; }
+    public bool IsPublic { get; init; }
 
     private class Mapping : Profile
     {

@@ -1,13 +1,19 @@
 @let data = coursesList$ | async;
 
 <div class="relative w-full grow rounded-lg bg-white p-4">
-  <table tuiTable [columns]="columns" class="w-full">
+  <table tuiTable size="l" [columns]="columns" [tuiSortBy]="'name'" (tuiSortChange)="sort($event)" class="w-full">
     <thead>
       <tr tuiThGroup>
-        <th tuiTh *tuiHead="'course'">Курс</th>
-        <th tuiTh *tuiHead="'students'">Количество студентов</th>
-        <th tuiTh *tuiHead="'taskBlocks'">Количество блоков заданий</th>
-        <th tuiTh *tuiHead="'description'">Описание</th>
+        <th tuiTh tuiSortable class="w-3/12" *tuiHead="'course'">Курс</th>
+        <th tuiTh class="w-2/12" [sorter]="null" *tuiHead="'students'">
+          Количество студентов
+        </th>
+        <th tuiTh class="w-2/12" [sorter]="null" *tuiHead="'taskBlocks'">
+          Количество блоков заданий
+        </th>
+        <th tuiTh class="w-5/12" [sorter]="null" *tuiHead="'description'">
+          Описание
+        </th>
       </tr>
     </thead>
     <tbody tuiTbody [data]="data">
@@ -18,26 +24,42 @@
             class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
             *tuiCell="'course'"
           >
-            {{ item.name }}
+            <p tuiCell="l">
+              <span tuiTitle class="!whitespace-normal">{{ item.name }}</span>
+            </p>
           </td>
           <td
             tuiTd
             class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
             *tuiCell="'students'"
           >
-            {{ item.studentsCount }}
+            <p tuiCell="l">
+              <span tuiTitle class="!whitespace-normal">{{
+                item.studentsCount
+              }}</span>
+            </p>
           </td>
           <td
             tuiTd
             class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
             *tuiCell="'taskBlocks'"
-          ></td>
+          >
+            <p tuiCell="l">
+              <span tuiTitle class="!whitespace-normal">{{
+                item.taskBlocksCount
+              }}</span>
+            </p>
+          </td>
           <td
             tuiTd
             class="transition-colors duration-300 ease-in-out group-hover:bg-gray-100"
             *tuiCell="'description'"
           >
-            {{ item.description }}
+            <p tuiCell="l">
+              <span tuiTitle class="!whitespace-normal">{{
+                item.description
+              }}</span>
+            </p>
           </td>
         </tr>
       }
@@ -48,7 +70,7 @@
     appearance="primary"
     tuiButton
     type="button"
-    class="!absolute bottom-4 right-4 shadow-sm"
+    class="!absolute bottom-6 right-6 shadow-sm"
     (click)="addCourse()"
   >
     <tui-icon icon="@tui.plus" />

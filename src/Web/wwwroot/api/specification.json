@@ -44,13 +44,22 @@
         "operationId": "GetCoursesList",
         "parameters": [
           {
+            "name": "Ascending",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "boolean"
+            },
+            "x-position": 1
+          },
+          {
             "name": "PageNumber",
             "in": "query",
             "schema": {
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 1
+            "x-position": 2
           },
           {
             "name": "PageSize",
@@ -59,7 +68,7 @@
               "type": "integer",
               "format": "int32"
             },
-            "x-position": 2
+            "x-position": 3
           }
         ],
         "responses": {
@@ -701,7 +710,7 @@
                   "$ref": "#/components/schemas/CourseResponse"
                 }
               }
-             }
+            }
           }
         }
       }
@@ -1320,6 +1329,10 @@
           "name": {
             "type": "string"
           },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
           "tasks": {
             "type": "array",
             "items": {
@@ -1335,15 +1348,21 @@
           },
           "startTime": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "endTime": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "nullable": true
           },
           "timeAllowed": {
             "type": "string",
-            "format": "duration"
+            "format": "duration",
+            "nullable": true
+          },
+          "isPublic": {
+            "type": "boolean"
           }
         }
       },
@@ -1418,6 +1437,10 @@
             "type": "integer",
             "format": "int32"
           },
+          "taskBlocksCount": {
+            "type": "integer",
+            "format": "int32"
+          },
           "description": {
             "type": "string",
             "nullable": true
@@ -1448,18 +1471,6 @@
               "type": "integer",
               "format": "int32"
             }
-          },
-          "startTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "endTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "timeAllowed": {
-            "type": "string",
-            "format": "duration"
           },
           "description": {
             "type": "string",
@@ -1538,7 +1549,8 @@
           },
           "timeAllowed": {
             "type": "string",
-            "format": "duration"
+            "format": "duration",
+            "nullable": true
           }
         }
       },

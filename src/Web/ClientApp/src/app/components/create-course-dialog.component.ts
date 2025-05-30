@@ -17,7 +17,6 @@ import { CoursesFacadeService } from '../courses-facade.service';
     <form class="flex flex-col items-end gap-y-4 pt-4" (ngSubmit)="create()">
       <tui-input [formControl]="courseName" class="w-full">
         Название курса
-        <input tuiTextfieldLegacy />
       </tui-input>
       <div class="flex flex-row gap-x-4">
         <button appearance="outline" tuiButton type="button" (click)="cancel()">
@@ -45,8 +44,8 @@ export class CreateCourseDialogComponent {
     this.context.completeWith();
   }
 
-  create() {
-    this.courseFacade.createCourse(this.courseName.value);
+  async create() {
+    await this.courseFacade.createCourse(this.courseName.value);
     this.context.completeWith();
   }
 }

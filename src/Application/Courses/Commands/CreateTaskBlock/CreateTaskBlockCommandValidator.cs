@@ -13,13 +13,9 @@ public class CreateTaskBlockCommandValidator : AbstractValidator<CreateTaskBlock
         RuleFor(x => x.Name)
             .NotEmpty()
             .MaximumLength(255)
-            .WithMessage("Недопустимое имя блока");
-        RuleFor(x => x.StartTime)
-            .LessThan(x => x.EndTime)
-            .WithMessage("Время начала не должно быть позже времени конца");
-        RuleFor(x => x.TimeAllowed)
-            .GreaterThan(TimeSpan.Zero)
-            .WithMessage("Время выполнения не должно быть нулевым");
+            .WithMessage("Недопустимое имя работы")
+            .MustAsync((cmd, name, token) => _context.TaskBlocks.AllAsync(tb => tb.CourseId != cmd.CourseId || tb.Name != name, token))
+            .WithMessage("Работа с таким названием уже существует");
         RuleFor(x => x.TaskIds)
             .MustAsync(AllTaskIdsExist)
             .WithMessage("Одна или несколько задач не существует");

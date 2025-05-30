@@ -5,7 +5,6 @@ using Itishnik.Domain.Entities;
 
 namespace Itishnik.Application.Tasks.Commands.CreateTag;
 
-[Authorize(Roles = Roles.Administrator)]
 [Authorize(Roles = Roles.Teacher)]
 public record CreateTagCommand(string Text) : IRequest<Tag>;
 

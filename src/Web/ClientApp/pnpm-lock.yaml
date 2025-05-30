@@ -75,44 +75,44 @@ importers:
         specifier: ^2.11.8
         version: 2.11.8
       '@taiga-ui/addon-charts':
-        specifier: ^4.36.0
-        version: 4.36.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@taiga-ui/cdk@4.36.0(khabtxyfjjong2rr2avfdg2uqe))(@taiga-ui/core@4.36.0(diip5fgogtbwfq7lqmuulpyibm))(@taiga-ui/polymorpheus@4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))))
+        specifier: ^4.39.2
+        version: 4.39.2(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@taiga-ui/cdk@4.39.2(6agd2qzgti7jvknvyoafrsq3jq))(@taiga-ui/core@4.39.2(yu5egd5p26pqyjji35hsbphfqe))(@taiga-ui/polymorpheus@4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))))
       '@taiga-ui/addon-commerce':
-        specifier: ^4.36.0
-        version: 4.36.0(gm237a2rawv42mlr5g37gpajgq)
+        specifier: ^4.39.2
+        version: 4.39.2(3rleizi432hzilx7o3eqzk7fa4)
       '@taiga-ui/addon-table':
-        specifier: ^4.36.0
-        version: 4.36.0(j7mppf7t2453sng2ds3v7tgut4)
+        specifier: ^4.39.2
+        version: 4.39.2(dhb2bdauzqh6fmeh6t3h5itr4q)
       '@taiga-ui/cdk':
-        specifier: ^4.36.0
-        version: 4.36.0(khabtxyfjjong2rr2avfdg2uqe)
+        specifier: ^4.39.2
+        version: 4.39.2(6agd2qzgti7jvknvyoafrsq3jq)
       '@taiga-ui/core':
-        specifier: ^4.36.0
-        version: 4.36.0(diip5fgogtbwfq7lqmuulpyibm)
+        specifier: ^4.39.2
+        version: 4.39.2(yu5egd5p26pqyjji35hsbphfqe)
       '@taiga-ui/editor':
         specifier: ^4.28.0
         version: 4.28.0(2zkoavafy6vv6m6xlhgjmoy7qq)
       '@taiga-ui/event-plugins':
-        specifier: ^4.5.1
-        version: 4.5.1(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
+        specifier: ^4.6.0
+        version: 4.6.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
       '@taiga-ui/experimental':
-        specifier: ^4.36.0
-        version: 4.36.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@taiga-ui/addon-commerce@4.36.0(gm237a2rawv42mlr5g37gpajgq))(@taiga-ui/cdk@4.36.0(khabtxyfjjong2rr2avfdg2uqe))(@taiga-ui/core@4.36.0(diip5fgogtbwfq7lqmuulpyibm))(@taiga-ui/kit@4.36.0(dpnavnmgg7zff6rhqjyqxb3hh4))(@taiga-ui/polymorpheus@4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))))(rxjs@7.8.2)
+        specifier: ^4.39.2
+        version: 4.39.2(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@taiga-ui/addon-commerce@4.39.2(3rleizi432hzilx7o3eqzk7fa4))(@taiga-ui/cdk@4.39.2(6agd2qzgti7jvknvyoafrsq3jq))(@taiga-ui/core@4.39.2(yu5egd5p26pqyjji35hsbphfqe))(@taiga-ui/kit@4.39.2(luwd4izp4ndegnee5jlyzu3jdi))(@taiga-ui/polymorpheus@4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))))(rxjs@7.8.2)
       '@taiga-ui/i18n':
-        specifier: ^4.36.0
-        version: 4.38.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)
+        specifier: ^4.39.2
+        version: 4.39.2(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)
       '@taiga-ui/icons':
-        specifier: ^4.36.0
-        version: 4.36.0
+        specifier: ^4.39.2
+        version: 4.39.2
       '@taiga-ui/kit':
-        specifier: ^4.36.0
-        version: 4.36.0(dpnavnmgg7zff6rhqjyqxb3hh4)
+        specifier: ^4.39.2
+        version: 4.39.2(luwd4izp4ndegnee5jlyzu3jdi)
       '@taiga-ui/layout':
-        specifier: ^4.36.0
-        version: 4.36.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@taiga-ui/cdk@4.36.0(khabtxyfjjong2rr2avfdg2uqe))(@taiga-ui/core@4.36.0(diip5fgogtbwfq7lqmuulpyibm))(@taiga-ui/kit@4.36.0(dpnavnmgg7zff6rhqjyqxb3hh4))(@taiga-ui/polymorpheus@4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))))(rxjs@7.8.2)
+        specifier: ^4.39.2
+        version: 4.39.2(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@taiga-ui/cdk@4.39.2(6agd2qzgti7jvknvyoafrsq3jq))(@taiga-ui/core@4.39.2(yu5egd5p26pqyjji35hsbphfqe))(@taiga-ui/kit@4.39.2(luwd4izp4ndegnee5jlyzu3jdi))(@taiga-ui/polymorpheus@4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))))(rxjs@7.8.2)
       '@taiga-ui/legacy':
-        specifier: ^4.36.0
-        version: 4.36.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))
+        specifier: ^4.39.2
+        version: 4.39.2(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))
       '@taiga-ui/polymorpheus':
         specifier: ^4.9.0
         version: 4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))
@@ -1755,48 +1755,48 @@ packages:
   '@socket.io/component-emitter@3.1.2':
     resolution: {integrity: sha512-9BCxFwvbGg/RsZK9tjXd8s4UcwR0MWeFQ1XEKIQVVvAGJyINdrqKMcTRyLoK8Rse1GjzLV9cwjWV1olXRWEXVA==}
 
-  '@taiga-ui/addon-charts@4.36.0':
-    resolution: {integrity: sha512-0lGbEPFVQfc8ntWUs+kmi1MyhFFZefIxdJmgbD1cB6Irb8T/JXxNizsJR4JXUJt3ozcE9or7Avbux2lkZaPjWw==}
+  '@taiga-ui/addon-charts@4.39.2':
+    resolution: {integrity: sha512-/ZYmzjEbmzntZF4flx+FR76tgGTSsdW6HZRUIcdxrJCv8+B/nekE/gMsEyImjdmTEJP4MmrRjM7KjnDaat7k8A==}
     peerDependencies:
       '@angular/common': '>=16.0.0'
       '@angular/core': '>=16.0.0'
       '@ng-web-apis/common': ^4.12.0
-      '@taiga-ui/cdk': ^4.36.0
-      '@taiga-ui/core': ^4.36.0
+      '@taiga-ui/cdk': ^4.39.2
+      '@taiga-ui/core': ^4.39.2
       '@taiga-ui/polymorpheus': ^4.9.0
 
-  '@taiga-ui/addon-commerce@4.36.0':
-    resolution: {integrity: sha512-DiUBCdvsk+3aNAHXPpGZI9KNuS0hc+T/XSz0RUPKlFWqQ1TUV4aqTE9o575EU7q+IyAn1yNXq40izmuvx/BLwg==}
+  '@taiga-ui/addon-commerce@4.39.2':
+    resolution: {integrity: sha512-71qlj+YPteo9S7pyuGdsIk1E5KILjojGo8mtWpI5xbxYBQ3UzGmXzbSICN0mxDKh8iVE6UlahhQVC3YAOrmNvg==}
     peerDependencies:
       '@angular/common': '>=16.0.0'
       '@angular/core': '>=16.0.0'
       '@angular/forms': '>=16.0.0'
-      '@maskito/angular': ^3.7.2
-      '@maskito/core': ^3.7.2
-      '@maskito/kit': ^3.7.2
+      '@maskito/angular': ^3.8.0
+      '@maskito/core': ^3.8.0
+      '@maskito/kit': ^3.8.0
       '@ng-web-apis/common': ^4.12.0
-      '@taiga-ui/cdk': ^4.36.0
-      '@taiga-ui/core': ^4.36.0
-      '@taiga-ui/i18n': ^4.36.0
-      '@taiga-ui/kit': ^4.36.0
+      '@taiga-ui/cdk': ^4.39.2
+      '@taiga-ui/core': ^4.39.2
+      '@taiga-ui/i18n': ^4.39.2
+      '@taiga-ui/kit': ^4.39.2
       '@taiga-ui/polymorpheus': ^4.9.0
       rxjs: '>=7.0.0'
 
-  '@taiga-ui/addon-table@4.36.0':
-    resolution: {integrity: sha512-VKztLMvDo3YeEvEjLHO1DZ1y7CK9Vj+jwLyDKoDpJWBGOJfzqZfYb/lqu228NgKL+3JmGAqvq0VQnN5gx1MtSA==}
+  '@taiga-ui/addon-table@4.39.2':
+    resolution: {integrity: sha512-o4yGLOdzJBwrWJ2CNyth58zv5sWIDnGljb9fBb24tdyKqcUv5Eh3CMGF+AObB1simQcnPDH6zztK4SUXleNCxQ==}
     peerDependencies:
       '@angular/common': '>=16.0.0'
       '@angular/core': '>=16.0.0'
       '@ng-web-apis/intersection-observer': ^4.12.0
-      '@taiga-ui/cdk': ^4.36.0
-      '@taiga-ui/core': ^4.36.0
-      '@taiga-ui/i18n': ^4.36.0
-      '@taiga-ui/kit': ^4.36.0
+      '@taiga-ui/cdk': ^4.39.2
+      '@taiga-ui/core': ^4.39.2
+      '@taiga-ui/i18n': ^4.39.2
+      '@taiga-ui/kit': ^4.39.2
       '@taiga-ui/polymorpheus': ^4.9.0
       rxjs: '>=7.0.0'
 
-  '@taiga-ui/cdk@4.36.0':
-    resolution: {integrity: sha512-JgnP7DDZsv87tVK6w9VE+mNTR3nomMgbVq1XoFh5JXbxUwC5FlEIMRKULygBW2FwjbfDehA+2Tm+OeB1HmCSZQ==}
+  '@taiga-ui/cdk@4.39.2':
+    resolution: {integrity: sha512-ydDDC5FFehHJoVLiRHXJ5nKFTtuc9EQTZ8cH2r3d16YBzKfMflyerNiVrco5zFB9CItwRmGGSbpGB4dInwAXvQ==}
     peerDependencies:
       '@angular/animations': '>=16.0.0'
       '@angular/cdk': '>=16.0.0'
@@ -1808,12 +1808,12 @@ packages:
       '@ng-web-apis/platform': ^4.12.0
       '@ng-web-apis/resize-observer': ^4.12.0
       '@ng-web-apis/screen-orientation': ^4.12.0
-      '@taiga-ui/event-plugins': ^4.5.1
+      '@taiga-ui/event-plugins': ^4.6.0
       '@taiga-ui/polymorpheus': ^4.9.0
       rxjs: '>=7.0.0'
 
-  '@taiga-ui/core@4.36.0':
-    resolution: {integrity: sha512-BwSF/ZA0pvqqbW2UYbtwjvaSfb7uIj1gNbaMTF7uhjQkvwL22x/Opbxcs2DAoja4I/EPpT3AJMr++S1bzUriWw==}
+  '@taiga-ui/core@4.39.2':
+    resolution: {integrity: sha512-gnNgFX3X36nv4gHTgZHFw7AyoWcy3JWucFESZEN51Z85j2qzkniGhlmJjrkBY51b7dRi7w9ZmScyly/YIiWcUA==}
     peerDependencies:
       '@angular/animations': '>=16.0.0'
       '@angular/common': '>=16.0.0'
@@ -1823,9 +1823,9 @@ packages:
       '@angular/router': '>=16.0.0'
       '@ng-web-apis/common': ^4.12.0
       '@ng-web-apis/mutation-observer': ^4.12.0
-      '@taiga-ui/cdk': ^4.36.0
-      '@taiga-ui/event-plugins': ^4.5.1
-      '@taiga-ui/i18n': ^4.36.0
+      '@taiga-ui/cdk': ^4.39.2
+      '@taiga-ui/event-plugins': ^4.6.0
+      '@taiga-ui/i18n': ^4.39.2
       '@taiga-ui/polymorpheus': ^4.9.0
       rxjs: '>=7.0.0'
 
@@ -1882,69 +1882,69 @@ packages:
       markdown-it:
         optional: true
 
-  '@taiga-ui/event-plugins@4.5.1':
-    resolution: {integrity: sha512-p5TAs6ZAJAlyl64OUdvnVnfCvDteJtLl9cjXarMzPRY7sX2d+SC97qnTZF8ACPcx4FgFaiHI6VH5G6UzYHMZ8g==}
+  '@taiga-ui/event-plugins@4.6.0':
+    resolution: {integrity: sha512-5qshJXrwpJmsrdePjOofF8nr+6ONk7fXRdVG4MH0BGSLiV6ChwUm9K78ROjanVyI4vEkoFqBbh1bhS6DdJTwhA==}
     peerDependencies:
       '@angular/core': '>=16.0.0'
       '@angular/platform-browser': '>=16.0.0'
       rxjs: '>=7.0.0'
 
-  '@taiga-ui/experimental@4.36.0':
-    resolution: {integrity: sha512-g1TN+hcr7zF/BLw9Sj9X/uKDx8pSEWU9282og5itxsPHgans+ENuh/0dS6kShrx+zwoWLOnjI0MyIR6IktqmQg==}
+  '@taiga-ui/experimental@4.39.2':
+    resolution: {integrity: sha512-1l9yMJtZVyJiqr0EZcPhXwMJoT4g3c8Pmo8YRoIRE7ujdbejt7G68AzAF6R59QZG43+QiCTqz8IgTYzmG+PxrA==}
     peerDependencies:
       '@angular/common': '>=16.0.0'
       '@angular/core': '>=16.0.0'
-      '@taiga-ui/addon-commerce': ^4.36.0
-      '@taiga-ui/cdk': ^4.36.0
-      '@taiga-ui/core': ^4.36.0
-      '@taiga-ui/kit': ^4.36.0
+      '@taiga-ui/addon-commerce': ^4.39.2
+      '@taiga-ui/cdk': ^4.39.2
+      '@taiga-ui/core': ^4.39.2
+      '@taiga-ui/kit': ^4.39.2
       '@taiga-ui/polymorpheus': ^4.9.0
       rxjs: '>=7.0.0'
 
-  '@taiga-ui/i18n@4.38.0':
-    resolution: {integrity: sha512-mQ4akU8N3jU+ngkbx9DcLbArofdBq15WKuLEPame4rZvsf5IL3fxbAzFQkt2wmg2kRg125N1y3Ik04NtwgtwEg==}
+  '@taiga-ui/i18n@4.39.2':
+    resolution: {integrity: sha512-/3fh+XkV9qP95Y4QL0rGJ+1NruKSqKQV+gVHiM1JK/cltn7YiSZjww8Fg/oVDqJ8TFglNQZ92oK3osa0MOPVCQ==}
     peerDependencies:
       '@angular/core': '>=16.0.0'
       '@ng-web-apis/common': ^4.12.0
       rxjs: '>=7.0.0'
 
-  '@taiga-ui/icons@4.36.0':
-    resolution: {integrity: sha512-mcGvUnwF7g1wcnXFJenrcfmlzE1+k2Haz2Cudws0htZQ5VnR/kC1f1pEJlhZYycqGgoJJrNEBPbHCBGrIkqfXg==}
+  '@taiga-ui/icons@4.39.2':
+    resolution: {integrity: sha512-WYkcw7b9pmqFV2/8vqkH0RcC6Q1Ni+dMeBQRIgI3v3B7zME6DYZpi3hT39XoYe66UGpugIaQAttngOYvr1QwHA==}
 
-  '@taiga-ui/kit@4.36.0':
-    resolution: {integrity: sha512-jUVMa3kUrv49HvOCzVymMo/+FRTv1Yrflbjjm+V7A4z9CnZR+tg2VZ+wJzjU0qNppp/nstu+ge+XTJ5B5Hsatw==}
+  '@taiga-ui/kit@4.39.2':
+    resolution: {integrity: sha512-Qb3FADnpKNO7cUIQV4RoYuJPwbkY5EaDiMMD7AHS2StiAfjjH9B/8rXgeJLtJn6J5z6i5m1ywUHwmB3lquTuVQ==}
     peerDependencies:
       '@angular/common': '>=16.0.0'
       '@angular/core': '>=16.0.0'
       '@angular/forms': '>=16.0.0'
       '@angular/router': '>=16.0.0'
-      '@maskito/angular': ^3.7.2
-      '@maskito/core': ^3.7.2
-      '@maskito/kit': ^3.7.2
-      '@maskito/phone': ^3.7.2
+      '@maskito/angular': ^3.8.0
+      '@maskito/core': ^3.8.0
+      '@maskito/kit': ^3.8.0
+      '@maskito/phone': ^3.8.0
       '@ng-web-apis/common': ^4.12.0
       '@ng-web-apis/intersection-observer': ^4.12.0
       '@ng-web-apis/mutation-observer': ^4.12.0
       '@ng-web-apis/resize-observer': ^4.12.0
-      '@taiga-ui/cdk': ^4.36.0
-      '@taiga-ui/core': ^4.36.0
-      '@taiga-ui/i18n': ^4.36.0
+      '@taiga-ui/cdk': ^4.39.2
+      '@taiga-ui/core': ^4.39.2
+      '@taiga-ui/i18n': ^4.39.2
       '@taiga-ui/polymorpheus': ^4.9.0
       rxjs: '>=7.0.0'
 
-  '@taiga-ui/layout@4.36.0':
-    resolution: {integrity: sha512-Y4s2mdYJopuVjTd38HmqaACK9RwoJAirC7PCYg8NVCWb2Q4mgqHzHtIwTcERRfxRANoSTt+Ne9rLIlxY5JOuVQ==}
+  '@taiga-ui/layout@4.39.2':
+    resolution: {integrity: sha512-E9SN7TtjfaOXcKsSud03bNPMQzLKEnbgux2+tKCxutcVUP/8umM50zKCaAaEMEcOCnknE5vPTDF6szNM/qD41w==}
     peerDependencies:
       '@angular/common': '>=16.0.0'
       '@angular/core': '>=16.0.0'
-      '@taiga-ui/cdk': ^4.36.0
-      '@taiga-ui/core': ^4.36.0
-      '@taiga-ui/kit': ^4.36.0
+      '@taiga-ui/cdk': ^4.39.2
+      '@taiga-ui/core': ^4.39.2
+      '@taiga-ui/kit': ^4.39.2
       '@taiga-ui/polymorpheus': ^4.9.0
       rxjs: '>=7.0.0'
 
-  '@taiga-ui/legacy@4.36.0':
-    resolution: {integrity: sha512-x4F5ZrAhJPhlCda8daLns7tADkjLDzSNmZa8xVMHeL8nuMjx7FbpKxqzVKcKJ/SLWqF5WHs30D6S/mXjl5YvYw==}
+  '@taiga-ui/legacy@4.39.2':
+    resolution: {integrity: sha512-mVp4EbMHlPtC8GrAFiy4QZDMypuJSCqgynukzpAMYlnNmfGTeQoRSKHLCy9EZpiNmg0C7lPzyvuBl1885Kk/GQ==}
     peerDependencies:
       '@angular/core': '>=16.0.0'
 
@@ -6927,17 +6927,17 @@ snapshots:
 
   '@socket.io/component-emitter@3.1.2': {}
 
-  '@taiga-ui/addon-charts@4.36.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@taiga-ui/cdk@4.36.0(khabtxyfjjong2rr2avfdg2uqe))(@taiga-ui/core@4.36.0(diip5fgogtbwfq7lqmuulpyibm))(@taiga-ui/polymorpheus@4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))))':
+  '@taiga-ui/addon-charts@4.39.2(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@taiga-ui/cdk@4.39.2(6agd2qzgti7jvknvyoafrsq3jq))(@taiga-ui/core@4.39.2(yu5egd5p26pqyjji35hsbphfqe))(@taiga-ui/polymorpheus@4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))))':
     dependencies:
       '@angular/common': 19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
       '@angular/core': 19.2.3(rxjs@7.8.2)(zone.js@0.15.0)
       '@ng-web-apis/common': 4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
-      '@taiga-ui/cdk': 4.36.0(khabtxyfjjong2rr2avfdg2uqe)
-      '@taiga-ui/core': 4.36.0(diip5fgogtbwfq7lqmuulpyibm)
+      '@taiga-ui/cdk': 4.39.2(6agd2qzgti7jvknvyoafrsq3jq)
+      '@taiga-ui/core': 4.39.2(yu5egd5p26pqyjji35hsbphfqe)
       '@taiga-ui/polymorpheus': 4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))
       tslib: 2.8.1
 
-  '@taiga-ui/addon-commerce@4.36.0(gm237a2rawv42mlr5g37gpajgq)':
+  '@taiga-ui/addon-commerce@4.39.2(3rleizi432hzilx7o3eqzk7fa4)':
     dependencies:
       '@angular/common': 19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
       '@angular/core': 19.2.3(rxjs@7.8.2)(zone.js@0.15.0)
@@ -6946,28 +6946,28 @@ snapshots:
       '@maskito/core': 3.8.0
       '@maskito/kit': 3.8.0(@maskito/core@3.8.0)
       '@ng-web-apis/common': 4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
-      '@taiga-ui/cdk': 4.36.0(khabtxyfjjong2rr2avfdg2uqe)
-      '@taiga-ui/core': 4.36.0(diip5fgogtbwfq7lqmuulpyibm)
-      '@taiga-ui/i18n': 4.38.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)
-      '@taiga-ui/kit': 4.36.0(dpnavnmgg7zff6rhqjyqxb3hh4)
+      '@taiga-ui/cdk': 4.39.2(6agd2qzgti7jvknvyoafrsq3jq)
+      '@taiga-ui/core': 4.39.2(yu5egd5p26pqyjji35hsbphfqe)
+      '@taiga-ui/i18n': 4.39.2(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)
+      '@taiga-ui/kit': 4.39.2(luwd4izp4ndegnee5jlyzu3jdi)
       '@taiga-ui/polymorpheus': 4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@taiga-ui/addon-table@4.36.0(j7mppf7t2453sng2ds3v7tgut4)':
+  '@taiga-ui/addon-table@4.39.2(dhb2bdauzqh6fmeh6t3h5itr4q)':
     dependencies:
       '@angular/common': 19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
       '@angular/core': 19.2.3(rxjs@7.8.2)(zone.js@0.15.0)
       '@ng-web-apis/intersection-observer': 4.12.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))
-      '@taiga-ui/cdk': 4.36.0(khabtxyfjjong2rr2avfdg2uqe)
-      '@taiga-ui/core': 4.36.0(diip5fgogtbwfq7lqmuulpyibm)
-      '@taiga-ui/i18n': 4.38.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)
-      '@taiga-ui/kit': 4.36.0(dpnavnmgg7zff6rhqjyqxb3hh4)
+      '@taiga-ui/cdk': 4.39.2(6agd2qzgti7jvknvyoafrsq3jq)
+      '@taiga-ui/core': 4.39.2(yu5egd5p26pqyjji35hsbphfqe)
+      '@taiga-ui/i18n': 4.39.2(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)
+      '@taiga-ui/kit': 4.39.2(luwd4izp4ndegnee5jlyzu3jdi)
       '@taiga-ui/polymorpheus': 4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@taiga-ui/cdk@4.36.0(khabtxyfjjong2rr2avfdg2uqe)':
+  '@taiga-ui/cdk@4.39.2(6agd2qzgti7jvknvyoafrsq3jq)':
     dependencies:
       '@angular/animations': 19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))
       '@angular/cdk': 18.2.14(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
@@ -6979,7 +6979,7 @@ snapshots:
       '@ng-web-apis/platform': 4.12.0
       '@ng-web-apis/resize-observer': 4.12.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))
       '@ng-web-apis/screen-orientation': 4.12.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)
-      '@taiga-ui/event-plugins': 4.5.1(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
+      '@taiga-ui/event-plugins': 4.6.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
       '@taiga-ui/polymorpheus': 4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))
       rxjs: 7.8.2
       tslib: 2.8.1
@@ -6992,7 +6992,7 @@ snapshots:
     transitivePeerDependencies:
       - chokidar
 
-  '@taiga-ui/core@4.36.0(diip5fgogtbwfq7lqmuulpyibm)':
+  '@taiga-ui/core@4.39.2(yu5egd5p26pqyjji35hsbphfqe)':
     dependencies:
       '@angular/animations': 19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))
       '@angular/common': 19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
@@ -7002,9 +7002,9 @@ snapshots:
       '@angular/router': 19.2.3(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
       '@ng-web-apis/common': 4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
       '@ng-web-apis/mutation-observer': 4.12.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))
-      '@taiga-ui/cdk': 4.36.0(khabtxyfjjong2rr2avfdg2uqe)
-      '@taiga-ui/event-plugins': 4.5.1(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
-      '@taiga-ui/i18n': 4.38.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)
+      '@taiga-ui/cdk': 4.39.2(6agd2qzgti7jvknvyoafrsq3jq)
+      '@taiga-ui/event-plugins': 4.6.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)
+      '@taiga-ui/i18n': 4.39.2(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)
       '@taiga-ui/polymorpheus': 4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))
       rxjs: 7.8.2
       tslib: 2.8.1
@@ -7055,37 +7055,37 @@ snapshots:
       '@types/markdown-it': 14.1.2
       markdown-it: 14.1.0
 
-  '@taiga-ui/event-plugins@4.5.1(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)':
+  '@taiga-ui/event-plugins@4.6.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(rxjs@7.8.2)':
     dependencies:
       '@angular/core': 19.2.3(rxjs@7.8.2)(zone.js@0.15.0)
       '@angular/platform-browser': 19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@taiga-ui/experimental@4.36.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@taiga-ui/addon-commerce@4.36.0(gm237a2rawv42mlr5g37gpajgq))(@taiga-ui/cdk@4.36.0(khabtxyfjjong2rr2avfdg2uqe))(@taiga-ui/core@4.36.0(diip5fgogtbwfq7lqmuulpyibm))(@taiga-ui/kit@4.36.0(dpnavnmgg7zff6rhqjyqxb3hh4))(@taiga-ui/polymorpheus@4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))))(rxjs@7.8.2)':
+  '@taiga-ui/experimental@4.39.2(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@taiga-ui/addon-commerce@4.39.2(3rleizi432hzilx7o3eqzk7fa4))(@taiga-ui/cdk@4.39.2(6agd2qzgti7jvknvyoafrsq3jq))(@taiga-ui/core@4.39.2(yu5egd5p26pqyjji35hsbphfqe))(@taiga-ui/kit@4.39.2(luwd4izp4ndegnee5jlyzu3jdi))(@taiga-ui/polymorpheus@4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))))(rxjs@7.8.2)':
     dependencies:
       '@angular/common': 19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
       '@angular/core': 19.2.3(rxjs@7.8.2)(zone.js@0.15.0)
-      '@taiga-ui/addon-commerce': 4.36.0(gm237a2rawv42mlr5g37gpajgq)
-      '@taiga-ui/cdk': 4.36.0(khabtxyfjjong2rr2avfdg2uqe)
-      '@taiga-ui/core': 4.36.0(diip5fgogtbwfq7lqmuulpyibm)
-      '@taiga-ui/kit': 4.36.0(dpnavnmgg7zff6rhqjyqxb3hh4)
+      '@taiga-ui/addon-commerce': 4.39.2(3rleizi432hzilx7o3eqzk7fa4)
+      '@taiga-ui/cdk': 4.39.2(6agd2qzgti7jvknvyoafrsq3jq)
+      '@taiga-ui/core': 4.39.2(yu5egd5p26pqyjji35hsbphfqe)
+      '@taiga-ui/kit': 4.39.2(luwd4izp4ndegnee5jlyzu3jdi)
       '@taiga-ui/polymorpheus': 4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@taiga-ui/i18n@4.38.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)':
+  '@taiga-ui/i18n@4.39.2(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)':
     dependencies:
       '@angular/core': 19.2.3(rxjs@7.8.2)(zone.js@0.15.0)
       '@ng-web-apis/common': 4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@taiga-ui/icons@4.36.0':
+  '@taiga-ui/icons@4.39.2':
     dependencies:
       tslib: 2.8.1
 
-  '@taiga-ui/kit@4.36.0(dpnavnmgg7zff6rhqjyqxb3hh4)':
+  '@taiga-ui/kit@4.39.2(luwd4izp4ndegnee5jlyzu3jdi)':
     dependencies:
       '@angular/common': 19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
       '@angular/core': 19.2.3(rxjs@7.8.2)(zone.js@0.15.0)
@@ -7099,25 +7099,25 @@ snapshots:
       '@ng-web-apis/intersection-observer': 4.12.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))
       '@ng-web-apis/mutation-observer': 4.12.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))
       '@ng-web-apis/resize-observer': 4.12.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))
-      '@taiga-ui/cdk': 4.36.0(khabtxyfjjong2rr2avfdg2uqe)
-      '@taiga-ui/core': 4.36.0(diip5fgogtbwfq7lqmuulpyibm)
-      '@taiga-ui/i18n': 4.38.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)
+      '@taiga-ui/cdk': 4.39.2(6agd2qzgti7jvknvyoafrsq3jq)
+      '@taiga-ui/core': 4.39.2(yu5egd5p26pqyjji35hsbphfqe)
+      '@taiga-ui/i18n': 4.39.2(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@ng-web-apis/common@4.12.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(rxjs@7.8.2)
       '@taiga-ui/polymorpheus': 4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@taiga-ui/layout@4.36.0(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@taiga-ui/cdk@4.36.0(khabtxyfjjong2rr2avfdg2uqe))(@taiga-ui/core@4.36.0(diip5fgogtbwfq7lqmuulpyibm))(@taiga-ui/kit@4.36.0(dpnavnmgg7zff6rhqjyqxb3hh4))(@taiga-ui/polymorpheus@4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))))(rxjs@7.8.2)':
+  '@taiga-ui/layout@4.39.2(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@taiga-ui/cdk@4.39.2(6agd2qzgti7jvknvyoafrsq3jq))(@taiga-ui/core@4.39.2(yu5egd5p26pqyjji35hsbphfqe))(@taiga-ui/kit@4.39.2(luwd4izp4ndegnee5jlyzu3jdi))(@taiga-ui/polymorpheus@4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))))(rxjs@7.8.2)':
     dependencies:
       '@angular/common': 19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2)
       '@angular/core': 19.2.3(rxjs@7.8.2)(zone.js@0.15.0)
-      '@taiga-ui/cdk': 4.36.0(khabtxyfjjong2rr2avfdg2uqe)
-      '@taiga-ui/core': 4.36.0(diip5fgogtbwfq7lqmuulpyibm)
-      '@taiga-ui/kit': 4.36.0(dpnavnmgg7zff6rhqjyqxb3hh4)
+      '@taiga-ui/cdk': 4.39.2(6agd2qzgti7jvknvyoafrsq3jq)
+      '@taiga-ui/core': 4.39.2(yu5egd5p26pqyjji35hsbphfqe)
+      '@taiga-ui/kit': 4.39.2(luwd4izp4ndegnee5jlyzu3jdi)
       '@taiga-ui/polymorpheus': 4.9.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(@angular/platform-browser@19.2.3(@angular/animations@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))(@angular/common@19.2.3(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))(rxjs@7.8.2))(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0)))
       rxjs: 7.8.2
       tslib: 2.8.1
 
-  '@taiga-ui/legacy@4.36.0(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))':
+  '@taiga-ui/legacy@4.39.2(@angular/core@19.2.3(rxjs@7.8.2)(zone.js@0.15.0))':
     dependencies:
       '@angular/core': 19.2.3(rxjs@7.8.2)(zone.js@0.15.0)
       tslib: 2.8.1

@@ -12,7 +12,7 @@ public record ChangeTaskBlockTimelineCommand(
     Guid TaskBlockId,
     DateTime StartTime,
     DateTime EndTime,
-    TimeSpan TimeAllowed) : IRequest<TaskBlockResponse>;
+    TimeSpan? TimeAllowed) : IRequest<TaskBlockResponse>;
 
 public class ChangeTaskBlockTimelineCommandHandler(IApplicationDbContext context, IMapper mapper) 
     : IRequestHandler<ChangeTaskBlockTimelineCommand, TaskBlockResponse>

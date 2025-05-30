@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TuiInputModule } from '@taiga-ui/legacy';
-import TaskTableComponent from '../components/task-table/task-table.component';
+import TasksTableComponent from '../components/tasks-table/tasks-table.component';
 import { TuiButton, TuiIcon } from '@taiga-ui/core';
 import { RouterLink } from '@angular/router';
 
@@ -11,13 +11,13 @@ import { RouterLink } from '@angular/router';
     FormsModule,
     ReactiveFormsModule,
     TuiInputModule,
-    TaskTableComponent,
+    TasksTableComponent,
     TuiButton,
     TuiIcon,
     RouterLink,
   ],
   styles: [':host { @apply relative flex grow flex-col }'],
-  template: ` <app-task-table />
+  template: ` <app-tasks-table />
     <button
       appearance="primary"
       tuiButton
