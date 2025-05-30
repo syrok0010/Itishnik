@@ -5,8 +5,14 @@ import { map } from 'rxjs';
 
 const adminRole = 'Administrator';
 const teacherRole = 'Teacher';
+const studentRole = 'Student';
 
 export const isAdminOrTeacherGuard: CanActivateFn | CanMatchFn = () =>
   inject(UsersFacadeService).authInfo$.pipe(
     map((v) => v.roles.includes(adminRole) || v.roles.includes(teacherRole)),
+  );
+
+export const isStudentGuard: CanActivateFn | CanMatchFn = () =>
+  inject(UsersFacadeService).authInfo$.pipe(
+    map((v) => v.roles.includes(studentRole)),
   );
