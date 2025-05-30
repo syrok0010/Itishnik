@@ -1,1 +1,3 @@
-<p>s-courses-page works!</p>
+@for (item of courses | async; track item.id) {
+  <app-student-course-card [course]="item" />
+}
