@@ -4,7 +4,7 @@
   <tui-scrollbar>
     <cdk-virtual-scroll-viewport
       #viewport
-      class="tui-zero-scrollbar h-[calc(100dvh-60px-4rem)]"
+      class="tui-zero-scrollbar {{data.length === 0 ? 'h-14' : 'h-[calc(100dvh-60px-56px-5rem)]'}}"
       appendOnly
       tuiScrollable
       itemSize="73"
@@ -120,6 +120,10 @@
       </table>
     </cdk-virtual-scroll-viewport>
   </tui-scrollbar>
+
+  @if (!data || data.length === 0) {
+    <h1 class="text-center text-2xl font-medium mt-4">Курсы не созданы</h1>
+  }
 
   <button
     appearance="primary"

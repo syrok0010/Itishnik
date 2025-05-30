@@ -150,13 +150,6 @@ export class CoursesClient implements ICoursesClient {
             result200 = PaginatedListOfCourseListResponse.fromJS(resultData200);
             return _observableOf(result200);
             }));
-        } else if (status === 404) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result404 = PaginatedListOfCourseListResponse.fromJS(resultData404);
-            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
-            }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
@@ -1273,20 +1266,6 @@ export class TasksClient implements ITasksClient {
                 result200 = <any>null;
             }
             return _observableOf(result200);
-            }));
-        } else if (status === 404) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            let result404: any = null;
-            let resultData404 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            if (Array.isArray(resultData404)) {
-                result404 = [] as any;
-                for (let item of resultData404)
-                    result404!.push(Tag.fromJS(item));
-            }
-            else {
-                result404 = <any>null;
-            }
-            return throwException("A server side error occurred.", status, _responseText, _headers, result404);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {

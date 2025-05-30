@@ -49,19 +49,9 @@ public class Courses : EndpointGroupBase
         return TypedResults.Created($"/{nameof(Courses)}/{response.Id}", response);
     }
 
-    public async Task<
-        Results<
-            Ok<PaginatedList<CourseListResponse>>,
-            NotFound<PaginatedList<CourseListResponse>>
-        >
-    > GetCoursesList(ISender sender, [AsParameters] GetCoursesListQuery query)
+    public async Task<Ok<PaginatedList<CourseListResponse>>> GetCoursesList(ISender sender, [AsParameters] GetCoursesListQuery query)
     {
         var response = await sender.Send(query);
-
-        if (response.TotalCount == 0)
-        {
-            return TypedResults.NotFound(response);
-        }
         return TypedResults.Ok(response);
     }
 
@@ -71,15 +61,12 @@ public class Courses : EndpointGroupBase
             NotFound<CourseResponse>,
             BadRequest
         >
-    > GetCourseById(ISender sender, Guid id) 
+    > GetCourseById(ISender sender, Guid id)
     {
         var response = await sender.Send(new GetCourseByIdQuery(id));
-        if (response == null)
-        {
-            return TypedResults.NotFound(response);
-        }
-
-        return TypedResults.Ok(response);
+        return response is null 
+            ? TypedResults.NotFound(response)
+            : TypedResults.Ok(response);
     }
 
     public async Task<Results<Created<TaskBlockResponse>, BadRequest>> CreateTaskBlock(ISender sender, Guid id, CreateTaskBlockCommand command)

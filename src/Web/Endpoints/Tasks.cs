@@ -40,10 +40,10 @@ public class Tasks : EndpointGroupBase
         return TypedResults.Created($"/{nameof(Tasks)}/tags", response);
     }
     
-    public async Task<Results<Ok<List<Tag>>, NotFound<List<Tag>>>> GetTagList(ISender sender)
+    public async Task<Ok<List<Tag>>> GetTagList(ISender sender)
     {
         var response = await sender.Send(new GetTagListQuery());
-        return response.Count == 0 ? TypedResults.NotFound(response) : TypedResults.Ok(response);
+        return TypedResults.Ok(response);
     }
     
     public async Task<PaginatedList<TaskListResponse>> GetTaskList(ISender sender, [AsParameters] GetTaskListQuery query)

@@ -46,6 +46,7 @@ import {
   CdkVirtualForOf,
   CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
+import { tuiPure } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-tasks-table',
@@ -145,5 +146,16 @@ export default class TasksTableComponent {
     const totalLoadedElements = this.filteredTasks().length;
     if (totalLoadedElements - currentElement <= pageSize)
       await this.taskFacade.nextPage();
+  }
+
+  @tuiPure
+  tableHeightClass() {
+    if (this.filteredTasks().length === 0) {
+      return 'h-14';
+    }
+    if (!this.selectMode()) {
+      return 'h-[calc(100dvh-60px-56px-5rem)]';
+    }
+    return 'h-[70dvh]';
   }
 }

@@ -1,4 +1,4 @@
-<div class="relative flex w-full grow flex-col gap-4 rounded-lg bg-white p-4 {{ selectMode() ? 'min-w-[70dvw]' : ''}}">
+<div class="relative flex w-full grow flex-col gap-4 rounded-lg bg-white {{ selectMode() ? 'min-w-[70dvw]' : 'p-4'}}">
   @if (filtering()) {
     <div class="flex justify-between gap-4" [formGroup]="filterForm">
       <app-tag-multiselect-input class="flex-1" formControlName="tagIds" />
@@ -16,7 +16,7 @@
   <tui-scrollbar>
     <cdk-virtual-scroll-viewport
       #viewport
-      class="tui-zero-scrollbar {{!selectMode() ? 'h-[calc(100dvh-60px-56px-5rem)]' : 'h-[70dvh]'}}"
+      class="tui-zero-scrollbar {{tableHeightClass()}}"
       appendOnly
       tuiScrollable
       itemSize="73"
