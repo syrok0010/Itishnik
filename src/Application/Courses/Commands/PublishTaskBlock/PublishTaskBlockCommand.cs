@@ -18,6 +18,7 @@ public class PublishTaskBlockCommandHandler(IApplicationDbContext context, IMapp
     {
         var block = await _context.TaskBlocks
             .Include(tb => tb.Tasks)
+            .Include(tb => tb.Course).ThenInclude(c => c.GradedCourses).ThenInclude(gc => gc.Student)
             .FirstAsync(tb => tb.Id == request.TaskBlockId, cancellationToken);
         block.IsPublic = true;
         await _context.SaveChangesAsync(cancellationToken);

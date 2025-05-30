@@ -140,6 +140,27 @@ public class ApplicationDbContextInitialiser
                 teacher.AddCourse(course);
                 await _context.GradedCourses.AddAsync(gradedCourse);
             }
+            var taskBlock = new TaskBlock(
+                "Куча",
+                courses[0],
+                "Ну структура данных такая");
+            
+            taskBlock.ChangeTimes(
+                DateTime.Now.ToUniversalTime().AddDays(7),
+                DateTime.Now.ToUniversalTime().AddDays(14),
+                new TimeSpan(5, 0, 0));
+            courses[0].AddTaskBlock(taskBlock);
+            
+            if (!await _context.Tasks.IgnoreQueryFilters().AnyAsync())
+            {
+                var task = new Domain.Entities.Task(
+                    "Пирамидальная сортировка",
+                    "Отсортировать с помощью кучи массив",
+                    "Текст решения",
+                    teacher);
+                taskBlock.AddTask(task, 10);
+                await _context.Tasks.AddAsync(task);
+            }
             await _context.Courses.AddRangeAsync(courses);
         }
 

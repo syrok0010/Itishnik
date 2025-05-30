@@ -12,6 +12,7 @@ public class GradedTaskBlock
     {
         Feedback = feedback;
         Student = student;
+        StudentId = student.Id;
         TaskBlock = taskBlock;
     }
 

@@ -113,9 +113,12 @@ public class TaskBlock
             if (StartTime is null || EndTime is null || TimeAllowed is null || StartTime < TimeProvider.System.GetLocalNow())
             {
                 throw new InvalidOperationException("Некорректно задано время выполнения работы");
-            }
+            } 
             
             _isPublic = true;
+            
+            foreach (var gradedCourse in Course.GradedCourses)
+                gradedCourse.AddTaskBlock(this);
         }
     }
     

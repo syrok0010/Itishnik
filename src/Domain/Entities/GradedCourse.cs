@@ -23,9 +23,12 @@ public class GradedCourse : IOwnedResource
 
     public IEnumerable<GradedTaskBlock> GradedTaskBlocks => _gradedTaskBlocks;
 
-    public void AddGradedTaskBlock(GradedTaskBlock gradedTaskBlock)
+    public void AddTaskBlock(TaskBlock taskBlock)
     {
-        _gradedTaskBlocks.Add(gradedTaskBlock);
+        if (!taskBlock.IsPublic)
+            throw new InvalidOperationException("Студенту нельзя добавить неопубликованную работу");
+        
+        _gradedTaskBlocks.Add(new GradedTaskBlock(Student, taskBlock));
     }
 
     public int? Grade
