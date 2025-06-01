@@ -1,6 +1,7 @@
 import {
   ApplicationConfig,
   InjectionToken,
+  LOCALE_ID,
   provideZoneChangeDetection,
 } from '@angular/core';
 import { provideRouter, withViewTransitions } from '@angular/router';
@@ -21,6 +22,7 @@ export const baseUrlToken = new InjectionToken<string>('BASE_URL');
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    { provide: LOCALE_ID, useValue: 'ru-RU' },
     {
       provide: TUI_LANGUAGE,
       useValue: of(TUI_RUSSIAN_LANGUAGE),
