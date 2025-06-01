@@ -84,7 +84,9 @@ export default class TasksTableComponent {
   taskFacade = inject(TasksFacadeService);
   tasks = toSignal(this.taskFacade.taskList$);
   filteredTasks = computed(() =>
-    this.tasks().filter((t) => !this.excludeTaskIds()?.includes(t.id)),
+    this.excludeTaskIds() !== null && this.excludeTaskIds().length > 0
+      ? this.tasks().filter((t) => !this.excludeTaskIds().includes(t.id))
+      : this.tasks(),
   );
 
   selectedArray = computed(

@@ -10,6 +10,7 @@ import { TuiInputModule, TuiTextfieldControllerModule } from '@taiga-ui/legacy';
 import {
   TuiAutoColorPipe,
   TuiButton,
+  TuiIcon,
   TuiInitialsPipe,
   TuiTextfield,
   TuiTitle,
@@ -34,6 +35,7 @@ import { TuiAvatar } from '@taiga-ui/kit';
     TuiAvatar,
     TuiInitialsPipe,
     TuiTitle,
+    TuiIcon,
   ],
   templateUrl: './course-students.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

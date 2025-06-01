@@ -140,6 +140,7 @@ export class CoursesFacadeService {
     taskBlockId: string,
     taskIds: string[],
   ): Promise<void> {
+    if (taskIds.length === 0) return;
     for (const taskId of taskIds) {
       await firstValueFrom(
         this.coursesClient.addTaskToBlock(
