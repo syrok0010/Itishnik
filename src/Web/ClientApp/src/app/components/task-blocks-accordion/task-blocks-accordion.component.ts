@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TuiAccordion } from '@taiga-ui/experimental';
 import { CoursesFacadeService } from '../../courses-facade.service';
 import { map } from 'rxjs/operators';
@@ -45,7 +40,7 @@ export default class TaskBlocksAccordionComponent {
   private readonly coursesFacade = inject(CoursesFacadeService);
 
   taskBlocks$ = this.coursesFacade.currentCourse$.pipe(
-    map((course) => course.taskBlocks),
+    map((course) => course.taskBlocks.reverse()),
   );
 
   nameControl = new FormControl<string>('', [Validators.required]);

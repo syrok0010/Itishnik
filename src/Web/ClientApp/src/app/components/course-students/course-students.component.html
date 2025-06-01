@@ -1,0 +1,71 @@
+<div class="flex gap-8">
+  <form class="flex w-1/3 flex-col gap-6" (ngSubmit)="inviteStudents()">
+    <h1 class="text-xl font-semibold">Пригласить студентов</h1>
+    <div class="flex flex-col gap-2">
+      @for (email of emailsArray.controls; let index = $index; track index) {
+        <div class="flex gap-2">
+          <tui-input [formControl]="email" class="flex-1">
+            Почта студента {{ index + 1 }}
+            <input tuiTextfieldLegacy type="email" />
+          </tui-input>
+          <button
+            tuiIconButton
+            appearance="flat-destructive"
+            iconEnd="@tui.trash"
+            type="button"
+            (click)="emailsArray.removeAt(index)"
+          ></button>
+        </div>
+      }
+      <button
+        tuiIconButton
+        iconEnd="@tui.plus"
+        appearance="outline"
+        type="button"
+        (click)="addControl()"
+      ></button>
+    </div>
+    <button
+      tuiButton
+      type="submit"
+      class="ml-auto"
+      [disabled]="emailsArray.invalid || emailsArray.length === 0"
+    >
+      Пригласить
+    </button>
+  </form>
+  <div class="flex w-2/3 flex-col gap-6">
+    <div class="flex justify-between">
+      <h1 class="text-xl font-semibold">Студенты на курсе</h1>
+      <tui-input
+        class="w-1/3"
+        [formControl]="search"
+        tuiTextfieldIcon="@tui.search"
+        tuiTextfieldSize="m"
+      >
+        Поиск
+      </tui-input>
+    </div>
+    <div class="grid grid-cols-3 gap-4">
+      @for (student of filteredStudents$ | async; track student.id) {
+        <div class="flex gap-2">
+          <tui-avatar
+            [src]="student.fullName | tuiInitials"
+            [style.background]="student.fullName | tuiAutoColor"
+            size="m"
+          />
+          <span tuiTitle class="truncate text-2xl">
+            {{
+              student.fullName === student.email
+                ? "ФИО не установлено"
+                : student.fullName
+            }}
+            <span tuiSubtitle class="truncate text-lg">{{
+              student.email
+            }}</span>
+          </span>
+        </div>
+      }
+    </div>
+  </div>
+</div>

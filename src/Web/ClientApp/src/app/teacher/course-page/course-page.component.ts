@@ -36,8 +36,9 @@ import { UsersFacadeService } from '../../users-facade.service';
 import { map } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';
 import { UserDto } from '../../web-api-client';
-import { tuiPure, TuiStringMatcher } from '@taiga-ui/cdk';
+import { TuiStringMatcher } from '@taiga-ui/cdk';
 import { TuiMultiSelectModule } from '@taiga-ui/legacy';
+import { FullNamePipe } from '../../components/full-name-pipe.pipe';
 
 @Component({
   selector: 'app-course-page',
@@ -60,6 +61,7 @@ import { TuiMultiSelectModule } from '@taiga-ui/legacy';
     TuiMultiSelectModule,
     TuiFilterByInputPipe,
     TuiComboBox,
+    FullNamePipe,
   ],
   templateUrl: './course-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -112,11 +114,6 @@ export default class CoursePageComponent implements OnInit {
       return true;
     return user.email.toLowerCase().includes(search.toLowerCase());
   };
-
-  @tuiPure
-  getTeacherFullName(author: UserDto) {
-    return `${author.surname} ${author.name} ${author.patronymic}`;
-  }
 
   async saveSelectedAuthor() {
     await this.coursesFacade.updateCourseTeacher(

@@ -12,6 +12,7 @@ import {
   CreateCourseCommand,
   CreateTaskBlockCommand,
   DeleteTaskFromBlockCommand,
+  InviteStudentsToCourseCommand,
 } from './web-api-client';
 import { BehaviorSubject, firstValueFrom, switchMap } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay } from 'rxjs/operators';
@@ -51,6 +52,13 @@ export class CoursesFacadeService {
     map((state) => state.currentCourseId),
     filter((courseId) => !!courseId),
     switchMap((courseId) => this.coursesClient.getCourseById(courseId)),
+    shareReplay(1),
+  );
+  currentCoursesStudents$ = this._store.pipe(
+    map((state) => state.currentCourseId),
+    filter((courseId) => !!courseId),
+    switchMap((courseId) => this.coursesClient.getStudents(courseId)),
+    map((r) => r.students),
     shareReplay(1),
   );
 
@@ -335,5 +343,18 @@ export class CoursesFacadeService {
         currentPage: _state.currentPage + 1,
       }),
     );
+  }
+
+  async inviteStudents(courseId: string, emails: string[]) {
+    await firstValueFrom(
+      this.coursesClient.inviteStudents(
+        courseId,
+        new InviteStudentsToCourseCommand({
+          id: courseId,
+          emails,
+        }),
+      ),
+    );
+    this._store.next(_state);
   }
 }

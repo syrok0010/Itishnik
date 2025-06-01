@@ -37,12 +37,12 @@
 
         <ng-template #dropdownOptionContent let-author>
           <tui-avatar
-            [src]="getTeacherFullName(author) | tuiInitials"
-            [style.background]="getTeacherFullName(author) | tuiAutoColor"
+            [src]="author | fullName | tuiInitials"
+            [style.background]="author | fullName | tuiAutoColor"
             size="m"
           />
           <span tuiTitle class="whitespace-normal text-xl">
-            {{ getTeacherFullName(author) }}
+            {{ author | fullName }}
             <span tuiSubtitle class="whitespace-normal text-base">{{
               author.email
             }}</span>
@@ -51,7 +51,7 @@
 
         <ng-template #selectedOptionContent let-author>
           <span tuiTitle class="whitespace-normal text-xl">
-            {{ getTeacherFullName(author) }}
+            {{ author | fullName }}
           </span>
         </ng-template>
       }
