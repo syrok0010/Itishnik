@@ -52,7 +52,7 @@ export default class CreateTaskPageComponent {
     name: new FormControl('', [Validators.required]),
     text: new FormControl('', [Validators.required]),
     solutionText: new FormControl('', [Validators.required]),
-    isPublic: new FormControl(true),
+    isPublic: new FormControl(false),
   });
 
   async createTask() {
