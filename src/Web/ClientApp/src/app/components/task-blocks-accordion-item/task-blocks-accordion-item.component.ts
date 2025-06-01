@@ -5,6 +5,8 @@ import {
   inject,
   input,
   signal,
+  TemplateRef,
+  viewChild,
 } from '@angular/core';
 import {
   AbstractControl,
@@ -23,6 +25,7 @@ import {
 import {
   TuiButton,
   tuiDialog,
+  TuiDialogService,
   TuiError,
   TuiIcon,
   TuiScrollbar,
@@ -82,7 +85,11 @@ import { AsyncPipe } from '@angular/common';
 })
 export default class TaskBlocksAccordionItemComponent {
   private readonly coursesFacade = inject(CoursesFacadeService);
-  private readonly dialog = tuiDialog(SelectTasksDialogComponent, {
+  private readonly dialogs = inject(TuiDialogService);
+  private readonly confirmPublishDialogRef = viewChild<TemplateRef<any>>(
+    'confirmPublishDialog',
+  );
+  private readonly selectTasksDialog = tuiDialog(SelectTasksDialogComponent, {
     dismissible: true,
     size: 'auto',
   });
@@ -177,7 +184,7 @@ export default class TaskBlocksAccordionItemComponent {
           ),
           timeAllowed: new FormControl<TuiTime | null>({
             value: TuiTime.fromString(this.taskBlock().timeAllowed ?? ''),
-            disabled: this.taskBlock().isPublic && this.taskBlockStarted(),
+            disabled: this.taskBlock().isPublic,
           }),
         },
         [this.timeValidator()],
@@ -222,7 +229,7 @@ export default class TaskBlocksAccordionItemComponent {
 
   async addTasksToBlock() {
     const taskIds = await firstValueFrom(
-      this.dialog(this.taskBlock().tasks.map((t) => t.id)),
+      this.selectTasksDialog(this.taskBlock().tasks.map((t) => t.id)),
     );
     await this.coursesFacade.addTasksToTaskBlock(
       this.taskBlock().courseId,
@@ -249,6 +256,16 @@ export default class TaskBlocksAccordionItemComponent {
   }
 
   async publish() {
+    if (
+      !(await firstValueFrom(
+        this.dialogs.open<boolean>(this.confirmPublishDialogRef(), {
+          dismissible: false,
+          closeable: false,
+          label: 'Вы хотите опубликовать блок?',
+        }),
+      ))
+    )
+      return;
     await this.coursesFacade.publishTaskBlock(
       this.taskBlock().courseId,
       this.taskBlock().id,
