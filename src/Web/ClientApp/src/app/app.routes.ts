@@ -21,8 +21,7 @@ export const routes: Routes = [
   {
     path: 'courses',
     canMatch: [isStudentGuard],
-    loadComponent: () =>
-      import('./student/student-courses-page/student-courses-page.component'),
+    loadComponent: () => import('./student/student-courses-page.component'),
   },
   {
     path: 'courses/:id',
