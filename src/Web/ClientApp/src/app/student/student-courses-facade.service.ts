@@ -1,13 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import {
-  CoursesClient,
-  GradedCourseResponse,
-  StudentsClient,
-} from '../web-api-client';
+import { GradedCourseResponse, StudentsClient } from '../web-api-client';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { distinctUntilChanged, map } from 'rxjs/operators';
-import { BehaviorSubject, switchMap } from 'rxjs';
-import { coursesPageSize } from '../teacher/courses-facade.service';
+import { map } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { TuiAlertService } from '@taiga-ui/core';
 
 export interface StudentCoursesState {
