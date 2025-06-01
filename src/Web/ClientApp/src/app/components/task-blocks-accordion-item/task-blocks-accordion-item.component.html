@@ -174,7 +174,7 @@
   </div>
 </div>
 
-<ng-template #confirmPublishDialog let-observer>
+<ng-template #confirmPublishDialog>
   <p class="mt-4 text-lg">После публикации вы <span class="font-semibold">не сможете изменить</span>:</p>
   <ul class="list-disc pl-8 *:text-lg">
     <li>Название работы</li>
@@ -182,20 +182,4 @@
     <li>Время ее начала или конца в <span class="font-semibold">меньшую</span> сторону</li>
     <li>Список задач и их баллы</li>
   </ul>
-  <div class="flex justify-end gap-4 mt-4">
-    <button
-      tuiButton
-      appearance="secondary"
-      (click)="observer.next(false); observer.complete()"
-    >
-      Отменить
-    </button>
-    <button
-      tuiButton
-      appearance="primary"
-      (click)="observer.next(true); observer.complete()"
-    >
-      Опубликовать
-    </button>
-  </div>
 </ng-template>

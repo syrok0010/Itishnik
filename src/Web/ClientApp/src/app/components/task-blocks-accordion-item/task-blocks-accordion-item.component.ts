@@ -32,8 +32,10 @@ import {
   TuiTextfield,
 } from '@taiga-ui/core';
 import {
+  TUI_CONFIRM,
   TuiBadge,
   TuiCarousel,
+  TuiConfirmData,
   TuiFieldErrorPipe,
   TuiInputNumber,
   TuiPagination,
@@ -256,16 +258,22 @@ export default class TaskBlocksAccordionItemComponent {
   }
 
   async publish() {
-    if (
-      !(await firstValueFrom(
-        this.dialogs.open<boolean>(this.confirmPublishDialogRef(), {
-          dismissible: false,
-          closeable: false,
-          label: 'Вы хотите опубликовать блок?',
-        }),
-      ))
-    )
-      return;
+    const data: TuiConfirmData = {
+      content: this.confirmPublishDialogRef(),
+      yes: 'Опубликовать',
+      no: 'Отменить',
+    };
+
+    const shouldPublishSolution = await firstValueFrom(
+      this.dialogs.open<boolean>(TUI_CONFIRM, {
+        label: 'Опубликовать блок?',
+        size: 'm',
+        data,
+      }),
+    );
+
+    if (!shouldPublishSolution) return;
+
     await this.coursesFacade.publishTaskBlock(
       this.taskBlock().courseId,
       this.taskBlock().id,
