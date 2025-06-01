@@ -18,8 +18,8 @@ public class ChangeTaskBlockTimelineCommandValidator : AbstractValidator<ChangeT
             .WithMessage("Невозможно сдвинуть начало выполнения опубликованной работы назад")
             .MustAsync((cmd, id, token) => context.TaskBlocks.AnyAsync(tb => tb.Id == id && (!tb.IsPublic || cmd.EndTime >= tb.EndTime), token))
             .WithMessage("Невозможно сдвинуть конец выполнения опубликованной работы назад")
-            .MustAsync((cmd, id, token) => context.TaskBlocks.AnyAsync(tb => tb.Id == id && (!tb.IsPublic || cmd.TimeAllowed == tb.TimeAllowed || (currentTime < tb.StartTime && cmd.TimeAllowed >= tb.TimeAllowed)), token))
-            .WithMessage("Невозможно уменьшить время на выполнение опубликованной работы");
+            .MustAsync((cmd, id, token) => context.TaskBlocks.AnyAsync(tb => tb.Id == id && !tb.IsPublic, token))
+            .WithMessage("Невозможно изменить время на выполнение опубликованной работы");
         RuleFor(x => x.StartTime)
             .LessThan(x => x.EndTime)
             .WithMessage("Время начала не должно быть позже времени конца");
