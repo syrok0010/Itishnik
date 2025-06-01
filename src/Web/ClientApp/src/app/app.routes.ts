@@ -36,7 +36,7 @@ export const routes: Routes = [
       {
         path: 'students',
         loadComponent: () =>
-          import('./components/course-students/./course-students.component'),
+          import('./components/course-students/course-students.component'),
       },
     ],
   },
