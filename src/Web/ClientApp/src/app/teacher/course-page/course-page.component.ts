@@ -4,6 +4,7 @@ import {
   computed,
   effect,
   inject,
+  Injector,
   OnInit,
   signal,
 } from '@angular/core';
@@ -28,7 +29,6 @@ import {
   TuiDataListWrapperComponent,
   TuiFilterByInputPipe,
   TuiTabs,
-  TuiTextarea,
 } from '@taiga-ui/kit';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -39,12 +39,16 @@ import { UserDto } from '../../web-api-client';
 import { TuiStringMatcher } from '@taiga-ui/cdk';
 import { TuiMultiSelectModule } from '@taiga-ui/legacy';
 import { FullNamePipe } from '../../components/full-name-pipe.pipe';
+import {
+  TUI_EDITOR_DEFAULT_EXTENSIONS,
+  TUI_EDITOR_EXTENSIONS,
+  TuiEditor,
+} from '@taiga-ui/editor';
 
 @Component({
   selector: 'app-course-page',
   imports: [
     TuiTextfield,
-    TuiTextarea,
     TuiButton,
     ReactiveFormsModule,
     TuiTabs,
@@ -62,9 +66,20 @@ import { FullNamePipe } from '../../components/full-name-pipe.pipe';
     TuiFilterByInputPipe,
     TuiComboBox,
     FullNamePipe,
+    TuiEditor,
   ],
   templateUrl: './course-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  providers: [
+    {
+      provide: TUI_EDITOR_EXTENSIONS,
+      deps: [Injector],
+      useFactory: (injector: Injector) => [
+        ...TUI_EDITOR_DEFAULT_EXTENSIONS,
+        import('@taiga-ui/editor').then(({ setup }) => setup({ injector })),
+      ],
+    },
+  ],
 })
 export default class CoursePageComponent implements OnInit {
   coursesFacade = inject(CoursesFacadeService);

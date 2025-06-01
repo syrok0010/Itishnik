@@ -19,6 +19,7 @@ import {
   CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
 import { pageSize } from '../tasks-facade.service';
+import { TuiEditorSocket } from '@taiga-ui/editor';
 
 @Component({
   selector: 'app-courses-page',
@@ -35,6 +36,7 @@ import { pageSize } from '../tasks-facade.service';
     TuiScrollbar,
     CdkVirtualScrollViewport,
     CdkVirtualForOf,
+    TuiEditorSocket,
   ],
   templateUrl: './courses-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
