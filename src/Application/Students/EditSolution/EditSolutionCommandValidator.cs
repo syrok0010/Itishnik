@@ -18,7 +18,7 @@ public class EditSolutionCommandValidator : AbstractValidator<EditSolutionComman
             .WithMessage("Текст решения пустой");
         RuleFor(x => x)
             .MustAsync((command, token) => CanEdit(context, command, token))
-            .WithMessage("Невозможно отправить решение");
+            .WithMessage("Нельзя отправить решение после дедлайна");
     }
 
     private async Task<bool> CanEdit(IApplicationDbContext context, EditSolutionCommand command, CancellationToken token)

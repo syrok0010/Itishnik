@@ -5,7 +5,6 @@ using Itishnik.Domain.Entities;
 
 namespace Itishnik.Application.Students.EditSolution;
 
-[Authorize(Roles = Roles.Student)]
 [Authorize(Policy = Policies.Owner)]
 [ResourceMetadata(nameof(Id), typeof(GradedCourse))]
 public record EditSolutionCommand(Guid Id, Guid BlockId, Guid TaskId, string Text) 
