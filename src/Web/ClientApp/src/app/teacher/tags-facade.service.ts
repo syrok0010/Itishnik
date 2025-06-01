@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Tag, TasksClient } from './web-api-client';
+import { Tag, TasksClient } from '../web-api-client';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';

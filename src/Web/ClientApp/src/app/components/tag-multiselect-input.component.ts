@@ -10,7 +10,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { TagsFacadeService } from '../tags-facade.service';
+import { TagsFacadeService } from '../teacher/tags-facade.service';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { tuiItemsHandlersProvider } from '@taiga-ui/kit';
 import { TuiContext } from '@taiga-ui/cdk';

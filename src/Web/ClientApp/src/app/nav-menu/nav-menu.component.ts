@@ -12,13 +12,24 @@ import { AsyncPipe } from '@angular/common';
   imports: [RouterLink, RouterLinkActive, TuiIcon, AsyncPipe],
 })
 export class NavMenuComponent {
-  readonly links: [string, string][] = [
+  readonly teacherLinks: [string, string][] = [
     ['Курсы', '/courses'],
     ['Задания', '/tasks'],
-    ['Студенты', '/students'],
+  ] as const;
+
+  readonly studentLinks: [string, string][] = [
+    ['Курсы', '/courses'],
+    ['Оценки', '/grades'],
   ] as const;
 
   usersFacade = inject(UsersFacadeService);
+  links$ = this.usersFacade.authInfo$.pipe(
+    map((authInfo) =>
+      authInfo.roles.includes('Student')
+        ? this.studentLinks
+        : this.teacherLinks,
+    ),
+  );
 
   shortenedFullName$ = this.usersFacade.currentUser$.pipe(
     map((user) => {

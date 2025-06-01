@@ -7,7 +7,7 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
-import { CoursesFacadeService } from '../../courses-facade.service';
+import { CoursesFacadeService } from '../courses-facade.service';
 import {
   ActivatedRoute,
   RouterLink,

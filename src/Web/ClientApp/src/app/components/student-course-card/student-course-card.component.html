@@ -1,0 +1,45 @@
+<div
+  class="w-full transform overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:scale-105"
+>
+  <img
+    [src]="getPlaceholderImageUrl()"
+    alt="Изображение курса"
+    class="h-40 w-full object-cover"
+  />
+
+  <div class="p-6">
+    <h2 class="mb-4 text-xl font-bold text-gray-800">
+      {{ course().name }}
+    </h2>
+
+    @if (course().grade !== null && course().grade !== undefined) {
+      <div class="flex items-center text-green-600">
+        <tui-icon icon="@tui.award" class="mr-2 h-6 w-6"></tui-icon>
+        <p class="text-lg font-semibold">Оценка: {{ course().grade }}</p>
+      </div>
+    } @else if (
+      course().nearestTaskBlockStart && course().nearestTaskBlockEnd
+    ) {
+      <div class="text-gray-600">
+        <p class="mb-1 flex items-center">
+          <tui-icon
+            icon="@tui.calendar"
+            class="mr-2 h-5 w-5 text-blue-500"
+          ></tui-icon>
+          Начало: {{ course().nearestTaskBlockStart | date: "medium" }}
+        </p>
+        <p class="flex items-center">
+          <tui-icon
+            icon="@tui.calendar-x"
+            class="mr-2 h-5 w-5 text-red-500"
+          ></tui-icon>
+          Дедлайн: {{ course().nearestTaskBlockEnd | date: "medium" }}
+        </p>
+      </div>
+    } @else {
+      <p class="text-sm italic text-gray-600">
+        Запланированной работы пока нет.
+      </p>
+    }
+  </div>
+</div>

@@ -10,7 +10,7 @@ import {
   FilterState,
   pageSize,
   TasksFacadeService,
-} from '../../tasks-facade.service';
+} from '../../teacher/tasks-facade.service';
 import { Role } from '../../users-facade.service';
 import {
   FormArray,

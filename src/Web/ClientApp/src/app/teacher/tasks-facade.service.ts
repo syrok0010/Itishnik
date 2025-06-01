@@ -8,7 +8,7 @@ import {
   TaskListResponse,
   TaskResponse,
   TasksClient,
-} from './web-api-client';
+} from '../web-api-client';
 import {
   BehaviorSubject,
   firstValueFrom,

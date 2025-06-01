@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TuiSortChange, TuiTable } from '@taiga-ui/addon-table';
-import { CoursesFacadeService } from '../../courses-facade.service';
+import { CoursesFacadeService } from '../courses-facade.service';
 import { AsyncPipe } from '@angular/common';
 import {
   TuiButton,
@@ -18,7 +18,7 @@ import {
   CdkVirtualForOf,
   CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
-import { pageSize } from '../../tasks-facade.service';
+import { pageSize } from '../tasks-facade.service';
 
 @Component({
   selector: 'app-courses-page',
