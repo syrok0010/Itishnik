@@ -14,7 +14,7 @@ import {
   TuiTextfield,
   TuiTitle,
 } from '@taiga-ui/core';
-import { CoursesFacadeService } from '../../courses-facade.service';
+import { CoursesFacadeService } from '../../teacher/courses-facade.service';
 import { combineLatest, firstValueFrom, startWith } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';

@@ -8,7 +8,7 @@ import {
 import { TuiInputModule } from '@taiga-ui/legacy';
 import { TuiButton, TuiDialogContext } from '@taiga-ui/core';
 import { injectContext } from '@taiga-ui/polymorpheus';
-import { CoursesFacadeService } from '../courses-facade.service';
+import { CoursesFacadeService } from '../teacher/courses-facade.service';
 
 @Component({
   selector: 'app-create-course-dialog',

@@ -11,7 +11,7 @@ import {
   viewChild,
 } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TasksFacadeService } from '../../tasks-facade.service';
+import { TasksFacadeService } from '../tasks-facade.service';
 import {
   TuiAutoColorPipe,
   TuiButton,

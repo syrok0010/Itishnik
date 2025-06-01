@@ -42,7 +42,7 @@ import { TuiTable } from '@taiga-ui/addon-table';
 import { RouterLink } from '@angular/router';
 import { TaskBlockResponse } from '../../web-api-client';
 import { TuiDay, TuiTime } from '@taiga-ui/cdk';
-import { CoursesFacadeService } from '../../courses-facade.service';
+import { CoursesFacadeService } from '../../teacher/courses-facade.service';
 import { firstValueFrom } from 'rxjs';
 import SelectTasksDialogComponent from '../select-tasks-dialog.component';
 import { AsyncPipe } from '@angular/common';

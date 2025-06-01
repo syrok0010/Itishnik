@@ -13,7 +13,7 @@ import {
   CreateTaskBlockCommand,
   DeleteTaskFromBlockCommand,
   InviteStudentsToCourseCommand,
-} from './web-api-client';
+} from '../web-api-client';
 import { BehaviorSubject, firstValueFrom, switchMap } from 'rxjs';
 import { distinctUntilChanged, filter, map, shareReplay } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';

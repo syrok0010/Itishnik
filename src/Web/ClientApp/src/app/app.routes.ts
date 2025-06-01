@@ -3,7 +3,7 @@ import {
   isAdminOrTeacherGuard,
   isStudentGuard,
 } from '../api-authorization/auth-guards';
-import { taskResolver } from './task-resolver';
+import { taskResolver } from './teacher/task-resolver';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/courses', pathMatch: 'full' },

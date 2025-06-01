@@ -19,7 +19,7 @@ import {
 } from '@taiga-ui/editor';
 import { TuiButton } from '@taiga-ui/core';
 import { TuiCheckbox } from '@taiga-ui/kit';
-import { TasksFacadeService } from '../../tasks-facade.service';
+import { TasksFacadeService } from '../tasks-facade.service';
 
 @Component({
   selector: 'app-create-task-page',

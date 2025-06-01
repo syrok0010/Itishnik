@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { TuiAccordion } from '@taiga-ui/experimental';
-import { CoursesFacadeService } from '../../courses-facade.service';
+import { CoursesFacadeService } from '../../teacher/courses-facade.service';
 import { map } from 'rxjs/operators';
 import {
   TuiInputDateTimeModule,
