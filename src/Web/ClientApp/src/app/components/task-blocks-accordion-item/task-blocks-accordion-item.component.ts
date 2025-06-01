@@ -143,7 +143,7 @@ export default class TaskBlocksAccordionItemComponent {
   );
 
   taskBlockFinished = computed(
-    () => Date.now() - this.taskBlock().endTime.getTime() > 0,
+    () => Date.now() - this.taskBlock().endTime?.getTime() > 0,
   );
 
   taskBlock = input.required<TaskBlockResponse>();

@@ -14,6 +14,7 @@ using Itishnik.Application.Courses.Commands.InviteStudentsToCourse;
 using Itishnik.Application.Courses.Commands.PublishTaskBlock;
 using Itishnik.Application.Courses.Queries.GetCourseById;
 using Itishnik.Application.Courses.Queries.GetCourseList;
+using Itishnik.Application.Courses.Queries.GetGradesOnCourse;
 using Itishnik.Application.Courses.Queries.GetFeedbacks;
 using Itishnik.Application.Courses.Queries.GetStudentsOnCourse;
 using Itishnik.Application.Students;
@@ -33,6 +34,7 @@ public class Courses : EndpointGroupBase
             .MapGet(GetCourseById, "{id}")
             .MapPost(CreateTaskBlock, "{id}/block")
             .MapGet(GetStudents, "{id}/students")
+            .MapGet(GetStudentsAndGrades, "{id}/grades")
             .MapPatch(ChangeTaskBlockDescription, "{id}/{blockId}/description")
             .MapPatch(ChangeTaskBlockTimeline, "{id}/{blockId}/timeline")
             .MapPatch(ChangeTaskBlockName, "{id}/{blockId}/name")
@@ -93,6 +95,12 @@ public class Courses : EndpointGroupBase
     public async Task<Ok<CourseStudentListResponse>> GetStudents(ISender sender, Guid id)
     {
         var response = await sender.Send(new GetStudentsOnCourseQuery(id));
+        return TypedResults.Ok(response);
+    }
+
+    public async Task<Ok<StudentGradesResponse[]>> GetStudentsAndGrades(ISender sender, Guid id)
+    {
+        var response = await sender.Send(new GetGradesOnCourseQuery(id));
         return TypedResults.Ok(response);
     }
 
