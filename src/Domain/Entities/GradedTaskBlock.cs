@@ -47,6 +47,11 @@ public class GradedTaskBlock
     {
         if (StartTime is not null)
             throw new InvalidOperationException("Работа уже начата");
+
+        foreach (var task in TaskBlock.Tasks)
+        {
+            AddSolution(new Solution(task, Student, "Solution"));
+        }
         
         StartTime = DateTime.Now;
     }
