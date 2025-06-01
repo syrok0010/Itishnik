@@ -1,0 +1,44 @@
+<div class="flex flex-col gap-4">
+  <div class="text-base text-gray-600 flex justify-between">
+    <p class="flex items-center">
+      <tui-icon
+        icon="@tui.calendar"
+        class="mr-2 h-5 w-5 text-blue-500"
+      ></tui-icon>
+      Начало: {{ taskBlock().startTime | date: "medium" }}
+    </p>
+    <p class="flex items-center">
+      <tui-icon
+        icon="@tui.calendar-x"
+        class="mr-2 h-5 w-5 text-red-500"
+      ></tui-icon>
+      Дедлайн: {{ taskBlock().endTime | date: "medium" }}
+    </p>
+    <p class="flex items-center">
+      <tui-icon
+        icon="@tui.clock-fading"
+        class="mr-2 h-5 w-5 text-green-500"
+      ></tui-icon>
+      Время на выполнение: {{ timeAllowed() }}
+    </p>
+    <p class="flex items-center">
+      <tui-icon
+        icon="@tui.circle-check"
+        class="mr-2 h-5 w-5 text-purple-500"
+      ></tui-icon>
+      Всего задач: {{ taskBlock().taskCount }}
+    </p>
+  </div>
+
+  <div>
+    <h3 class="font-semibold">Описание работы:</h3>
+    <p class="text-base">
+      {{ taskBlock().description }}
+    </p>
+  </div>
+
+  @if (status() === 'CanStart') {
+    <button tuiButton class="mr-auto" (click)="confirmStart()">Начать выполнение</button>
+  }
+
+</div>

@@ -7,7 +7,6 @@ import { GradedCourseResponse } from '../../web-api-client';
   selector: 'app-student-course-card',
   imports: [TuiIcon, DatePipe],
   templateUrl: './student-course-card.component.html',
-  styles: ``,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class StudentCourseCardComponent {
