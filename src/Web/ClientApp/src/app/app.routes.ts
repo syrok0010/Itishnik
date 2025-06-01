@@ -56,6 +56,13 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./components/course-students/course-students.component'),
       },
+      {
+        path: 'grades',
+        loadComponent: () =>
+          import(
+            './components/course-grades-table/course-grades-table.component'
+          ),
+      },
     ],
   },
   {
