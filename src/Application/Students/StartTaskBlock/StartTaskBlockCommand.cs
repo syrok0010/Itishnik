@@ -6,6 +6,7 @@ using Itishnik.Domain.Entities;
 namespace Itishnik.Application.Students.StartTaskBlock;
 
 [Authorize(Roles = Roles.Student)]
+[Authorize(Policy = Policies.Owner)]
 [ResourceMetadata(nameof(Id), typeof(GradedCourse))]
 public record StartTaskBlockCommand(Guid Id, Guid BlockId) : IRequest<GradedTaskBlockDto>;
 
