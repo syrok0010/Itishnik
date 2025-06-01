@@ -1,10 +1,9 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TuiIcon } from '@taiga-ui/core';
 import { UsersFacadeService } from '../users-facade.service';
 import { map } from 'rxjs/operators';
 import { AsyncPipe } from '@angular/common';
-import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-nav-menu',
@@ -24,11 +23,12 @@ export class NavMenuComponent {
   ] as const;
 
   usersFacade = inject(UsersFacadeService);
-  roles = toSignal(
-    this.usersFacade.authInfo$.pipe(map((authInfo) => authInfo.roles)),
-  );
-  links = computed(() =>
-    this.roles().includes('Student') ? this.studentLinks : this.teacherLinks,
+  links$ = this.usersFacade.authInfo$.pipe(
+    map((authInfo) =>
+      authInfo.roles.includes('Student')
+        ? this.studentLinks
+        : this.teacherLinks,
+    ),
   );
 
   shortenedFullName$ = this.usersFacade.currentUser$.pipe(
