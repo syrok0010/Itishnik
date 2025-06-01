@@ -821,6 +821,115 @@
         }
       }
     },
+    "/api/Students/courses/{id}/start": {
+      "patch": {
+        "tags": [
+          "Students"
+        ],
+        "operationId": "StartTaskBlock",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "blockId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GradedTaskBlockDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Students/courses/{id}/{blockId}/{taskId}/solution": {
+      "patch": {
+        "tags": [
+          "Students"
+        ],
+        "operationId": "EditSolution",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "taskId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 3
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditSolutionCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 4
+        },
+        "responses": {
+          "400": {
+            "description": ""
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SolutionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Tasks": {
       "post": {
         "tags": [
@@ -1856,6 +1965,27 @@
           },
           "name": {
             "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "EditSolutionCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "blockId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "taskId": {
+            "type": "string",
+            "format": "guid"
           },
           "text": {
             "type": "string"

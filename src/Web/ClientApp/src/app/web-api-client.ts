@@ -946,6 +946,8 @@ export class CoursesClient implements ICoursesClient {
 export interface IStudentsClient {
     getCourses(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfGradedCourseResponse>;
     getCourse(id: string): Observable<StudentCourseResponse>;
+    startTaskBlock(id: string, blockId: string): Observable<GradedTaskBlockDto>;
+    editSolution(id: string, blockId: string, taskId: string, command: EditSolutionCommand): Observable<SolutionDto>;
 }
 
 @Injectable({
@@ -1058,6 +1060,126 @@ export class StudentsClient implements IStudentsClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = StudentCourseResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    startTaskBlock(id: string, blockId: string): Observable<GradedTaskBlockDto> {
+        let url_ = this.baseUrl + "/api/Students/courses/{id}/start?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (blockId === undefined || blockId === null)
+            throw new Error("The parameter 'blockId' must be defined and cannot be null.");
+        else
+            url_ += "blockId=" + encodeURIComponent("" + blockId) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processStartTaskBlock(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processStartTaskBlock(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<GradedTaskBlockDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<GradedTaskBlockDto>;
+        }));
+    }
+
+    protected processStartTaskBlock(response: HttpResponseBase): Observable<GradedTaskBlockDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = GradedTaskBlockDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    editSolution(id: string, blockId: string, taskId: string, command: EditSolutionCommand): Observable<SolutionDto> {
+        let url_ = this.baseUrl + "/api/Students/courses/{id}/{blockId}/{taskId}/solution";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (blockId === undefined || blockId === null)
+            throw new Error("The parameter 'blockId' must be defined.");
+        url_ = url_.replace("{blockId}", encodeURIComponent("" + blockId));
+        if (taskId === undefined || taskId === null)
+            throw new Error("The parameter 'taskId' must be defined.");
+        url_ = url_.replace("{taskId}", encodeURIComponent("" + taskId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEditSolution(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEditSolution(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SolutionDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SolutionDto>;
+        }));
+    }
+
+    protected processEditSolution(response: HttpResponseBase): Observable<SolutionDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SolutionDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -3086,6 +3208,54 @@ export class TaskDto implements ITaskDto {
 export interface ITaskDto {
     id?: string;
     name?: string;
+    text?: string;
+}
+
+export class EditSolutionCommand implements IEditSolutionCommand {
+    id?: string;
+    blockId?: string;
+    taskId?: string;
+    text?: string;
+
+    constructor(data?: IEditSolutionCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.blockId = _data["blockId"];
+            this.taskId = _data["taskId"];
+            this.text = _data["text"];
+        }
+    }
+
+    static fromJS(data: any): EditSolutionCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new EditSolutionCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["blockId"] = this.blockId;
+        data["taskId"] = this.taskId;
+        data["text"] = this.text;
+        return data;
+    }
+}
+
+export interface IEditSolutionCommand {
+    id?: string;
+    blockId?: string;
+    taskId?: string;
     text?: string;
 }
 
