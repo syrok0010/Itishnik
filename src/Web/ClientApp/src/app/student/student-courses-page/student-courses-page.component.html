@@ -1,0 +1,5 @@
+<div class="mt-4 grid grid-cols-3 gap-x-12 gap-y-8">
+  @for (course of courses | async; track course.id) {
+    <app-student-course-card [course]="course" />
+  }
+</div>

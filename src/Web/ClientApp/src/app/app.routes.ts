@@ -22,7 +22,7 @@ export const routes: Routes = [
     path: 'courses',
     canMatch: [isStudentGuard],
     loadComponent: () =>
-      import('./student/s-courses-page/s-courses-page.component'),
+      import('./student/student-courses-page/student-courses-page.component'),
   },
   {
     path: 'courses/:id',
