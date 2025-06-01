@@ -128,17 +128,19 @@
         />
       </label>
     </div>
-    <button
-      appearance="primary"
-      tuiButton
-      type="button"
-      class="mr-auto shadow-sm"
-      [disabled]="formGroup().invalid"
-      size="m"
-      (click)="saveTaskBlock()"
-    >
-      Сохранить
-    </button>
+    @if (!taskBlockFinished()) {
+      <button
+        appearance="primary"
+        tuiButton
+        type="button"
+        class="mr-auto shadow-sm"
+        [disabled]="formGroup().invalid"
+        size="m"
+        (click)="saveTaskBlock()"
+      >
+        Сохранить
+      </button>
+    }
   </div>
 
   <div class="flex flex-col gap-4">

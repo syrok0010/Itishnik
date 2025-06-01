@@ -142,6 +142,10 @@ export default class TaskBlocksAccordionItemComponent {
     () => Date.now() - this.taskBlock().startTime.getTime() > 0,
   );
 
+  taskBlockFinished = computed(
+    () => Date.now() - this.taskBlock().endTime.getTime() > 0,
+  );
+
   taskBlock = input.required<TaskBlockResponse>();
   formGroup = computed(
     () =>
@@ -154,9 +158,10 @@ export default class TaskBlocksAccordionItemComponent {
             },
             [Validators.required],
           ),
-          description: new FormControl<string | null>(
-            this.taskBlock().description,
-          ),
+          description: new FormControl<string | null>({
+            value: this.taskBlock().description,
+            disabled: this.taskBlockFinished(),
+          }),
           startTime: new FormControl<[TuiDay, TuiTime]>(
             {
               value: [
@@ -172,16 +177,19 @@ export default class TaskBlocksAccordionItemComponent {
             Validators.required,
           ),
           endTime: new FormControl<[TuiDay, TuiTime]>(
-            [
-              TuiDay.fromLocalNativeDate(
-                this.taskBlock().endTime ??
-                  new Date(Date.now() + 1000 * 60 * 60 * 24),
-              ),
-              TuiTime.fromLocalNativeDate(
-                this.taskBlock().endTime ??
-                  new Date(Date.now() + 1000 * 60 * 60 * 24),
-              ),
-            ],
+            {
+              value: [
+                TuiDay.fromLocalNativeDate(
+                  this.taskBlock().endTime ??
+                    new Date(Date.now() + 1000 * 60 * 60 * 24),
+                ),
+                TuiTime.fromLocalNativeDate(
+                  this.taskBlock().endTime ??
+                    new Date(Date.now() + 1000 * 60 * 60 * 24),
+                ),
+              ],
+              disabled: this.taskBlock().isPublic && this.taskBlockFinished(),
+            },
             Validators.required,
           ),
           timeAllowed: new FormControl<TuiTime | null>({
