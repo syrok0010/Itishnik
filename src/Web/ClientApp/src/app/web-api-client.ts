@@ -952,6 +952,7 @@ export class CoursesClient implements ICoursesClient {
 
 export interface IStudentsClient {
     getCourses(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfGradedCourseResponse>;
+    getCourse(id: string): Observable<StudentCourseResponse>;
 }
 
 @Injectable({
@@ -1013,6 +1014,57 @@ export class StudentsClient implements IStudentsClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = PaginatedListOfGradedCourseResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getCourse(id: string): Observable<StudentCourseResponse> {
+        let url_ = this.baseUrl + "/api/Students/{id}";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetCourse(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetCourse(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<StudentCourseResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<StudentCourseResponse>;
+        }));
+    }
+
+    protected processGetCourse(response: HttpResponseBase): Observable<StudentCourseResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = StudentCourseResponse.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2816,6 +2868,246 @@ export interface IGradedCourseResponse {
     grade?: number | undefined;
     nearestTaskBlockStart?: Date | undefined;
     nearestTaskBlockEnd?: Date | undefined;
+}
+
+export class StudentCourseResponse implements IStudentCourseResponse {
+    id?: string;
+    name?: string;
+    description?: string | undefined;
+    grade?: number | undefined;
+    taskBlocks?: GradedTaskBlockDto[];
+
+    constructor(data?: IStudentCourseResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.grade = _data["grade"];
+            if (Array.isArray(_data["taskBlocks"])) {
+                this.taskBlocks = [] as any;
+                for (let item of _data["taskBlocks"])
+                    this.taskBlocks!.push(GradedTaskBlockDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): StudentCourseResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new StudentCourseResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["grade"] = this.grade;
+        if (Array.isArray(this.taskBlocks)) {
+            data["taskBlocks"] = [];
+            for (let item of this.taskBlocks)
+                data["taskBlocks"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IStudentCourseResponse {
+    id?: string;
+    name?: string;
+    description?: string | undefined;
+    grade?: number | undefined;
+    taskBlocks?: GradedTaskBlockDto[];
+}
+
+export class GradedTaskBlockDto implements IGradedTaskBlockDto {
+    id?: string;
+    name?: string;
+    description?: string | undefined;
+    startTime?: Date;
+    endTime?: Date;
+    timeAllowed?: string;
+    studentStartTime?: Date | undefined;
+    grade?: number | undefined;
+    taskCount?: number;
+    solutions?: SolutionDto[] | undefined;
+    tasks?: TaskDto[] | undefined;
+
+    constructor(data?: IGradedTaskBlockDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.description = _data["description"];
+            this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
+            this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
+            this.timeAllowed = _data["timeAllowed"];
+            this.studentStartTime = _data["studentStartTime"] ? new Date(_data["studentStartTime"].toString()) : <any>undefined;
+            this.grade = _data["grade"];
+            this.taskCount = _data["taskCount"];
+            if (Array.isArray(_data["solutions"])) {
+                this.solutions = [] as any;
+                for (let item of _data["solutions"])
+                    this.solutions!.push(SolutionDto.fromJS(item));
+            }
+            if (Array.isArray(_data["tasks"])) {
+                this.tasks = [] as any;
+                for (let item of _data["tasks"])
+                    this.tasks!.push(TaskDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): GradedTaskBlockDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new GradedTaskBlockDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["description"] = this.description;
+        data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
+        data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
+        data["timeAllowed"] = this.timeAllowed;
+        data["studentStartTime"] = this.studentStartTime ? this.studentStartTime.toISOString() : <any>undefined;
+        data["grade"] = this.grade;
+        data["taskCount"] = this.taskCount;
+        if (Array.isArray(this.solutions)) {
+            data["solutions"] = [];
+            for (let item of this.solutions)
+                data["solutions"].push(item.toJSON());
+        }
+        if (Array.isArray(this.tasks)) {
+            data["tasks"] = [];
+            for (let item of this.tasks)
+                data["tasks"].push(item.toJSON());
+        }
+        return data;
+    }
+}
+
+export interface IGradedTaskBlockDto {
+    id?: string;
+    name?: string;
+    description?: string | undefined;
+    startTime?: Date;
+    endTime?: Date;
+    timeAllowed?: string;
+    studentStartTime?: Date | undefined;
+    grade?: number | undefined;
+    taskCount?: number;
+    solutions?: SolutionDto[] | undefined;
+    tasks?: TaskDto[] | undefined;
+}
+
+export class SolutionDto implements ISolutionDto {
+    id?: string;
+    text?: string;
+    grade?: number | undefined;
+
+    constructor(data?: ISolutionDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.text = _data["text"];
+            this.grade = _data["grade"];
+        }
+    }
+
+    static fromJS(data: any): SolutionDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new SolutionDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["text"] = this.text;
+        data["grade"] = this.grade;
+        return data;
+    }
+}
+
+export interface ISolutionDto {
+    id?: string;
+    text?: string;
+    grade?: number | undefined;
+}
+
+export class TaskDto implements ITaskDto {
+    id?: string;
+    name?: string;
+    text?: string;
+
+    constructor(data?: ITaskDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.text = _data["text"];
+        }
+    }
+
+    static fromJS(data: any): TaskDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new TaskDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["text"] = this.text;
+        return data;
+    }
+}
+
+export interface ITaskDto {
+    id?: string;
+    name?: string;
+    text?: string;
 }
 
 export class TaskResponse implements ITaskResponse {

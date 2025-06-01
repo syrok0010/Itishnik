@@ -27,6 +27,8 @@ public class GradedTaskBlock
     public IEnumerable<Solution> Solutions => _solutions;
 
     public void AddSolution(Solution solution) => _solutions.Add(solution);
+    
+    public DateTime? StartTime { get; private set; }
 
     public string? Feedback
     {
@@ -39,6 +41,11 @@ public class GradedTaskBlock
             }
             _feedback = value;
         }
+    }
+
+    public void Start()
+    {
+        StartTime = DateTime.Now;
     }
     
     public int? Grade
