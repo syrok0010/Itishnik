@@ -1025,7 +1025,7 @@ export class StudentsClient implements IStudentsClient {
     }
 
     getCourse(id: string): Observable<StudentCourseResponse> {
-        let url_ = this.baseUrl + "/api/Students/{id}";
+        let url_ = this.baseUrl + "/api/Students/courses/{id}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));

@@ -799,7 +799,7 @@
         }
       }
     },
-    "/api/Students/{id}": {
+    "/api/Students/courses/{id}": {
       "get": {
         "tags": [
           "Students"

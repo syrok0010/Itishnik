@@ -14,7 +14,7 @@ public class Students : EndpointGroupBase
         app.MapGroup(this)
             .RequireAuthorization()
             .MapGet(GetCourses, "/courses")
-            .MapGet(GetCourse, "{id}");
+            .MapGet(GetCourse, "/courses/{id}");
     }
     
     public async Task<Ok<PaginatedList<GradedCourseResponse>>> GetCourses(ISender sender,
