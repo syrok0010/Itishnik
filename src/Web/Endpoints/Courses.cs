@@ -14,7 +14,9 @@ using Itishnik.Application.Courses.Commands.InviteStudentsToCourse;
 using Itishnik.Application.Courses.Commands.PublishTaskBlock;
 using Itishnik.Application.Courses.Queries.GetCourseById;
 using Itishnik.Application.Courses.Queries.GetCourseList;
+using Itishnik.Application.Courses.Queries.GetFeedbacks;
 using Itishnik.Application.Courses.Queries.GetStudentsOnCourse;
+using Itishnik.Application.Students;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,7 +42,8 @@ public class Courses : EndpointGroupBase
             .MapPatch(ChangeWeights, "{id}/{blockId}/gradeWeights")
             .MapPost(PublishBlock, "{id}/{blockId}/publish")
             .MapPatch(ChangeTeacher, "{id}/teacher")
-            .MapPost(InviteStudents, "{id}/invite");
+            .MapPost(InviteStudents, "{id}/invite")
+            .MapGet(GetFeedbacks, "{id}/{blockId}/feedbacks");
     }
     
     public async Task<Created<CourseResponse>> CreateCourse(ISender sender, CreateCourseCommand command)
@@ -173,6 +176,13 @@ public class Courses : EndpointGroupBase
     public async Task<Ok<CourseStudentListResponse>> InviteStudents(ISender sender, Guid id, InviteStudentsToCourseCommand command)
     {
         var response = await sender.Send(command);
+        return TypedResults.Ok(response);
+    }
+
+    public async Task<Ok<PaginatedList<FeedbackDto>>> GetFeedbacks(
+        ISender sender, Guid id, Guid blockId, int pageNumber = 1, int pageSize = 10)
+    {
+        var response = await sender.Send(new GetFeedbacksQuery(id, blockId, pageNumber, pageSize));
         return TypedResults.Ok(response);
     }
 }

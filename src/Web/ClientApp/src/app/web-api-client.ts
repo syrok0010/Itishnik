@@ -31,6 +31,7 @@ export interface ICoursesClient {
     publishBlock(id: string, blockId: string): Observable<TaskBlockResponse>;
     changeTeacher(id: string, command: ChangeCourseTeacherCommand): Observable<CourseResponse>;
     inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<CourseStudentListResponse>;
+    getFeedbacks(id: string, blockId: string, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfFeedbackDto>;
 }
 
 @Injectable({
@@ -941,6 +942,68 @@ export class CoursesClient implements ICoursesClient {
         }
         return _observableOf(null as any);
     }
+
+    getFeedbacks(id: string, blockId: string, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfFeedbackDto> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/feedbacks?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (blockId === undefined || blockId === null)
+            throw new Error("The parameter 'blockId' must be defined.");
+        url_ = url_.replace("{blockId}", encodeURIComponent("" + blockId));
+        if (pageNumber === null)
+            throw new Error("The parameter 'pageNumber' cannot be null.");
+        else if (pageNumber !== undefined)
+            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
+        if (pageSize === null)
+            throw new Error("The parameter 'pageSize' cannot be null.");
+        else if (pageSize !== undefined)
+            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetFeedbacks(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetFeedbacks(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<PaginatedListOfFeedbackDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<PaginatedListOfFeedbackDto>;
+        }));
+    }
+
+    protected processGetFeedbacks(response: HttpResponseBase): Observable<PaginatedListOfFeedbackDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = PaginatedListOfFeedbackDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export interface IStudentsClient {
@@ -948,6 +1011,7 @@ export interface IStudentsClient {
     getCourse(id: string): Observable<StudentCourseResponse>;
     startTaskBlock(id: string, blockId: string): Observable<GradedTaskBlockDto>;
     editSolution(id: string, blockId: string, taskId: string, command: EditSolutionCommand): Observable<SolutionDto>;
+    sendFeedback(id: string, blockId: string, command: SendFeedbackCommand): Observable<FeedbackDto>;
 }
 
 @Injectable({
@@ -1180,6 +1244,68 @@ export class StudentsClient implements IStudentsClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = SolutionDto.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    sendFeedback(id: string, blockId: string, command: SendFeedbackCommand): Observable<FeedbackDto> {
+        let url_ = this.baseUrl + "/api/Students/courses/{id}/{blockId}/feedback";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (blockId === undefined || blockId === null)
+            throw new Error("The parameter 'blockId' must be defined.");
+        url_ = url_.replace("{blockId}", encodeURIComponent("" + blockId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSendFeedback(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSendFeedback(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<FeedbackDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<FeedbackDto>;
+        }));
+    }
+
+    protected processSendFeedback(response: HttpResponseBase): Observable<FeedbackDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = FeedbackDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2855,6 +2981,114 @@ export interface IInviteStudentsToCourseCommand {
     emails?: string[];
 }
 
+export class PaginatedListOfFeedbackDto implements IPaginatedListOfFeedbackDto {
+    items?: FeedbackDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+
+    constructor(data?: IPaginatedListOfFeedbackDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["items"])) {
+                this.items = [] as any;
+                for (let item of _data["items"])
+                    this.items!.push(FeedbackDto.fromJS(item));
+            }
+            this.pageNumber = _data["pageNumber"];
+            this.totalPages = _data["totalPages"];
+            this.totalCount = _data["totalCount"];
+            this.hasPreviousPage = _data["hasPreviousPage"];
+            this.hasNextPage = _data["hasNextPage"];
+        }
+    }
+
+    static fromJS(data: any): PaginatedListOfFeedbackDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new PaginatedListOfFeedbackDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.items)) {
+            data["items"] = [];
+            for (let item of this.items)
+                data["items"].push(item.toJSON());
+        }
+        data["pageNumber"] = this.pageNumber;
+        data["totalPages"] = this.totalPages;
+        data["totalCount"] = this.totalCount;
+        data["hasPreviousPage"] = this.hasPreviousPage;
+        data["hasNextPage"] = this.hasNextPage;
+        return data;
+    }
+}
+
+export interface IPaginatedListOfFeedbackDto {
+    items?: FeedbackDto[];
+    pageNumber?: number;
+    totalPages?: number;
+    totalCount?: number;
+    hasPreviousPage?: boolean;
+    hasNextPage?: boolean;
+}
+
+export class FeedbackDto implements IFeedbackDto {
+    taskBlockId?: string;
+    studentId?: string;
+    feedback?: string;
+
+    constructor(data?: IFeedbackDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.taskBlockId = _data["taskBlockId"];
+            this.studentId = _data["studentId"];
+            this.feedback = _data["feedback"];
+        }
+    }
+
+    static fromJS(data: any): FeedbackDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FeedbackDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["taskBlockId"] = this.taskBlockId;
+        data["studentId"] = this.studentId;
+        data["feedback"] = this.feedback;
+        return data;
+    }
+}
+
+export interface IFeedbackDto {
+    taskBlockId?: string;
+    studentId?: string;
+    feedback?: string;
+}
+
 export class PaginatedListOfGradedCourseResponse implements IPaginatedListOfGradedCourseResponse {
     items?: GradedCourseResponse[];
     pageNumber?: number;
@@ -3256,6 +3490,50 @@ export interface IEditSolutionCommand {
     id?: string;
     blockId?: string;
     taskId?: string;
+    text?: string;
+}
+
+export class SendFeedbackCommand implements ISendFeedbackCommand {
+    courseId?: string;
+    blockId?: string;
+    text?: string;
+
+    constructor(data?: ISendFeedbackCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.courseId = _data["courseId"];
+            this.blockId = _data["blockId"];
+            this.text = _data["text"];
+        }
+    }
+
+    static fromJS(data: any): SendFeedbackCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new SendFeedbackCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["courseId"] = this.courseId;
+        data["blockId"] = this.blockId;
+        data["text"] = this.text;
+        return data;
+    }
+}
+
+export interface ISendFeedbackCommand {
+    courseId?: string;
+    blockId?: string;
     text?: string;
 }
 
