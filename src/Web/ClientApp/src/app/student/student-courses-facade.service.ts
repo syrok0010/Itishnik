@@ -53,4 +53,6 @@ export class StudentCoursesFacadeService {
     );
     this._store.next((_state = { ..._state, currentCourse }));
   }
+
+  async startSolution(id: string) {}
 }

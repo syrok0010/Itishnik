@@ -10,7 +10,11 @@ import { RouterLink } from '@angular/router';
   template: `
     <div class="my-4 grid grid-cols-3 gap-x-12 gap-y-8">
       @for (course of courses$ | async; track course.id) {
-        <app-student-course-card [course]="course" [routerLink]="[course.id]" />
+        <app-student-course-card
+          [course]="course"
+          class="hover:cursor-pointer"
+          [routerLink]="[course.id]"
+        />
       }
     </div>
   `,

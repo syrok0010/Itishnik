@@ -13,10 +13,10 @@
     </h1>
     @if (!!course.grade) {
       <h2
-        class="flex items-center text-xl font-semibold text-green-600"
+        class="flex items-center text-xl font-semibold"
         style="view-transition-name: course-grade-{{ course.id }}"
       >
-        <tui-icon icon="@tui.award" class="mr-2 h-6 w-6"></tui-icon>
+        <tui-icon icon="@tui.award" class="mr-1 h-6 w-6 text-green-600"></tui-icon>
         <p>
           Оценка: <span class="text-2xl">{{ course.grade }}</span>
         </p>
@@ -27,6 +27,7 @@
 </div>
 
 <div class="mt-4 flex w-full flex-col gap-4 rounded-lg bg-white p-4">
+  <h1 class="text-2xl font-bold">Работы</h1>
   <tui-accordion>
     @for (block of course.taskBlocks; track block.id) {
       <button [tuiAccordion]="false">

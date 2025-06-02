@@ -11,6 +11,7 @@ import { DatePipe } from '@angular/common';
 import { TuiButton, TuiDialogService, TuiIcon } from '@taiga-ui/core';
 import { TUI_CONFIRM, TuiConfirmData } from '@taiga-ui/kit';
 import { firstValueFrom } from 'rxjs';
+import { StudentCoursesFacadeService } from '../../student/student-courses-facade.service';
 
 type TaskBlockStatus = 'BeforeStart' | 'CanStart' | 'Solving' | 'Finished';
 
@@ -21,6 +22,7 @@ type TaskBlockStatus = 'BeforeStart' | 'CanStart' | 'Solving' | 'Finished';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class StudentTaskBlocksAccordionItemComponent {
+  private readonly courseFacade = inject(StudentCoursesFacadeService);
   private readonly dialogs = inject(TuiDialogService);
   taskBlock = input.required<GradedTaskBlockDto>();
 
@@ -59,5 +61,7 @@ export default class StudentTaskBlocksAccordionItemComponent {
     if (!shouldStartSolution) {
       return;
     }
+
+    await this.courseFacade.startSolution(this.taskBlock().id);
   }
 }
