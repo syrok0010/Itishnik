@@ -22,9 +22,8 @@ public class GetFeedbacksQueryHandler(IApplicationDbContext context, IMapper map
     {
         return await _context.GradedTaskBlocks
             .AsNoTracking()
-            .Where(b => b.TaskBlockId == request.TaskBlockId)
+            .Where(b => b.TaskBlockId == request.TaskBlockId && !string.IsNullOrWhiteSpace(b.Feedback))
             .Select(b => b.Feedback!)
-            .Where(f => !string.IsNullOrWhiteSpace(f) || !string.IsNullOrEmpty(f))
             .ToListAsync(cancellationToken);
     }
 }
