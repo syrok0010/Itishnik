@@ -4,6 +4,7 @@ using Itishnik.Application.Students;
 using Itishnik.Application.Students.EditSolution;
 using Itishnik.Application.Students.GetCourseById;
 using Itishnik.Application.Students.GetCourses;
+using Itishnik.Application.Students.SendFeedback;
 using Itishnik.Application.Students.StartTaskBlock;
 using Microsoft.AspNetCore.Http.HttpResults;
 
@@ -18,7 +19,8 @@ public class Students : EndpointGroupBase
             .MapGet(GetCourses, "/courses")
             .MapGet(GetCourse, "/courses/{id}")
             .MapPatch(StartTaskBlock, "/courses/{id}/start")
-            .MapPatch(EditSolution, "/courses/{id}/{blockId}/{taskId}/solution");
+            .MapPatch(EditSolution, "/courses/{id}/{blockId}/{taskId}/solution")
+            .MapPatch(SendFeedback, "courses/{id}/{blockId}/feedback");
     }
     
     public async Task<Ok<PaginatedList<GradedCourseResponse>>> GetCourses(ISender sender,
@@ -49,6 +51,17 @@ public class Students : EndpointGroupBase
     {
         if (id != command.Id || blockId != command.BlockId || taskId != command.TaskId)
             return TypedResults.BadRequest();
+        var response = await sender.Send(command);
+        return TypedResults.Ok(response);
+    }
+
+    public async Task<Results<BadRequest, Ok<FeedbackDto>>> SendFeedback(
+        ISender sender,
+        Guid id,
+        Guid blockId,
+        SendFeedbackCommand command)
+    {
+        if (command.CourseId != id || command.BlockId != blockId) return TypedResults.BadRequest();
         var response = await sender.Send(command);
         return TypedResults.Ok(response);
     }

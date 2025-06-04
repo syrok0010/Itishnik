@@ -749,6 +749,51 @@
         }
       }
     },
+    "/api/Courses/{id}/{blockId}/feedbacks": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "GetFeedbacks",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Students/courses": {
       "get": {
         "tags": [
@@ -923,6 +968,63 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/SolutionDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/Students/courses/{id}/{blockId}/feedback": {
+      "patch": {
+        "tags": [
+          "Students"
+        ],
+        "operationId": "SendFeedback",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SendFeedbackCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "400": {
+            "description": ""
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FeedbackDto"
                 }
               }
             }
@@ -1984,6 +2086,40 @@
             "format": "guid"
           },
           "taskId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
+      "FeedbackDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "taskBlockId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "studentId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "feedback": {
+            "type": "string"
+          }
+        }
+      },
+      "SendFeedbackCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "courseId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "blockId": {
             "type": "string",
             "format": "guid"
           },
