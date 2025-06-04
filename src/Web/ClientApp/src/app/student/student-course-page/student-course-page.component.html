@@ -29,12 +29,12 @@
 <div class="mt-4 flex w-full flex-col gap-4 rounded-lg bg-white p-4">
   <h1 class="text-2xl font-bold">Работы</h1>
   <tui-accordion>
-    @for (block of course.taskBlocks; track block.id) {
-      <button [tuiAccordion]="false">
+    @for (block of sortedTaskBlocks$ | async; track block.id) {
+      <button [tuiAccordion]="!!block.studentStartTime && inFuture(block.endTime)">
         {{ block.name }}
       </button>
       <tui-expand>
-        <app-student-task-blocks-accordion-item [taskBlock]="block" />
+        <app-student-task-blocks-accordion-item [taskBlock]="block" [courseId]="course.id" />
       </tui-expand>
     }
   </tui-accordion>

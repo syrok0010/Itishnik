@@ -54,5 +54,29 @@ export class StudentCoursesFacadeService {
     this._store.next((_state = { ..._state, currentCourse }));
   }
 
-  async startSolution(id: string) {}
+  async startSolution(courseId: string, taskBlockId: string) {
+    const response = await firstValueFrom(
+      this.studentClient.startTaskBlock(courseId, taskBlockId),
+    );
+    this._store.next(
+      (_state = {
+        ..._state,
+        currentCourse: new StudentCourseResponse({
+          ..._state.currentCourse,
+          taskBlocks: [
+            ..._state.currentCourse.taskBlocks.filter(
+              (tb) => tb.id !== taskBlockId,
+            ),
+            response,
+          ],
+        }),
+      }),
+    );
+    this.alerts
+      .open('Вы начали решение работы', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
+  }
 }

@@ -25,6 +25,7 @@ export default class StudentTaskBlocksAccordionItemComponent {
   private readonly courseFacade = inject(StudentCoursesFacadeService);
   private readonly dialogs = inject(TuiDialogService);
   taskBlock = input.required<GradedTaskBlockDto>();
+  courseId = input.required<string>();
 
   status: Signal<TaskBlockStatus> = computed(() => {
     const blockStarted = Date.now() - this.taskBlock().startTime.getTime() > 0;
@@ -62,6 +63,6 @@ export default class StudentTaskBlocksAccordionItemComponent {
       return;
     }
 
-    await this.courseFacade.startSolution(this.taskBlock().id);
+    await this.courseFacade.startSolution(this.courseId(), this.taskBlock().id);
   }
 }

@@ -6,6 +6,7 @@ import { TuiEditorSocket } from '@taiga-ui/editor';
 import { TuiAccordion } from '@taiga-ui/experimental';
 import { TuiIcon } from '@taiga-ui/core';
 import StudentTaskBlocksAccordionItemComponent from '../../components/student-task-blocks-accordion-item/student-task-blocks-accordion-item.component';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-student-course-page',
@@ -23,4 +24,15 @@ import StudentTaskBlocksAccordionItemComponent from '../../components/student-ta
 export default class StudentCoursePageComponent {
   private readonly coursesFacade = inject(StudentCoursesFacadeService);
   protected readonly currentCourse$ = this.coursesFacade.currentCourse$;
+  protected readonly sortedTaskBlocks$ = this.currentCourse$.pipe(
+    map((course) =>
+      course.taskBlocks.sort(
+        (a, b) => a.startTime.getTime() - b.startTime.getTime(),
+      ),
+    ),
+  );
+
+  inFuture(date: Date): boolean {
+    return Date.now() < date.getTime();
+  }
 }
