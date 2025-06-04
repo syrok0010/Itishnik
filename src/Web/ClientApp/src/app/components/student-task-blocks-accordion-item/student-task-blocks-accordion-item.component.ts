@@ -12,12 +12,14 @@ import { TuiButton, TuiDialogService, TuiIcon } from '@taiga-ui/core';
 import { TUI_CONFIRM, TuiConfirmData } from '@taiga-ui/kit';
 import { firstValueFrom } from 'rxjs';
 import { StudentCoursesFacadeService } from '../../student/student-courses-facade.service';
+import { CountdownTimerComponent } from '../countdown-timer.component';
+import { TuiTime } from '@taiga-ui/cdk';
 
 type TaskBlockStatus = 'BeforeStart' | 'CanStart' | 'Solving' | 'Finished';
 
 @Component({
   selector: 'app-student-task-blocks-accordion-item',
-  imports: [DatePipe, TuiIcon, TuiButton],
+  imports: [DatePipe, TuiIcon, TuiButton, CountdownTimerComponent],
   templateUrl: './student-task-blocks-accordion-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -42,6 +44,14 @@ export default class StudentTaskBlocksAccordionItemComponent {
     const hours = parseInt(this.taskBlock().timeAllowed.substring(0, 2), 10);
     const minutes = parseInt(this.taskBlock().timeAllowed.substring(3, 4), 10);
     return `${hours} ч. ${minutes} мин.`;
+  });
+
+  studentEndTime = computed(() => {
+    const blockEnd = this.taskBlock().endTime.getTime();
+    const studentEnd =
+      this.taskBlock().studentStartTime.getTime() +
+      TuiTime.fromString(this.taskBlock().timeAllowed).toAbsoluteMilliseconds();
+    return new Date(Math.min(blockEnd, studentEnd));
   });
 
   async confirmStart() {

@@ -42,4 +42,13 @@
       Начать выполнение
     </button>
   }
+
+  @if (status() === "Solving") {
+    <div class="flex justify-between">
+      <div></div>
+      <div>
+        <app-countdown-timer [targetDateTime]="studentEndTime()" />
+      </div>
+    </div>
+  }
 </div>
