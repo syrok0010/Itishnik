@@ -21,7 +21,7 @@ public class StartTaskBlockCommandValidator : AbstractValidator<StartTaskBlockCo
     {
         var block = await context.GradedTaskBlocks
             .Include(b => b.TaskBlock)
-            .FirstAsync(b => b.Id == command.Id, token);
+            .FirstAsync(b => b.Id == command.BlockId, token);
         return block.TaskBlock.StartTime <= DateTime.Now && DateTime.Now <= block.TaskBlock.EndTime;
     }
 }

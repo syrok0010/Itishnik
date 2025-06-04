@@ -50,12 +50,12 @@ public class GradedTaskBlock
 
         foreach (var task in TaskBlock.Tasks)
         {
-            AddSolution(new Solution(task, Student, "Solution"));
+            AddSolution(new Solution(task, Student, "Здесь будет текст вашего решения"));
         }
-        
-        StartTime = DateTime.Now;
+ 
+        StartTime = DateTime.UtcNow;
     }
-    
+
     public int? Grade
     {
         get => _grade;
