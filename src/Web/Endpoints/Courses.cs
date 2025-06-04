@@ -179,10 +179,10 @@ public class Courses : EndpointGroupBase
         return TypedResults.Ok(response);
     }
 
-    public async Task<Ok<PaginatedList<FeedbackDto>>> GetFeedbacks(
-        ISender sender, Guid id, Guid blockId, int pageNumber = 1, int pageSize = 10)
+    public async Task<Ok<List<string>>> GetFeedbacks(
+        ISender sender, Guid id, Guid blockId)
     {
-        var response = await sender.Send(new GetFeedbacksQuery(id, blockId, pageNumber, pageSize));
+        var response = await sender.Send(new GetFeedbacksQuery(id, blockId));
         return TypedResults.Ok(response);
     }
 }

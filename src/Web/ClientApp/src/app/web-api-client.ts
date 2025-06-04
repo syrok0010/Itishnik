@@ -31,7 +31,7 @@ export interface ICoursesClient {
     publishBlock(id: string, blockId: string): Observable<TaskBlockResponse>;
     changeTeacher(id: string, command: ChangeCourseTeacherCommand): Observable<CourseResponse>;
     inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<CourseStudentListResponse>;
-    getFeedbacks(id: string, blockId: string, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfFeedbackDto>;
+    getFeedbacks(id: string, blockId: string): Observable<string[]>;
 }
 
 @Injectable({
@@ -943,22 +943,14 @@ export class CoursesClient implements ICoursesClient {
         return _observableOf(null as any);
     }
 
-    getFeedbacks(id: string, blockId: string, pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfFeedbackDto> {
-        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/feedbacks?";
+    getFeedbacks(id: string, blockId: string): Observable<string[]> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/feedbacks";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         if (blockId === undefined || blockId === null)
             throw new Error("The parameter 'blockId' must be defined.");
         url_ = url_.replace("{blockId}", encodeURIComponent("" + blockId));
-        if (pageNumber === null)
-            throw new Error("The parameter 'pageNumber' cannot be null.");
-        else if (pageNumber !== undefined)
-            url_ += "pageNumber=" + encodeURIComponent("" + pageNumber) + "&";
-        if (pageSize === null)
-            throw new Error("The parameter 'pageSize' cannot be null.");
-        else if (pageSize !== undefined)
-            url_ += "pageSize=" + encodeURIComponent("" + pageSize) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -976,14 +968,14 @@ export class CoursesClient implements ICoursesClient {
                 try {
                     return this.processGetFeedbacks(response_ as any);
                 } catch (e) {
-                    return _observableThrow(e) as any as Observable<PaginatedListOfFeedbackDto>;
+                    return _observableThrow(e) as any as Observable<string[]>;
                 }
             } else
-                return _observableThrow(response_) as any as Observable<PaginatedListOfFeedbackDto>;
+                return _observableThrow(response_) as any as Observable<string[]>;
         }));
     }
 
-    protected processGetFeedbacks(response: HttpResponseBase): Observable<PaginatedListOfFeedbackDto> {
+    protected processGetFeedbacks(response: HttpResponseBase): Observable<string[]> {
         const status = response.status;
         const responseBlob =
             response instanceof HttpResponse ? response.body :
@@ -994,7 +986,14 @@ export class CoursesClient implements ICoursesClient {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
-            result200 = PaginatedListOfFeedbackDto.fromJS(resultData200);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(item);
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2981,114 +2980,6 @@ export interface IInviteStudentsToCourseCommand {
     emails?: string[];
 }
 
-export class PaginatedListOfFeedbackDto implements IPaginatedListOfFeedbackDto {
-    items?: FeedbackDto[];
-    pageNumber?: number;
-    totalPages?: number;
-    totalCount?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
-
-    constructor(data?: IPaginatedListOfFeedbackDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["items"])) {
-                this.items = [] as any;
-                for (let item of _data["items"])
-                    this.items!.push(FeedbackDto.fromJS(item));
-            }
-            this.pageNumber = _data["pageNumber"];
-            this.totalPages = _data["totalPages"];
-            this.totalCount = _data["totalCount"];
-            this.hasPreviousPage = _data["hasPreviousPage"];
-            this.hasNextPage = _data["hasNextPage"];
-        }
-    }
-
-    static fromJS(data: any): PaginatedListOfFeedbackDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new PaginatedListOfFeedbackDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.items)) {
-            data["items"] = [];
-            for (let item of this.items)
-                data["items"].push(item.toJSON());
-        }
-        data["pageNumber"] = this.pageNumber;
-        data["totalPages"] = this.totalPages;
-        data["totalCount"] = this.totalCount;
-        data["hasPreviousPage"] = this.hasPreviousPage;
-        data["hasNextPage"] = this.hasNextPage;
-        return data;
-    }
-}
-
-export interface IPaginatedListOfFeedbackDto {
-    items?: FeedbackDto[];
-    pageNumber?: number;
-    totalPages?: number;
-    totalCount?: number;
-    hasPreviousPage?: boolean;
-    hasNextPage?: boolean;
-}
-
-export class FeedbackDto implements IFeedbackDto {
-    taskBlockId?: string;
-    studentId?: string;
-    feedback?: string;
-
-    constructor(data?: IFeedbackDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.taskBlockId = _data["taskBlockId"];
-            this.studentId = _data["studentId"];
-            this.feedback = _data["feedback"];
-        }
-    }
-
-    static fromJS(data: any): FeedbackDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new FeedbackDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["taskBlockId"] = this.taskBlockId;
-        data["studentId"] = this.studentId;
-        data["feedback"] = this.feedback;
-        return data;
-    }
-}
-
-export interface IFeedbackDto {
-    taskBlockId?: string;
-    studentId?: string;
-    feedback?: string;
-}
-
 export class PaginatedListOfGradedCourseResponse implements IPaginatedListOfGradedCourseResponse {
     items?: GradedCourseResponse[];
     pageNumber?: number;
@@ -3491,6 +3382,50 @@ export interface IEditSolutionCommand {
     blockId?: string;
     taskId?: string;
     text?: string;
+}
+
+export class FeedbackDto implements IFeedbackDto {
+    taskBlockId?: string;
+    studentId?: string;
+    feedback?: string;
+
+    constructor(data?: IFeedbackDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.taskBlockId = _data["taskBlockId"];
+            this.studentId = _data["studentId"];
+            this.feedback = _data["feedback"];
+        }
+    }
+
+    static fromJS(data: any): FeedbackDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FeedbackDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["taskBlockId"] = this.taskBlockId;
+        data["studentId"] = this.studentId;
+        data["feedback"] = this.feedback;
+        return data;
+    }
+}
+
+export interface IFeedbackDto {
+    taskBlockId?: string;
+    studentId?: string;
+    feedback?: string;
 }
 
 export class SendFeedbackCommand implements ISendFeedbackCommand {

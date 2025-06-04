@@ -775,26 +775,6 @@
               "format": "guid"
             },
             "x-position": 2
-          },
-          {
-            "name": "pageNumber",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 1
-            },
-            "x-position": 3
-          },
-          {
-            "name": "pageSize",
-            "in": "query",
-            "schema": {
-              "type": "integer",
-              "format": "int32",
-              "default": 10
-            },
-            "x-position": 4
           }
         ],
         "responses": {
@@ -803,7 +783,10 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PaginatedListOfFeedbackDto"
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -1913,53 +1896,6 @@
           }
         }
       },
-      "PaginatedListOfFeedbackDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "items": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/FeedbackDto"
-            }
-          },
-          "pageNumber": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalPages": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "totalCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "hasPreviousPage": {
-            "type": "boolean"
-          },
-          "hasNextPage": {
-            "type": "boolean"
-          }
-        }
-      },
-      "FeedbackDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "taskBlockId": {
-            "type": "string",
-            "format": "guid"
-          },
-          "studentId": {
-            "type": "string",
-            "format": "guid"
-          },
-          "feedback": {
-            "type": "string"
-          }
-        }
-      },
       "PaginatedListOfGradedCourseResponse": {
         "type": "object",
         "additionalProperties": false,
@@ -2154,6 +2090,23 @@
             "format": "guid"
           },
           "text": {
+            "type": "string"
+          }
+        }
+      },
+      "FeedbackDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "taskBlockId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "studentId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "feedback": {
             "type": "string"
           }
         }

@@ -10,20 +10,21 @@ namespace Itishnik.Application.Courses.Queries.GetFeedbacks;
 
 [Authorize(Policy = Policies.OwnerOrAdmin)]
 [ResourceMetadata(nameof(CourseId), typeof(Course))]
-public record GetFeedbacksQuery(Guid CourseId, Guid TaskBlockId, int PageNumber = 1, int PageSize = 10) : IRequest<PaginatedList<FeedbackDto>>;
+public record GetFeedbacksQuery(Guid CourseId, Guid TaskBlockId) : IRequest<List<string>>;
 
 public class GetFeedbacksQueryHandler(IApplicationDbContext context, IMapper mapper)
-    : IRequestHandler<GetFeedbacksQuery, PaginatedList<FeedbackDto>>
+    : IRequestHandler<GetFeedbacksQuery, List<string>>
 {
     private readonly IApplicationDbContext _context = context;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<PaginatedList<FeedbackDto>> Handle(GetFeedbacksQuery request, CancellationToken cancellationToken)
+    public async Task<List<string>> Handle(GetFeedbacksQuery request, CancellationToken cancellationToken)
     {
         return await _context.GradedTaskBlocks
             .AsNoTracking()
             .Where(b => b.TaskBlockId == request.TaskBlockId)
-            .ProjectTo<FeedbackDto>(_mapper.ConfigurationProvider)
-            .PaginatedListAsync(request.PageNumber, request.PageSize);
+            .Select(b => b.Feedback!)
+            .Where(f => !string.IsNullOrWhiteSpace(f) || !string.IsNullOrEmpty(f))
+            .ToListAsync(cancellationToken);
     }
 }
