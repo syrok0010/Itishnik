@@ -7,10 +7,11 @@ import {
   Signal,
 } from '@angular/core';
 import { GradedTaskBlockDto, SolutionDto } from '../../web-api-client';
-import { DatePipe, NgClass } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import {
   TuiAlertService,
   TuiButton,
+  tuiDialog,
   TuiDialogService,
   TuiIcon,
 } from '@taiga-ui/core';
@@ -19,13 +20,14 @@ import { firstValueFrom } from 'rxjs';
 import { StudentCoursesFacadeService } from '../../student/student-courses-facade.service';
 import { CountdownTimerComponent } from '../countdown-timer.component';
 import { TuiTime } from '@taiga-ui/cdk';
+import TaskSolutionDialogComponent from '../task-solution-dialog.component';
 
 type TaskBlockStatus = 'BeforeStart' | 'CanStart' | 'Solving' | 'Finished';
 const DEFAULT_SOLUTION_TEXT = 'Здесь будет текст вашего решения';
 
 @Component({
   selector: 'app-student-task-blocks-accordion-item',
-  imports: [DatePipe, TuiIcon, TuiButton, CountdownTimerComponent, NgClass],
+  imports: [DatePipe, TuiIcon, TuiButton, CountdownTimerComponent],
   templateUrl: './student-task-blocks-accordion-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -33,6 +35,10 @@ export default class StudentTaskBlocksAccordionItemComponent {
   private readonly courseFacade = inject(StudentCoursesFacadeService);
   private readonly dialogs = inject(TuiDialogService);
   private readonly alerts = inject(TuiAlertService);
+  private readonly solutionDialog = tuiDialog(TaskSolutionDialogComponent, {
+    size: 'auto',
+    label: 'Решение задания',
+  });
 
   taskBlock = input.required<GradedTaskBlockDto>();
   courseId = input.required<string>();
@@ -101,7 +107,14 @@ export default class StudentTaskBlocksAccordionItemComponent {
         ? '@tui.circle-check-big'
         : '@tui.pen';
     }
-    return '@tui.circle-outline';
+    return '@tui.circle';
+  }
+
+  getTaskStatusIconColor(solution: SolutionDto): string {
+    if (this.status() === 'Solving') {
+      return this.startedTaskSolution(solution) ? 'green' : 'blue';
+    }
+    return 'gray';
   }
 
   getTaskActionText(solution: SolutionDto): string {
@@ -112,7 +125,12 @@ export default class StudentTaskBlocksAccordionItemComponent {
   }
 
   openTaskDialog(solution: SolutionDto): void {
-    console.log('Open dialog for task:', solution.task.name);
+    this.solutionDialog({
+      solution,
+      taskBlockId: this.taskBlock().id,
+      courseId: this.courseId(),
+      isEditable: this.status() === 'Solving',
+    }).subscribe();
   }
 
   onTimerExpired(): void {

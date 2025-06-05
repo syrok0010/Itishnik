@@ -51,14 +51,7 @@
               <div class="flex items-center gap-4">
                 <tui-icon
                   [icon]="getTaskStatusIcon(solution)"
-                  [ngClass]="{
-                    'text-green-600': startedTaskSolution(solution),
-                    'text-blue-600':
-                      !startedTaskSolution(solution) && status() === 'Solving',
-                    'text-gray-500':
-                      !startedTaskSolution(solution) && status() !== 'Solving',
-                  }"
-                  class="h-6 w-6"
+                  class="h-6 w-6 text-{{getTaskStatusIconColor(solution)}}-500"
                 ></tui-icon>
                 <span class="text-base">{{ solution.task!.name }}</span>
               </div>

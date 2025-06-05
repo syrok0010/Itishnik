@@ -9,9 +9,6 @@ public class EditSolutionCommandValidator : AbstractValidator<EditSolutionComman
         RuleFor(x => x.BlockId)
             .MustAsync((id, token) => context.GradedTaskBlocks.AnyAsync(b => b.Id == id, token))
             .WithMessage("Работа не существует");
-        RuleFor(x => x.TaskId)
-            .MustAsync((id, token) => context.GradedCourses.AnyAsync(c => c.Id == id, token))
-            .WithMessage("Задание не существует");
         RuleFor(x => x.Text)
             .NotNull()
             .NotEmpty()
@@ -38,11 +35,10 @@ public class EditSolutionCommandValidator : AbstractValidator<EditSolutionComman
         var timeAllowed = block.TaskBlock.TimeAllowed.Value;
         var studentStartTime = block.StartTime;
 
-
         var nearestEnd = studentStartTime + timeAllowed < endTime 
             ? studentStartTime + timeAllowed 
             : endTime;
 
-        return studentStartTime <= DateTime.Now && DateTime.Now <= nearestEnd;
+        return studentStartTime <= DateTime.UtcNow && DateTime.UtcNow <= nearestEnd;
     }
 }

@@ -1,6 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import {
+  EditSolutionCommand,
   GradedCourseResponse,
+  GradedTaskBlockDto,
   StudentCourseResponse,
   StudentsClient,
 } from '../web-api-client';
@@ -78,5 +80,51 @@ export class StudentCoursesFacadeService {
         appearance: 'positive',
       })
       .subscribe();
+  }
+
+  async saveSolution(
+    courseId: string,
+    taskBlockId: string,
+    taskId: string,
+    text: string,
+  ) {
+    const response = await firstValueFrom(
+      this.studentClient.editSolution(
+        courseId,
+        taskBlockId,
+        taskId,
+        new EditSolutionCommand({
+          id: courseId,
+          blockId: taskBlockId,
+          taskId,
+          text,
+        }),
+      ),
+    );
+    this.alerts
+      .open('Решение успешно сохранено.', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
+
+    this._store.next(
+      (_state = {
+        ..._state,
+        currentCourse: new StudentCourseResponse({
+          ..._state.currentCourse,
+          taskBlocks: _state.currentCourse.taskBlocks.map((block) =>
+            block.id === taskBlockId
+              ? new GradedTaskBlockDto({
+                  ...block,
+                  solutions: block.solutions.map((solution) =>
+                    solution.task.id === taskId ? response : solution,
+                  ),
+                })
+              : block,
+          ),
+        }),
+      }),
+    );
   }
 }
