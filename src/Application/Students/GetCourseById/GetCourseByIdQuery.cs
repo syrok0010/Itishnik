@@ -9,19 +9,18 @@ namespace Itishnik.Application.Students.GetCourseById;
 [ResourceMetadata(nameof(Id), typeof(GradedCourse))]
 public record GetCourseByIdQuery(Guid Id) : IRequest<StudentCourseResponse>;
 
-public class GetCourseByIdQueryHandler(IApplicationDbContext context, IUser user, IMapper mapper) 
+public class GetCourseByIdQueryHandler(IApplicationDbContext context, IMapper mapper) 
     : IRequestHandler<GetCourseByIdQuery, StudentCourseResponse>
 {
     private readonly IApplicationDbContext _context = context;
-    private readonly IUser _user = user;
     private readonly IMapper _mapper = mapper;
     
     public async Task<StudentCourseResponse> Handle(GetCourseByIdQuery request, CancellationToken cancellationToken)
     {
         var gradedCourse = await _context.GradedCourses
             .Include(gc => gc.Course)
+            .Include(gc => gc.GradedTaskBlocks).ThenInclude(gtb => gtb.Solutions).ThenInclude(s => s.Task)
             .Include(gc => gc.GradedTaskBlocks).ThenInclude(gtb => gtb.TaskBlock).ThenInclude(tb => tb.Tasks)
-            .Include(gc => gc.GradedTaskBlocks).ThenInclude(gtb => gtb.Solutions)
             .AsNoTracking()
             .FirstAsync(gc => gc.Id == request.Id, cancellationToken);
 

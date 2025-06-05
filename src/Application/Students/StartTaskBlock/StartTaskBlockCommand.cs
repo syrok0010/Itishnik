@@ -19,6 +19,7 @@ public class StartTaskBlockCommandHandler(IApplicationDbContext context, IMapper
     {
         var block = await _context.GradedTaskBlocks
             .Include(gtb => gtb.TaskBlock).ThenInclude(tb => tb.Tasks)
+            .Include(gtb => gtb.Solutions).ThenInclude(s => s.Task)
             .FirstAsync(gtb => gtb.Id == request.BlockId, cancellationToken);
         block.Start();
         await _context.SaveChangesAsync(cancellationToken);

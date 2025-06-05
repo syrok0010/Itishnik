@@ -3167,7 +3167,6 @@ export class GradedTaskBlockDto implements IGradedTaskBlockDto {
     grade?: number | undefined;
     taskCount?: number;
     solutions?: SolutionDto[] | undefined;
-    tasks?: TaskDto[] | undefined;
 
     constructor(data?: IGradedTaskBlockDto) {
         if (data) {
@@ -3193,11 +3192,6 @@ export class GradedTaskBlockDto implements IGradedTaskBlockDto {
                 this.solutions = [] as any;
                 for (let item of _data["solutions"])
                     this.solutions!.push(SolutionDto.fromJS(item));
-            }
-            if (Array.isArray(_data["tasks"])) {
-                this.tasks = [] as any;
-                for (let item of _data["tasks"])
-                    this.tasks!.push(TaskDto.fromJS(item));
             }
         }
     }
@@ -3225,11 +3219,6 @@ export class GradedTaskBlockDto implements IGradedTaskBlockDto {
             for (let item of this.solutions)
                 data["solutions"].push(item.toJSON());
         }
-        if (Array.isArray(this.tasks)) {
-            data["tasks"] = [];
-            for (let item of this.tasks)
-                data["tasks"].push(item.toJSON());
-        }
         return data;
     }
 }
@@ -3245,13 +3234,13 @@ export interface IGradedTaskBlockDto {
     grade?: number | undefined;
     taskCount?: number;
     solutions?: SolutionDto[] | undefined;
-    tasks?: TaskDto[] | undefined;
 }
 
 export class SolutionDto implements ISolutionDto {
     id?: string;
     text?: string;
     grade?: number | undefined;
+    task?: TaskDto;
 
     constructor(data?: ISolutionDto) {
         if (data) {
@@ -3267,6 +3256,7 @@ export class SolutionDto implements ISolutionDto {
             this.id = _data["id"];
             this.text = _data["text"];
             this.grade = _data["grade"];
+            this.task = _data["task"] ? TaskDto.fromJS(_data["task"]) : <any>undefined;
         }
     }
 
@@ -3282,6 +3272,7 @@ export class SolutionDto implements ISolutionDto {
         data["id"] = this.id;
         data["text"] = this.text;
         data["grade"] = this.grade;
+        data["task"] = this.task ? this.task.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -3290,6 +3281,7 @@ export interface ISolutionDto {
     id?: string;
     text?: string;
     grade?: number | undefined;
+    task?: TaskDto;
 }
 
 export class TaskDto implements ITaskDto {

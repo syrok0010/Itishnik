@@ -1,18 +1,20 @@
 <div class="flex flex-col gap-4">
-  <div class="flex justify-between text-base text-gray-600">
+  <div
+    class="flex flex-wrap justify-between gap-x-4 gap-y-2 text-sm text-gray-700"
+  >
     <p class="flex items-center">
       <tui-icon
         icon="@tui.calendar"
         class="mr-2 h-5 w-5 text-blue-500"
       ></tui-icon>
-      Начало: {{ taskBlock().startTime | date: "medium" }}
+      Начало: {{ taskBlock().startTime | date: "dd.MM.yyyy, HH:mm" }}
     </p>
     <p class="flex items-center">
       <tui-icon
         icon="@tui.calendar-x"
         class="mr-2 h-5 w-5 text-red-500"
       ></tui-icon>
-      Дедлайн: {{ taskBlock().endTime | date: "medium" }}
+      Дедлайн: {{ taskBlock().endTime | date: "dd.MM.yyyy, HH:mm" }}
     </p>
     <p class="flex items-center">
       <tui-icon
@@ -23,7 +25,7 @@
     </p>
     <p class="flex items-center">
       <tui-icon
-        icon="@tui.circle-check"
+        icon="@tui.info"
         class="mr-2 h-5 w-5 text-purple-500"
       ></tui-icon>
       Всего задач: {{ taskBlock().taskCount }}
@@ -37,18 +39,64 @@
     </p>
   </div>
 
-  @if (status() === "CanStart") {
-    <button tuiButton class="mr-auto" (click)="confirmStart()">
-      Начать выполнение
-    </button>
-  }
-
-  @if (status() === "Solving") {
-    <div class="flex justify-between">
-      <div></div>
-      <div>
-        <app-countdown-timer [targetDateTime]="studentEndTime()" />
+  @if (status() === "Solving" || status() === "Finished") {
+    <div class="border-t border-gray-200 pt-4">
+      <h4 class="mb-2 text-lg font-semibold text-gray-700">Задачи:</h4>
+      <div class="flex justify-between">
+        <div class="-mx-2 ml-1 flex w-1/2 flex-col">
+          @for (solution of taskBlock().solutions; track solution.id) {
+            <div
+              class="flex items-center justify-between rounded-lg p-2 hover:bg-gray-200"
+            >
+              <div class="flex items-center gap-4">
+                <tui-icon
+                  [icon]="getTaskStatusIcon(solution)"
+                  [ngClass]="{
+                    'text-green-600': startedTaskSolution(solution),
+                    'text-blue-600':
+                      !startedTaskSolution(solution) && status() === 'Solving',
+                    'text-gray-500':
+                      !startedTaskSolution(solution) && status() !== 'Solving',
+                  }"
+                  class="h-6 w-6"
+                ></tui-icon>
+                <span class="text-base">{{ solution.task!.name }}</span>
+              </div>
+              <div class="flex items-center gap-4">
+                @if (!!solution.grade) {
+                  <span class="text-base">Оценка</span>
+                  <span class="text-lg text-green-500"
+                    >({{ solution.grade }})</span
+                  >
+                }
+                <button
+                  tuiButton
+                  type="button"
+                  size="m"
+                  (click)="openTaskDialog(solution)"
+                >
+                  {{ getTaskActionText(solution) }}
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+        @if (status() === "Solving") {
+          <app-countdown-timer
+            [targetDateTime]="studentEndTime()"
+            (expired)="onTimerExpired()"
+          />
+        }
       </div>
     </div>
+  } @else if (status() === "CanStart") {
+    <button
+      tuiButton
+      type="button"
+      class="mr-auto mt-1"
+      (click)="confirmStart()"
+    >
+      Начать выполнение
+    </button>
   }
 </div>

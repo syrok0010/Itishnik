@@ -2029,13 +2029,6 @@
             "items": {
               "$ref": "#/components/schemas/SolutionDto"
             }
-          },
-          "tasks": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/TaskDto"
-            }
           }
         }
       },
@@ -2054,6 +2047,9 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
+          },
+          "task": {
+            "$ref": "#/components/schemas/TaskDto"
           }
         }
       },
