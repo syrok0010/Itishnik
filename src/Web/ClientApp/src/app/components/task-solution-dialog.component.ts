@@ -48,7 +48,7 @@ export interface TaskSolutionDialogData {
           <h3 class="mb-3 text-xl font-semibold text-gray-800">Ваше решение</h3>
           @if (context.data.isEditable) {
             <tui-editor
-              class="flex-grow rounded-xl border-2 p-4"
+              class="flex-grow !rounded-xl !border-2 !border-gray-200 !shadow-none"
               [formControl]="solutionControl"
             />
           } @else {
