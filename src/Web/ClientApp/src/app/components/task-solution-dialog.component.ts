@@ -36,27 +36,30 @@ export interface TaskSolutionDialogData {
   ],
   template: `
     <div class="flex min-h-[70dvh] min-w-[70dvw] flex-col">
-      <div class="flex flex-grow gap-6 overflow-auto p-4">
+      <div class="flex flex-grow gap-6 overflow-auto py-4">
         <div class="flex w-1/2 flex-col">
           <h3 class="mb-3 text-xl font-semibold text-gray-800">Задание</h3>
           <tui-editor-socket
-            class="flex-grow"
+            class="flex-grow rounded-xl border-2 p-4"
             [content]="context.data.solution.task.text"
           />
         </div>
         <div class="flex w-1/2 flex-col">
           <h3 class="mb-3 text-xl font-semibold text-gray-800">Ваше решение</h3>
           @if (context.data.isEditable) {
-            <tui-editor class="flex-grow" [formControl]="solutionControl" />
+            <tui-editor
+              class="flex-grow rounded-xl border-2 p-4"
+              [formControl]="solutionControl"
+            />
           } @else {
             <tui-editor-socket
-              class="flex-grow"
+              class="flex-grow rounded-xl border-2 p-4"
               [content]="context.data.solution.text"
             />
           }
         </div>
       </div>
-      <div class="flex justify-end gap-4 border-t border-gray-200 p-4">
+      <div class="flex justify-end gap-4 border-gray-200">
         <button
           tuiButton
           type="button"

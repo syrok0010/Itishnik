@@ -119,9 +119,11 @@ export default class StudentTaskBlocksAccordionItemComponent {
 
   getTaskActionText(solution: SolutionDto): string {
     if (this.status() === 'Solving') {
-      return this.startedTaskSolution(solution) ? 'Редактировать' : 'Решить';
+      return this.startedTaskSolution(solution)
+        ? 'Редактировать решение'
+        : 'Решить';
     }
-    return 'Посмотреть';
+    return 'Посмотреть решение';
   }
 
   openTaskDialog(solution: SolutionDto): void {

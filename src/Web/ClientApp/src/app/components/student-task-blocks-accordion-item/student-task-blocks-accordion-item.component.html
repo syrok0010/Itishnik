@@ -51,17 +51,21 @@
               <div class="flex items-center gap-4">
                 <tui-icon
                   [icon]="getTaskStatusIcon(solution)"
-                  class="h-6 w-6 text-{{getTaskStatusIconColor(solution)}}-500"
+                  class="h-6 w-6 text-{{
+                    getTaskStatusIconColor(solution)
+                  }}-500"
                 ></tui-icon>
                 <span class="text-base">{{ solution.task!.name }}</span>
               </div>
-              <div class="flex items-center gap-4">
-                @if (!!solution.grade) {
-                  <span class="text-base">Оценка</span>
-                  <span class="text-lg text-green-500"
-                    >({{ solution.grade }})</span
+              <div class="flex items-center gap-8">
+                <div class="flex items-center gap-2">
+                  <span class="text-base">Оценка:</span>
+                  <span
+                    class="text-xl font-bold"
+                    [class.text-green-500]="!!solution.grade"
+                    >{{ solution.grade ?? "—" }}</span
                   >
-                }
+                </div>
                 <button
                   tuiButton
                   type="button"
