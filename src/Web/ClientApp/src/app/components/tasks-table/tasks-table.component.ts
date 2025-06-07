@@ -46,7 +46,6 @@ import {
   CdkVirtualForOf,
   CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
-import { tuiPure } from '@taiga-ui/cdk';
 
 @Component({
   selector: 'app-tasks-table',
@@ -148,7 +147,6 @@ export default class TasksTableComponent {
       await this.taskFacade.nextPage();
   }
 
-  @tuiPure
   tableHeightClass() {
     if (this.filteredTasks().length === 0) {
       return 'h-14';
