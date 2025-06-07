@@ -1780,6 +1780,9 @@
           "fullName": {
             "type": "string"
           },
+          "email": {
+            "type": "string"
+          },
           "grades": {
             "type": "array",
             "items": {

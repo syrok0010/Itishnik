@@ -2627,6 +2627,7 @@ export class StudentGradesResponse implements IStudentGradesResponse {
     studentId?: string;
     courseId?: string;
     fullName?: string;
+    email?: string;
     grades?: (number | undefined)[];
 
     constructor(data?: IStudentGradesResponse) {
@@ -2643,6 +2644,7 @@ export class StudentGradesResponse implements IStudentGradesResponse {
             this.studentId = _data["studentId"];
             this.courseId = _data["courseId"];
             this.fullName = _data["fullName"];
+            this.email = _data["email"];
             if (Array.isArray(_data["grades"])) {
                 this.grades = [] as any;
                 for (let item of _data["grades"])
@@ -2663,6 +2665,7 @@ export class StudentGradesResponse implements IStudentGradesResponse {
         data["studentId"] = this.studentId;
         data["courseId"] = this.courseId;
         data["fullName"] = this.fullName;
+        data["email"] = this.email;
         if (Array.isArray(this.grades)) {
             data["grades"] = [];
             for (let item of this.grades)
@@ -2676,6 +2679,7 @@ export interface IStudentGradesResponse {
     studentId?: string;
     courseId?: string;
     fullName?: string;
+    email?: string;
     grades?: (number | undefined)[];
 }
 
