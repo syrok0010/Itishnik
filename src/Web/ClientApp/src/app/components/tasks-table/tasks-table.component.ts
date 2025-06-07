@@ -156,6 +156,6 @@ export default class TasksTableComponent {
     if (!this.selectMode()) {
       return 'h-[calc(100dvh-60px-56px-5rem)]';
     }
-    return 'h-[70dvh]';
+    return 'h-[60dvh]';
   }
 }
