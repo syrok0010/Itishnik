@@ -41,11 +41,11 @@ import { TuiAvatar } from '@taiga-ui/kit';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CourseStudentsComponent {
-  courseFacade = inject(CoursesFacadeService);
+  coursesFacade = inject(CoursesFacadeService);
   emailsArray = new FormArray<FormControl<string>>([this.getEmailControl()]);
   search = new FormControl('');
 
-  existingStudents$ = this.courseFacade.currentCoursesStudents$;
+  existingStudents$ = this.coursesFacade.currentCourseStudents$;
   filteredStudents$ = combineLatest([
     this.existingStudents$,
     this.search.valueChanges.pipe(startWith('')),
@@ -75,8 +75,8 @@ export default class CourseStudentsComponent {
   }
 
   async inviteStudents() {
-    const course = await firstValueFrom(this.courseFacade.currentCourse$);
-    await this.courseFacade.inviteStudents(course.id, this.emailsArray.value);
+    const course = await firstValueFrom(this.coursesFacade.currentCourse$);
+    await this.coursesFacade.inviteStudents(course.id, this.emailsArray.value);
     this.emailsArray.reset();
   }
 }

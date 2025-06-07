@@ -130,7 +130,7 @@
         />
       </label>
     </div>
-    @if (!taskBlockFinished()) {
+    @if (!taskBlockFinished() || !taskBlock().isPublic) {
       <button
         appearance="primary"
         tuiButton
