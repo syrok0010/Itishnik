@@ -1,5 +1,5 @@
 <div
-  class="w-full transform overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:scale-105"
+  class="w-full h-full flex flex-col transform overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:scale-105"
   style="view-transition-name: course-card-{{ course().id }}"
 >
   <img
@@ -8,9 +8,9 @@
     class="h-40 w-full object-cover"
   />
 
-  <div class="p-6">
+  <div class="p-6 flex flex-col grow justify-between gap-4">
     <h2
-      class="mb-4 text-xl font-bold text-gray-800"
+      class="text-xl font-bold text-gray-800"
       style="view-transition-name: course-title-{{ course().id }}"
     >
       {{ course().name }}

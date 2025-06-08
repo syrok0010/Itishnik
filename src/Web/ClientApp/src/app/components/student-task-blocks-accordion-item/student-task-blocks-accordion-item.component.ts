@@ -91,7 +91,11 @@ export default class StudentTaskBlocksAccordionItemComponent {
   });
 
   feedbackControl = computed(
-    () => new FormControl(this.taskBlock().feedback ?? ''),
+    () =>
+      new FormControl({
+        value: this.taskBlock().feedback ?? '',
+        disabled: this.status() !== 'Solving',
+      }),
   );
 
   async confirmStart() {
