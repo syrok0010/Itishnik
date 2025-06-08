@@ -40,7 +40,19 @@ export default class TaskBlocksAccordionComponent {
   private readonly coursesFacade = inject(CoursesFacadeService);
 
   taskBlocks$ = this.coursesFacade.currentCourse$.pipe(
-    map((course) => course.taskBlocks.reverse()),
+    map((course) =>
+      course.taskBlocks.sort(
+        (a, b) => b.startTime.getTime() - a.startTime.getTime(),
+      ),
+    ),
+  );
+
+  publicTaskBlocks$ = this.taskBlocks$.pipe(
+    map((taskBlocks) => taskBlocks.filter((tb) => tb.isPublic)),
+  );
+
+  notPublicTaskBlocks$ = this.taskBlocks$.pipe(
+    map((taskBlocks) => taskBlocks.filter((tb) => !tb.isPublic)),
   );
 
   nameControl = new FormControl<string>('', [Validators.required]);

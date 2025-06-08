@@ -19,7 +19,7 @@
         </tr>
       </thead>
       <tbody tuiTbody [data]="taskBlock().tasks">
-        @let previousTasks = allTasksPreCurrentBlock() | async;
+        @let previousTasks = allTasksInPublishedBlocks() | async;
         @for (task of taskBlock().tasks; track task.id) {
           <tr tuiTr>
             <td tuiTd *tuiCell="'number'">{{ task.position }}</td>
@@ -31,7 +31,9 @@
                     class="cursor-pointer hover:underline hover:underline-offset-4"
                     >{{ task.name }}</span
                   >
-                  @if (previousTasks.includes(task.id)) {
+                  @if (
+                    previousTasks.includes(task.id) && !taskBlock().isPublic
+                  ) {
                     <tui-badge appearance="warning" size="xl"
                       >Задача уже задавалась ранее</tui-badge
                     >

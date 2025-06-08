@@ -15,8 +15,21 @@
   </button>
 </div>
 
+<h3 class="mb-2 text-lg font-semibold">Не опубликованные</h3>
 <tui-accordion class="!inline">
-  @for (taskBlock of taskBlocks$ | async; track taskBlock.id) {
+  @for (taskBlock of notPublicTaskBlocks$ | async; track taskBlock.id) {
+    <button class="w-full" [tuiAccordion]="false">
+      {{ taskBlock.name }}
+    </button>
+    <tui-expand>
+      <app-task-blocks-accordion-item [taskBlock]="taskBlock" />
+    </tui-expand>
+  }
+</tui-accordion>
+
+<h3 class="mb-2 mt-4 text-lg font-semibold">Опубликованные</h3>
+<tui-accordion class="!inline">
+  @for (taskBlock of publicTaskBlocks$ | async; track taskBlock.id) {
     <button class="w-full" [tuiAccordion]="false">
       {{ taskBlock.name }}
     </button>
