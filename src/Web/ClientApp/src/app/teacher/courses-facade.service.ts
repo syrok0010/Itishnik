@@ -16,6 +16,7 @@ import {
   DeleteTaskFromBlockCommand,
   InviteStudentsToCourseCommand,
   StudentGradesResponse,
+  TaskBlockResponse,
 } from '../web-api-client';
 import { BehaviorSubject, firstValueFrom, Observable, switchMap } from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
@@ -133,6 +134,7 @@ export class CoursesFacadeService {
             name: response.name,
             description: response.description,
             studentsCount: 0,
+            taskBlocksCount: 0,
           }),
         ],
       }),
@@ -155,7 +157,21 @@ export class CoursesFacadeService {
         appearance: 'positive',
       })
       .subscribe();
-    this._store.next(_state);
+    this._store.next(
+      (_state = {
+        ..._state,
+        coursesList: [
+          ..._state.coursesList.map((c) =>
+            c.id !== courseId
+              ? c
+              : new CourseListResponse({
+                  ...c,
+                  description,
+                }),
+          ),
+        ],
+      }),
+    );
   }
 
   async addTasksToTaskBlock(
@@ -164,8 +180,9 @@ export class CoursesFacadeService {
     taskIds: string[],
   ): Promise<void> {
     if (taskIds.length === 0) return;
+    let response: TaskBlockResponse;
     for (const taskId of taskIds) {
-      await firstValueFrom(
+      response = await firstValueFrom(
         this.coursesClient.addTaskToBlock(
           courseId,
           taskBlockId,
@@ -183,7 +200,20 @@ export class CoursesFacadeService {
         appearance: 'positive',
       })
       .subscribe();
-    this._store.next(_state);
+    this._store.next(
+      (_state = {
+        ..._state,
+        currentCourse: new CourseResponse({
+          ..._state.currentCourse,
+          taskBlocks: [
+            ..._state.currentCourse.taskBlocks.filter(
+              (tb) => tb.id !== taskBlockId,
+              response,
+            ),
+          ],
+        }),
+      }),
+    );
   }
 
   async removeTasksFromTaskBlock(
@@ -212,6 +242,24 @@ export class CoursesFacadeService {
         appearance: 'positive',
       })
       .subscribe();
+    this._store.next(
+      (_state = {
+        ..._state,
+        currentCourse: new CourseResponse({
+          ..._state.currentCourse,
+          taskBlocks: [
+            ..._state.currentCourse.taskBlocks.map((tb) =>
+              tb.id !== taskBlockId
+                ? tb
+                : new TaskBlockResponse({
+                    ...tb,
+                    tasks: tb.tasks.filter((t) => !taskIds.includes(t.id)),
+                  }),
+            ),
+          ],
+        }),
+      }),
+    );
     this._store.next(_state);
   }
 
@@ -246,7 +294,7 @@ export class CoursesFacadeService {
         }),
       ),
     );
-    await firstValueFrom(
+    const response = await firstValueFrom(
       this.coursesClient.changeTaskBlockTimeline(
         courseId,
         taskBlockId,
@@ -265,7 +313,20 @@ export class CoursesFacadeService {
         appearance: 'positive',
       })
       .subscribe();
-    this._store.next(_state);
+    this._store.next(
+      (_state = {
+        ..._state,
+        currentCourse: new CourseResponse({
+          ..._state.currentCourse,
+          taskBlocks: [
+            ..._state.currentCourse.taskBlocks.filter(
+              (tb) => tb.id !== taskBlockId,
+              response,
+            ),
+          ],
+        }),
+      }),
+    );
   }
 
   async updateTaskBlockWeights(
@@ -273,7 +334,7 @@ export class CoursesFacadeService {
     taskBlockId: string,
     weights: number[],
   ): Promise<void> {
-    await firstValueFrom(
+    const response = await firstValueFrom(
       this.coursesClient.changeWeights(
         courseId,
         taskBlockId,
@@ -290,7 +351,20 @@ export class CoursesFacadeService {
         appearance: 'positive',
       })
       .subscribe();
-    this._store.next(_state);
+    this._store.next(
+      (_state = {
+        ..._state,
+        currentCourse: new CourseResponse({
+          ..._state.currentCourse,
+          taskBlocks: [
+            ..._state.currentCourse.taskBlocks.filter(
+              (tb) => tb.id !== taskBlockId,
+              response,
+            ),
+          ],
+        }),
+      }),
+    );
   }
 
   setSorting(ascending: boolean) {
@@ -302,7 +376,7 @@ export class CoursesFacadeService {
     courseId: string,
     teacherId: string,
   ): Promise<void> {
-    await firstValueFrom(
+    const response = await firstValueFrom(
       this.coursesClient.changeTeacher(
         courseId,
         new ChangeCourseTeacherCommand({ courseId, newTeacherId: teacherId }),
@@ -314,11 +388,11 @@ export class CoursesFacadeService {
         appearance: 'positive',
       })
       .subscribe();
-    this._store.next(_state);
+    this._store.next((_state = { ..._state, currentCourse: response }));
   }
 
   async publishTaskBlock(courseId: string, taskBlockId: string) {
-    await firstValueFrom(
+    const response = await firstValueFrom(
       this.coursesClient.publishBlock(courseId, taskBlockId),
     );
     this.alerts
@@ -327,11 +401,24 @@ export class CoursesFacadeService {
         appearance: 'positive',
       })
       .subscribe();
-    this._store.next(_state);
+    this._store.next(
+      (_state = {
+        ..._state,
+        currentCourse: new CourseResponse({
+          ..._state.currentCourse,
+          taskBlocks: [
+            ..._state.currentCourse.taskBlocks.filter(
+              (tb) => tb.id !== taskBlockId,
+              response,
+            ),
+          ],
+        }),
+      }),
+    );
   }
 
   async createTaskBlock(courseId: string, name: string) {
-    await firstValueFrom(
+    const response = await firstValueFrom(
       this.coursesClient.createTaskBlock(
         courseId,
         new CreateTaskBlockCommand({
@@ -348,7 +435,15 @@ export class CoursesFacadeService {
         appearance: 'positive',
       })
       .subscribe();
-    this._store.next(_state);
+    this._store.next(
+      (_state = {
+        ..._state,
+        currentCourse: new CourseResponse({
+          ..._state.currentCourse,
+          taskBlocks: [..._state.currentCourse.taskBlocks, response],
+        }),
+      }),
+    );
   }
 
   async nextPage() {
@@ -370,7 +465,7 @@ export class CoursesFacadeService {
   }
 
   async inviteStudents(courseId: string, emails: string[]) {
-    await firstValueFrom(
+    const response = await firstValueFrom(
       this.coursesClient.inviteStudents(
         courseId,
         new InviteStudentsToCourseCommand({
@@ -379,7 +474,7 @@ export class CoursesFacadeService {
         }),
       ),
     );
-    this._store.next(_state);
+    this._store.next((_state = { ..._state, currentCourseStudents: response }));
   }
 
   getFeedback(courseId: string, taskBlockId: string): Observable<string[]> {

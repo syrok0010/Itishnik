@@ -130,8 +130,10 @@
     tuiButton
     type="button"
     class="!absolute bottom-6 right-6"
-    (click)="addCourse()"
+    [routerLink]="['create']"
   >
     <tui-icon icon="@tui.plus" />
   </button>
 </div>
+
+<router-outlet/>
