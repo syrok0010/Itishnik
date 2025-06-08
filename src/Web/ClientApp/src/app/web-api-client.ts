@@ -3156,6 +3156,7 @@ export class GradedTaskBlockDto implements IGradedTaskBlockDto {
     id?: string;
     name?: string;
     description?: string | undefined;
+    feedback?: string | undefined;
     startTime?: Date;
     endTime?: Date;
     timeAllowed?: string | undefined;
@@ -3178,6 +3179,7 @@ export class GradedTaskBlockDto implements IGradedTaskBlockDto {
             this.id = _data["id"];
             this.name = _data["name"];
             this.description = _data["description"];
+            this.feedback = _data["feedback"];
             this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
             this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
             this.timeAllowed = _data["timeAllowed"];
@@ -3204,6 +3206,7 @@ export class GradedTaskBlockDto implements IGradedTaskBlockDto {
         data["id"] = this.id;
         data["name"] = this.name;
         data["description"] = this.description;
+        data["feedback"] = this.feedback;
         data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
         data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
         data["timeAllowed"] = this.timeAllowed;
@@ -3223,6 +3226,7 @@ export interface IGradedTaskBlockDto {
     id?: string;
     name?: string;
     description?: string | undefined;
+    feedback?: string | undefined;
     startTime?: Date;
     endTime?: Date;
     timeAllowed?: string | undefined;

@@ -14,20 +14,31 @@ import {
   tuiDialog,
   TuiDialogService,
   TuiIcon,
+  TuiTextfield,
 } from '@taiga-ui/core';
-import { TUI_CONFIRM, TuiConfirmData } from '@taiga-ui/kit';
+import { TUI_CONFIRM, TuiConfirmData, TuiTextarea } from '@taiga-ui/kit';
 import { firstValueFrom } from 'rxjs';
 import { StudentCoursesFacadeService } from '../../student/student-courses-facade.service';
 import { CountdownTimerComponent } from '../countdown-timer.component';
 import { TuiTime } from '@taiga-ui/cdk';
 import TaskSolutionDialogComponent from '../task-solution-dialog.component';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 type TaskBlockStatus = 'BeforeStart' | 'CanStart' | 'Solving' | 'Finished';
 const DEFAULT_SOLUTION_TEXT = 'Здесь будет текст вашего решения';
 
 @Component({
   selector: 'app-student-task-blocks-accordion-item',
-  imports: [DatePipe, TuiIcon, TuiButton, CountdownTimerComponent],
+  imports: [
+    DatePipe,
+    TuiIcon,
+    TuiButton,
+    CountdownTimerComponent,
+    TuiTextfield,
+    FormsModule,
+    TuiTextarea,
+    ReactiveFormsModule,
+  ],
   templateUrl: './student-task-blocks-accordion-item.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -78,6 +89,10 @@ export default class StudentTaskBlocksAccordionItemComponent {
     const studentCalculatedEndMs = studentStartMs + timeAllowedMs;
     return new Date(Math.min(blockEndMs, studentCalculatedEndMs));
   });
+
+  feedbackControl = computed(
+    () => new FormControl(this.taskBlock().feedback ?? ''),
+  );
 
   async confirmStart() {
     const data: TuiConfirmData = {
@@ -135,5 +150,13 @@ export default class StudentTaskBlocksAccordionItemComponent {
         },
       )
       .subscribe();
+  }
+
+  async saveFeedback() {
+    await this.courseFacade.saveFeedback(
+      this.courseId(),
+      this.taskBlock().id,
+      this.feedbackControl().value,
+    );
   }
 }
