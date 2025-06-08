@@ -17,7 +17,7 @@ import {
       class="timer-container inline-flex flex-col items-center text-gray-600"
     >
       <div
-        class="timer-display select-none font-mono text-5xl tracking-wider"
+        class="timer-display select-none font-mono text-4xl tracking-wider"
         [class.text-red-400]="isExpired() && timeToDisplay() === '00:00:00'"
         [class.animate-pulse-strong]="
           isExpired() && timeToDisplay() === '00:00:00'

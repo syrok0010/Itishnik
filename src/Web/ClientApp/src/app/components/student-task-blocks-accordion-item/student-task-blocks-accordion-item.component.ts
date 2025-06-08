@@ -101,22 +101,6 @@ export default class StudentTaskBlocksAccordionItemComponent {
     return !!solution && solution.text !== DEFAULT_SOLUTION_TEXT;
   }
 
-  getTaskStatusIcon(solution: SolutionDto): string {
-    if (this.status() === 'Solving') {
-      return this.startedTaskSolution(solution)
-        ? '@tui.circle-check-big'
-        : '@tui.pen';
-    }
-    return '@tui.circle';
-  }
-
-  getTaskStatusIconColor(solution: SolutionDto): string {
-    if (this.status() === 'Solving') {
-      return this.startedTaskSolution(solution) ? 'green' : 'blue';
-    }
-    return 'gray';
-  }
-
   getTaskActionText(solution: SolutionDto): string {
     if (this.status() === 'Solving') {
       return this.startedTaskSolution(solution)
@@ -132,6 +116,7 @@ export default class StudentTaskBlocksAccordionItemComponent {
       taskBlockId: this.taskBlock().id,
       courseId: this.courseId(),
       isEditable: this.status() === 'Solving',
+      studentEndTime: this.studentEndTime(),
     }).subscribe();
   }
 
