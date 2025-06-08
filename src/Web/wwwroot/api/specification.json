@@ -1998,6 +1998,10 @@
             "type": "string",
             "nullable": true
           },
+          "feedback": {
+            "type": "string",
+            "nullable": true
+          },
           "startTime": {
             "type": "string",
             "format": "date-time"

@@ -3,6 +3,7 @@ import {
   EditSolutionCommand,
   GradedCourseResponse,
   GradedTaskBlockDto,
+  SendFeedbackCommand,
   SolutionDto,
   StudentCourseResponse,
   StudentsClient,
@@ -133,5 +134,25 @@ export class StudentCoursesFacadeService {
         }),
       }),
     );
+  }
+
+  async saveFeedback(courseId: string, taskBlockId: string, text: string) {
+    await firstValueFrom(
+      this.studentClient.sendFeedback(
+        courseId,
+        taskBlockId,
+        new SendFeedbackCommand({
+          courseId,
+          blockId: taskBlockId,
+          text,
+        }),
+      ),
+    );
+    this.alerts
+      .open('Комментарий сохранен', {
+        appearance: 'positive',
+        autoClose: 3000,
+      })
+      .subscribe();
   }
 }

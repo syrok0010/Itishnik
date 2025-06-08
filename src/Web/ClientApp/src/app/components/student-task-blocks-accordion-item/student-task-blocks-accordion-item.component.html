@@ -117,4 +117,12 @@
       Начать выполнение
     </button>
   }
+
+  <tui-textfield>
+    <label tuiLabel>Оставьте анонимный комментарий (по желанию)</label>
+    <textarea tuiTextarea [min]="4" [formControl]="feedbackControl()"></textarea>
+  </tui-textfield>
+  <button tuiButton size="m" (click)="saveFeedback()" class="mr-auto">
+    Сохранить
+  </button>
 </div>
