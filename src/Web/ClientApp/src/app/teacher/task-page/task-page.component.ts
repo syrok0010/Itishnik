@@ -10,7 +10,7 @@ import {
   TemplateRef,
   viewChild,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { TasksFacadeService } from '../tasks-facade.service';
 import {
   TuiAutoColorPipe,
@@ -48,6 +48,7 @@ import {
   TuiEditor,
   TuiEditorSocket,
 } from '@taiga-ui/editor';
+import { firstValueFrom } from 'rxjs';
 
 export function textDifferentFromLatest(
   latestTextSignal: Signal<string | undefined>,
@@ -109,6 +110,11 @@ export function textDifferentFromLatest(
 })
 export default class TaskPageComponent {
   editTagsDialogTemplate = viewChild<TemplateRef<any>>('editTagsDialog');
+  createVersionDialogTemplate = viewChild<TemplateRef<any>>(
+    'createVersionDialog',
+  );
+
+  private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly taskFacade = inject(TasksFacadeService);
   private readonly dialogs = inject(TuiDialogService);
@@ -118,7 +124,6 @@ export default class TaskPageComponent {
   solutionControl = new FormControl('');
 
   currentTaskChain = toSignal(this.taskFacade.currentTaskChain$);
-  creatingNewVersion = signal(false);
   editingSolution = signal(false);
 
   currentVersion = computed(() =>
@@ -185,15 +190,14 @@ export default class TaskPageComponent {
       return;
     }
 
-    await this.taskFacade.createTask(
+    const id = await this.taskFacade.createTask(
       latest.name,
       this.newVersionForm.value.text,
       this.newVersionForm.value.solutionText,
       latest.isPublic,
       latest.id,
     );
-    this.creatingNewVersion.set(false);
-    this.newVersionForm.reset();
+    await this.router.navigate(['/tasks', id]);
   }
 
   async publish() {
@@ -206,5 +210,15 @@ export default class TaskPageComponent {
       this.latestVersion().id,
       this.solutionControl.value,
     );
+  }
+
+  async openCreatingVersionDialog() {
+    const save = await firstValueFrom(
+      this.dialogs.open<boolean>(this.createVersionDialogTemplate(), {
+        size: 'auto',
+        label: 'Новая версия',
+      }),
+    );
+    if (save) await this.saveNewVersion();
   }
 }
