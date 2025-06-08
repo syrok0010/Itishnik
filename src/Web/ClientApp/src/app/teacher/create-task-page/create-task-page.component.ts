@@ -16,10 +16,15 @@ import {
   TUI_EDITOR_EXTENSIONS,
   TuiEditor,
 } from '@taiga-ui/editor';
-import { TuiButton } from '@taiga-ui/core';
-import { TuiCheckbox } from '@taiga-ui/kit';
+import { TuiButton, TuiError } from '@taiga-ui/core';
+import {
+  TuiCheckbox,
+  TuiFieldErrorPipe,
+  tuiValidationErrorsProvider,
+} from '@taiga-ui/kit';
 import { TasksFacadeService } from '../tasks-facade.service';
 import { Router } from '@angular/router';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-create-task-page',
@@ -30,6 +35,9 @@ import { Router } from '@angular/router';
     TuiCheckbox,
     TuiButton,
     TuiTextfieldControllerModule,
+    TuiError,
+    TuiFieldErrorPipe,
+    AsyncPipe,
   ],
   templateUrl: './create-task-page.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -42,6 +50,9 @@ import { Router } from '@angular/router';
         import('@taiga-ui/editor').then(({ setup }) => setup({ injector })),
       ],
     },
+    tuiValidationErrorsProvider({
+      required: 'Поле не может быть пустым',
+    }),
   ],
 })
 export default class CreateTaskPageComponent {
