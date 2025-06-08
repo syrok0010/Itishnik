@@ -16,6 +16,7 @@ import {
   TuiAutoColorPipe,
   TuiButton,
   TuiInitialsPipe,
+  TuiScrollbar,
   TuiTitle,
 } from '@taiga-ui/core';
 import { TuiAvatar } from '@taiga-ui/kit';
@@ -31,6 +32,7 @@ import { TuiAvatar } from '@taiga-ui/kit';
     TuiTitle,
     TuiInitialsPipe,
     TuiButton,
+    TuiScrollbar,
   ],
   templateUrl: './course-grades-table.component.html',
   styles: ``,
@@ -51,6 +53,8 @@ export default class CourseGradesTableComponent {
   );
   columns = computed(() => [
     'student',
-    ...this.studentsAndGrades()[0].grades.map((g, i) => i.toString()),
+    ...(!!this.studentsAndGrades()
+      ? this.studentsAndGrades()[0].grades.map((g, i) => i.toString())
+      : []),
   ]);
 }
