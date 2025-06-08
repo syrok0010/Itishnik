@@ -48,7 +48,7 @@ public class TaskBlock
         TimeAllowed = timeAllowed;
     }
 
-    public void AddTask(Task task, int weight=0)
+    public void AddTask(Task task, int weight = 1)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(weight, nameof(weight));
         _taskEntries.Add(new TaskBlockEntry(this, task, _taskEntries.Count + 1, weight));
@@ -108,7 +108,7 @@ public class TaskBlock
                 throw new InvalidOperationException("Сумма весов должна равняться 10");
             }
 
-            if (StartTime is null || EndTime is null || TimeAllowed is null || StartTime < TimeProvider.System.GetLocalNow())
+            if (StartTime is null || EndTime is null || StartTime < TimeProvider.System.GetLocalNow())
             {
                 throw new InvalidOperationException("Некорректно задано время выполнения работы");
             } 

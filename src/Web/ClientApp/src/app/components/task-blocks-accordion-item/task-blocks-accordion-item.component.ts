@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import {
   AbstractControl,
+  FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -51,6 +52,7 @@ import { CoursesFacadeService } from '../../teacher/courses-facade.service';
 import { firstValueFrom } from 'rxjs';
 import SelectTasksDialogComponent from '../select-tasks-dialog.component';
 import { AsyncPipe } from '@angular/common';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-blocks-accordion-item',
@@ -203,7 +205,12 @@ export default class TaskBlocksAccordionItemComponent {
       ),
   );
   weightControls = computed(() =>
-    this.taskBlock().tasks.map((t) => new FormControl(t.weight)),
+    new FormArray(this.taskBlock().tasks.map((t) => new FormControl(t.weight, [Validators.required])),
+    ));
+  weightsInvalid = computed(() =>
+    this.weightControls().valueChanges.pipe(
+      map((_) => this.weightControls().controls.some((c) => c.invalid)),
+    ),
   );
 
   tableColumns = ['number', 'task', 'weight'] as readonly string[];
@@ -253,7 +260,7 @@ export default class TaskBlocksAccordionItemComponent {
   }
 
   async saveWeights() {
-    const weights = this.weightControls().map((fc) => fc.value);
+    const weights = this.weightControls().value;
     await this.coursesFacade.updateTaskBlockWeights(
       this.taskBlock().courseId,
       this.taskBlock().id,
