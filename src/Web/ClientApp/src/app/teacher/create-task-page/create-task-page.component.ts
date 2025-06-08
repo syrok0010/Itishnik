@@ -20,6 +20,7 @@ import {
 import { TuiButton } from '@taiga-ui/core';
 import { TuiCheckbox } from '@taiga-ui/kit';
 import { TasksFacadeService } from '../tasks-facade.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-task-page',
@@ -46,7 +47,7 @@ import { TasksFacadeService } from '../tasks-facade.service';
 })
 export default class CreateTaskPageComponent {
   private readonly taskFacade = inject(TasksFacadeService);
-  private readonly location = inject(Location);
+  private readonly router = inject(Router);
 
   form = new FormGroup({
     name: new FormControl('', [Validators.required]),
@@ -56,13 +57,13 @@ export default class CreateTaskPageComponent {
   });
 
   async createTask() {
-    await this.taskFacade.createTask(
+    const id = await this.taskFacade.createTask(
       this.form.value.name,
       this.form.value.text,
       this.form.value.solutionText,
       this.form.value.isPublic,
       null,
     );
-    this.location.back();
+    await this.router.navigate(['/tasks', id]);
   }
 }
