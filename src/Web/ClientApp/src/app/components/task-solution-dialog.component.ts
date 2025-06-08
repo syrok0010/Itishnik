@@ -62,10 +62,12 @@ export interface TaskSolutionDialogData {
         </div>
       </div>
       <div class="relative flex items-center justify-end gap-4 border-gray-200">
-        <app-countdown-timer
-          class="absolute left-1/2 -translate-x-1/2"
-          [targetDateTime]="context.data.studentEndTime"
-        />
+        @if (context.data.isEditable) {
+          <app-countdown-timer
+            class="absolute left-1/2 -translate-x-1/2"
+            [targetDateTime]="context.data.studentEndTime"
+          />
+        }
         <button
           tuiButton
           type="button"
