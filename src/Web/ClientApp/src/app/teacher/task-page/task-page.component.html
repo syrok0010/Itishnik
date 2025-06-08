@@ -57,17 +57,22 @@
               </span>
             }
           </div>
-          <button
-            tuiIconButton
-            iconStart="@tui.pen"
-            size="m"
-            appearance="outline"
-            (click)="showEditTagsDialog()"
-          ></button>
+
+          @if (isAuthor()) {
+            <button
+              tuiIconButton
+              iconStart="@tui.pen"
+              size="m"
+              appearance="outline"
+              (click)="showEditTagsDialog()"
+            ></button>
+          }
         </div>
-        <button tuiButton size="m" (click)="openCreatingVersionDialog()">
-          Добавить версию
-        </button>
+        @if (isAuthor()) {
+          <button tuiButton size="m" (click)="openCreatingVersionDialog()">
+            Добавить версию
+          </button>
+        }
       </div>
     </div>
 
@@ -98,7 +103,7 @@
                 }
               </div>
 
-              @if (first) {
+              @if (first && isAuthor()) {
                 <div class="ml-auto mt-2 flex gap-4 self-end">
                   @if (editingSolution()) {
                     <button

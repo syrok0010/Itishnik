@@ -51,6 +51,7 @@ import {
   TuiEditorSocket,
 } from '@taiga-ui/editor';
 import { firstValueFrom } from 'rxjs';
+import { UsersFacadeService } from '../../users-facade.service';
 
 export function textDifferentFromLatest(
   latestTextSignal: Signal<string | undefined>,
@@ -119,9 +120,11 @@ export default class TaskPageComponent {
   private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly taskFacade = inject(TasksFacadeService);
+  private readonly userFacade = inject(UsersFacadeService);
   private readonly dialogs = inject(TuiDialogService);
   id: string = this.route.snapshot.paramMap.get('id');
 
+  authInfo = toSignal(this.userFacade.authInfo$);
   tagControl = new FormControl<string[]>([]);
   solutionControl = new FormControl('');
 
@@ -132,6 +135,10 @@ export default class TaskPageComponent {
     !this.currentTaskChain()
       ? null
       : this.currentTaskChain().find((t) => t.id === this.id),
+  );
+
+  isAuthor = computed(
+    () => this.currentVersion().teacherId === this.authInfo().userId,
   );
 
   latestVersion = computed(() => {
