@@ -13,11 +13,21 @@
     </tui-input>
     <div>
       <p class="mb-2 text-xl font-semibold">Текст задания</p>
-      <tui-editor formControlName="text"></tui-editor>
+      <tui-editor formControlName="text" />
+      <tui-error
+        class="mt-2"
+        formControlName="text"
+        [error]="[] | tuiFieldError | async"
+      />
     </div>
     <div>
       <p class="mb-2 text-xl font-semibold">Решение задания</p>
       <tui-editor formControlName="solutionText"></tui-editor>
+      <tui-error
+        class="mt-2"
+        formControlName="solutionText"
+        [error]="[] | tuiFieldError | async"
+      />
     </div>
     <label class="flex items-center gap-4 text-base">
       <input
