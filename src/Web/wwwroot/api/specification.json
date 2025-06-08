@@ -829,6 +829,50 @@
         }
       }
     },
+    "/api/Courses/{id}/verdict": {
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "GetAiVerdict",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAiVerdictCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiVerdictResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Students/courses": {
       "get": {
         "tags": [
@@ -1957,6 +2001,30 @@
             "items": {
               "type": "string"
             }
+          }
+        }
+      },
+      "AiVerdictResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "GetAiVerdictCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "taskBlockId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "solutionId": {
+            "type": "string",
+            "format": "guid"
           }
         }
       },

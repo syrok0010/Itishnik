@@ -1,0 +1,74 @@
+using System.Net.Http.Json;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using Itishnik.Application.Common.Interfaces;
+using Itishnik.Application.Common.Models;
+using Microsoft.Extensions.Configuration;
+
+namespace Itishnik.Infrastructure.Services;
+
+public class AiService(HttpClient httpClient, IConfiguration configuration) : IAiService
+{
+    private readonly HttpClient _httpClient = httpClient;
+    private readonly IConfiguration _configuration = configuration;
+    private static readonly JsonSerializerOptions JsonOptions = new() { PropertyNameCaseInsensitive = true };
+
+    public async Task<AiVerdictResponse> EvaluateSolutionAsync(int maxScore, string taskText, string solutionText, string referenceText)
+    {
+        const string modelName = "gemini-2.0-flash";
+        var requestUrl = $"/v1beta/models/{modelName}:generateContent?key={_configuration["GoogleAi:ApiKey"]}";
+        var prompt = GenerateGradePrompt(maxScore, taskText, solutionText, referenceText);
+        var requestPayload = new
+        {
+            contents = new[] { new { parts = new[] { new { text = prompt } } } },
+            generationConfig = new
+            {
+                responseMimeType = "application/json",
+                temperature = 0.1,
+                maxOutputTokens = 50
+            }
+        };
+
+        var response = await _httpClient.PostAsJsonAsync(requestUrl, requestPayload);
+        response.EnsureSuccessStatusCode();
+        JsonNode? root = await response.Content.ReadFromJsonAsync<JsonNode>();
+        
+        var innerJsonString = root?["candidates"]?[0]?["content"]?["parts"]?[0]?["text"]?.GetValue<string>();
+
+        if (string.IsNullOrWhiteSpace(innerJsonString))
+            throw new FormatException("Ошибка: Gemini API вернул пустой или некорректный ответ.");
+
+        var verdict = JsonSerializer.Deserialize<AiVerdictResponse>(innerJsonString, JsonOptions);
+    
+        if (verdict is null)
+            throw new NullReferenceException("Вердикт пуст после десериализации вложенного JSON.");
+
+        return verdict;
+    }
+
+    private string GenerateGradePrompt(int maxScore, string taskText, string solutionText, string referenceText)
+    {
+        return $$"""
+               Ты — эксперт-ассистент по оценке заданий для курса "Алгоритмы и структуры данных". Твоя задача — проанализировать решение студента, сравнить его с эталонным решением и выставить оценку по заданным критериям.
+
+               **Максимальный балл за задачу:** 
+               {{maxScore}}
+               
+               **Решение студента:**
+               {{solutionText}}
+               
+               **Текст задачи:**
+               {{taskText}}
+               
+               **Эталонное решение:**
+               {{referenceText}}
+               
+               ТРЕБОВАНИЯ К ОТВЕТУ:
+               Верни ответ СТРОГО в формате JSON. Не добавляй никаких пояснений или текста вне JSON.
+               JSON должен содержать ТОЛЬКО одно поле "score" с числовым значением от 0 до {maxScore}.
+               
+               Пример правильного ответа:
+               8
+               """;
+    }
+}
