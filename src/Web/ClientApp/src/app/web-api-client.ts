@@ -3236,6 +3236,8 @@ export class SolutionDto implements ISolutionDto {
     id?: string;
     text?: string;
     grade?: number | undefined;
+    weight?: number;
+    position?: number;
     task?: TaskDto;
 
     constructor(data?: ISolutionDto) {
@@ -3252,6 +3254,8 @@ export class SolutionDto implements ISolutionDto {
             this.id = _data["id"];
             this.text = _data["text"];
             this.grade = _data["grade"];
+            this.weight = _data["weight"];
+            this.position = _data["position"];
             this.task = _data["task"] ? TaskDto.fromJS(_data["task"]) : <any>undefined;
         }
     }
@@ -3268,6 +3272,8 @@ export class SolutionDto implements ISolutionDto {
         data["id"] = this.id;
         data["text"] = this.text;
         data["grade"] = this.grade;
+        data["weight"] = this.weight;
+        data["position"] = this.position;
         data["task"] = this.task ? this.task.toJSON() : <any>undefined;
         return data;
     }
@@ -3277,6 +3283,8 @@ export interface ISolutionDto {
     id?: string;
     text?: string;
     grade?: number | undefined;
+    weight?: number;
+    position?: number;
     task?: TaskDto;
 }
 

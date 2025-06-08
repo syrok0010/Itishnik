@@ -31,7 +31,35 @@ public class GradedTaskBlockDto
                 .ForMember(w => w.StudentStartTime, options => options.MapFrom(gtb => gtb.StartTime))
                 .ForMember(w => w.Grade, options => options.MapFrom(gtb => gtb.Grade))
                 .ForMember(w => w.TaskCount, options => options.MapFrom(gtb => gtb.TaskBlock.TasksEntries.Count()))
-                .ForMember(w => w.Solutions, options => options.MapFrom(gtb => gtb.StartTime == null ? null : gtb.Solutions));
+                .ForMember(w => w.Solutions, opt => opt.MapFrom((src, dest, destMember, context) =>
+                {
+                    if (src.StartTime == null)
+                        return null;
+
+                    var entryData = src.TaskBlock.TasksEntries.ToDictionary(
+                        entry => entry.TaskId,
+                        entry => new { entry.Weight, entry.Position }
+                    );
+
+                    return src.Solutions
+                        .Select(solution =>
+                        {
+                            entryData.TryGetValue(solution.TaskId, out var data);
+
+                            return new SolutionDto
+                            {
+                                Id = solution.Id,
+                                Text = solution.Text,
+                                Grade = solution.Grade,
+                                Task = context.Mapper.Map<TaskDto>(solution.Task),
+                                Weight = data!.Weight,
+                                Position = data.Position
+                            };
+                        })
+                        .OrderBy(dto => dto.Position)
+                        .ToList();
+                }));
+            ;
         }
     }
 }

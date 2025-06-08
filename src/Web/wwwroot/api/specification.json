@@ -2049,6 +2049,14 @@
             "format": "int32",
             "nullable": true
           },
+          "weight": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
           "task": {
             "$ref": "#/components/schemas/TaskDto"
           }
