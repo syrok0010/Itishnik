@@ -208,8 +208,8 @@ export class CoursesFacadeService {
           taskBlocks: [
             ..._state.currentCourse.taskBlocks.filter(
               (tb) => tb.id !== taskBlockId,
-              response,
             ),
+            response,
           ],
         }),
       }),
@@ -321,8 +321,8 @@ export class CoursesFacadeService {
           taskBlocks: [
             ..._state.currentCourse.taskBlocks.filter(
               (tb) => tb.id !== taskBlockId,
-              response,
             ),
+            response,
           ],
         }),
       }),
@@ -359,8 +359,8 @@ export class CoursesFacadeService {
           taskBlocks: [
             ..._state.currentCourse.taskBlocks.filter(
               (tb) => tb.id !== taskBlockId,
-              response,
             ),
+            response,
           ],
         }),
       }),
@@ -368,7 +368,6 @@ export class CoursesFacadeService {
   }
 
   setSorting(ascending: boolean) {
-    if (ascending === _state.ascending) return;
     this._store.next((_state = { ..._state, ascending }));
   }
 
@@ -409,8 +408,8 @@ export class CoursesFacadeService {
           taskBlocks: [
             ..._state.currentCourse.taskBlocks.filter(
               (tb) => tb.id !== taskBlockId,
-              response,
             ),
+            response,
           ],
         }),
       }),
@@ -442,6 +441,14 @@ export class CoursesFacadeService {
           ..._state.currentCourse,
           taskBlocks: [..._state.currentCourse.taskBlocks, response],
         }),
+        coursesList: _state.coursesList.map((c) =>
+          c.id !== courseId
+            ? c
+            : new CourseListResponse({
+                ...c,
+                taskBlocksCount: c.taskBlocksCount + 1,
+              }),
+        ),
       }),
     );
   }

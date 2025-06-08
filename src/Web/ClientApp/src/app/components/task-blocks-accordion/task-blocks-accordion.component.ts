@@ -42,7 +42,7 @@ export default class TaskBlocksAccordionComponent {
   taskBlocks$ = this.coursesFacade.currentCourse$.pipe(
     map((course) =>
       course.taskBlocks.sort(
-        (a, b) => b.startTime.getTime() - a.startTime.getTime(),
+        (a, b) => b.startTime?.getTime() - a.startTime?.getTime(),
       ),
     ),
   );
