@@ -22,9 +22,11 @@ import {
 } from '@taiga-ui/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import {
+  TUI_CONFIRM,
   TuiAvatar,
   TuiBadge,
   TuiChip,
+  TuiConfirmData,
   TuiFieldErrorPipe,
   TuiStatus,
   tuiValidationErrorsProvider,
@@ -201,6 +203,23 @@ export default class TaskPageComponent {
   }
 
   async publish() {
+    const data: TuiConfirmData = {
+      content:
+        'Задача станет доступна для просмотра и использования остальным преподавателям. Вы не сможете отменить это действие.',
+      yes: 'Опубликовать',
+      no: 'Отменить',
+    };
+
+    const shouldPublishTask = await firstValueFrom(
+      this.dialogs.open<boolean>(TUI_CONFIRM, {
+        label: 'Опубликовать задачу?',
+        size: 'm',
+        data,
+      }),
+    );
+
+    if (!shouldPublishTask) return;
+
     await this.taskFacade.publishTask(this.currentVersion().id);
   }
 
