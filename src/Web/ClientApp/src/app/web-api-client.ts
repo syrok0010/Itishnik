@@ -3158,7 +3158,7 @@ export class GradedTaskBlockDto implements IGradedTaskBlockDto {
     description?: string | undefined;
     startTime?: Date;
     endTime?: Date;
-    timeAllowed?: string;
+    timeAllowed?: string | undefined;
     studentStartTime?: Date | undefined;
     grade?: number | undefined;
     taskCount?: number;
@@ -3225,7 +3225,7 @@ export interface IGradedTaskBlockDto {
     description?: string | undefined;
     startTime?: Date;
     endTime?: Date;
-    timeAllowed?: string;
+    timeAllowed?: string | undefined;
     studentStartTime?: Date | undefined;
     grade?: number | undefined;
     taskCount?: number;

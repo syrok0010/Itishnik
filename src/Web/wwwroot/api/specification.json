@@ -2008,7 +2008,8 @@
           },
           "timeAllowed": {
             "type": "string",
-            "format": "duration"
+            "format": "duration",
+            "nullable": true
           },
           "studentStartTime": {
             "type": "string",

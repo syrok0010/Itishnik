@@ -10,7 +10,7 @@ public class GradedTaskBlockDto
 
     public DateTime StartTime { get; init; }
     public DateTime EndTime { get; init; }
-    public TimeSpan TimeAllowed { get; init; }
+    public TimeSpan? TimeAllowed { get; init; }
     public DateTime? StudentStartTime { get; init; }
 
     public int? Grade { get; init; }
