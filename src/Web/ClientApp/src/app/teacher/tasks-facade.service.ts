@@ -69,15 +69,16 @@ export class TasksFacadeService {
     filter((state) => !!state.currentTaskId),
     map((state) => {
       const currentTask = state.tasks.find((t) => t.id === state.currentTaskId);
+
       if (!currentTask) return [];
-      if (!currentTask.firstTaskId) return [currentTask];
+
+      const chainRootId = currentTask.firstTaskId || currentTask.id;
       return state.tasks
-        .filter(
-          (t) =>
-            t.id == currentTask.firstTaskId ||
-            t.firstTaskId == currentTask.firstTaskId,
-        )
-        .sort((a, b) => b.created.getTime() - a.created.getTime());
+        .filter((t) => t.id === chainRootId || t.firstTaskId === chainRootId)
+        .sort(
+          (a, b) =>
+            new Date(b.created).getTime() - new Date(a.created).getTime(),
+        );
     }),
   );
 

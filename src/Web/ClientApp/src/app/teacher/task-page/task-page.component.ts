@@ -10,7 +10,7 @@ import {
   TemplateRef,
   viewChild,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { TasksFacadeService } from '../tasks-facade.service';
 import {
   TuiAutoColorPipe,
@@ -117,7 +117,6 @@ export default class TaskPageComponent {
     'createVersionDialog',
   );
 
-  private readonly router = inject(Router);
   private readonly route = inject(ActivatedRoute);
   private readonly taskFacade = inject(TasksFacadeService);
   private readonly userFacade = inject(UsersFacadeService);
@@ -199,14 +198,14 @@ export default class TaskPageComponent {
       return;
     }
 
-    const id = await this.taskFacade.createTask(
+    await this.taskFacade.createTask(
       latest.name,
       this.newVersionForm.value.text,
       this.newVersionForm.value.solutionText,
       latest.isPublic,
       latest.id,
     );
-    await this.router.navigate(['/tasks', id]);
+    this.newVersionForm.markAsPristine();
   }
 
   async publish() {

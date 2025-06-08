@@ -83,7 +83,7 @@
         let index = $index;
         let first = $first
       ) {
-        <button [tuiAccordion]="false">
+        <button [tuiAccordion]="version.id === currentVersion().id">
           Версия {{ taskChain.length - index }}
         </button>
 
