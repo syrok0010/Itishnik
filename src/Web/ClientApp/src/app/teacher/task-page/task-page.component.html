@@ -182,7 +182,11 @@
       </label>
     </div>
     <div class="flex justify-end gap-4">
-      <button tuiButton appearance="flat" (click)="observer.next(false); observer.complete()">
+      <button
+        tuiButton
+        appearance="flat"
+        (click)="observer.next(false); observer.complete()"
+      >
         Отменить
       </button>
       <button
