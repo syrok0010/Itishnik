@@ -5,7 +5,7 @@
     <cdk-virtual-scroll-viewport
       #viewport
       class="tui-zero-scrollbar {{
-        data.length === 0 ? 'h-14' : 'h-[calc(100dvh-60px-56px-5rem)]'
+        data.length === 0 ? 'h-14' : 'h-[calc(100dvh-60px-4rem)]'
       }}"
       appendOnly
       tuiScrollable
@@ -31,6 +31,7 @@
               "
               tuiSortable
               class="w-3/12"
+              [sticky]="true"
               *tuiHead="'course'"
             >
               Курс
@@ -42,6 +43,7 @@
               "
               class="w-1/12"
               [sorter]="null"
+              [sticky]="true"
               *tuiHead="'students'"
             >
               Количество студентов
@@ -53,6 +55,7 @@
               "
               class="w-2/12"
               [sorter]="null"
+              [sticky]="true"
               *tuiHead="'taskBlocks'"
             >
               Количество блоков заданий
@@ -64,6 +67,7 @@
               "
               class="w-6/12"
               [sorter]="null"
+              [sticky]="true"
               *tuiHead="'description'"
             >
               Описание
