@@ -4,7 +4,6 @@ import {
   computed,
   inject,
   input,
-  signal,
   TemplateRef,
   viewChild,
 } from '@angular/core';
@@ -137,7 +136,12 @@ export default class TaskBlocksAccordionItemComponent {
     };
   }
 
-  taskBlockComments = signal<string[]>([]);
+  taskBlockComments$ = computed(() =>
+    this.coursesFacade.getFeedback(
+      this.taskBlock().courseId,
+      this.taskBlock().id,
+    ),
+  );
   index = 0;
 
   taskBlockStarted = computed(
