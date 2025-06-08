@@ -209,6 +209,41 @@
         }
       }
     },
+    "/api/Courses/{id}/grades": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "GetStudentsAndGrades",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StudentGradesResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Courses/{id}/{blockId}/description": {
       "patch": {
         "tags": [
@@ -1727,6 +1762,34 @@
           },
           "group": {
             "type": "string"
+          }
+        }
+      },
+      "StudentGradesResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "studentId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "courseId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "fullName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "grades": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "format": "int32",
+              "nullable": true
+            }
           }
         }
       },

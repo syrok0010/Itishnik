@@ -10,6 +10,7 @@ import {
 } from '@angular/core';
 import {
   AbstractControl,
+  FormArray,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
@@ -51,6 +52,7 @@ import { CoursesFacadeService } from '../../teacher/courses-facade.service';
 import { firstValueFrom } from 'rxjs';
 import SelectTasksDialogComponent from '../select-tasks-dialog.component';
 import { AsyncPipe } from '@angular/common';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-task-blocks-accordion-item',
@@ -142,6 +144,10 @@ export default class TaskBlocksAccordionItemComponent {
     () => Date.now() - this.taskBlock().startTime.getTime() > 0,
   );
 
+  taskBlockFinished = computed(
+    () => Date.now() - this.taskBlock().endTime?.getTime() > 0,
+  );
+
   taskBlock = input.required<TaskBlockResponse>();
   formGroup = computed(
     () =>
@@ -154,9 +160,10 @@ export default class TaskBlocksAccordionItemComponent {
             },
             [Validators.required],
           ),
-          description: new FormControl<string | null>(
-            this.taskBlock().description,
-          ),
+          description: new FormControl<string | null>({
+            value: this.taskBlock().description,
+            disabled: this.taskBlockFinished(),
+          }),
           startTime: new FormControl<[TuiDay, TuiTime]>(
             {
               value: [
@@ -172,16 +179,19 @@ export default class TaskBlocksAccordionItemComponent {
             Validators.required,
           ),
           endTime: new FormControl<[TuiDay, TuiTime]>(
-            [
-              TuiDay.fromLocalNativeDate(
-                this.taskBlock().endTime ??
-                  new Date(Date.now() + 1000 * 60 * 60 * 24),
-              ),
-              TuiTime.fromLocalNativeDate(
-                this.taskBlock().endTime ??
-                  new Date(Date.now() + 1000 * 60 * 60 * 24),
-              ),
-            ],
+            {
+              value: [
+                TuiDay.fromLocalNativeDate(
+                  this.taskBlock().endTime ??
+                    new Date(Date.now() + 1000 * 60 * 60 * 24),
+                ),
+                TuiTime.fromLocalNativeDate(
+                  this.taskBlock().endTime ??
+                    new Date(Date.now() + 1000 * 60 * 60 * 24),
+                ),
+              ],
+              disabled: this.taskBlock().isPublic && this.taskBlockFinished(),
+            },
             Validators.required,
           ),
           timeAllowed: new FormControl<TuiTime | null>({
@@ -194,8 +204,18 @@ export default class TaskBlocksAccordionItemComponent {
         [this.timeValidator()],
       ),
   );
-  weightControls = computed(() =>
-    this.taskBlock().tasks.map((t) => new FormControl(t.weight)),
+  weightControls = computed(
+    () =>
+      new FormArray(
+        this.taskBlock().tasks.map(
+          (t) => new FormControl(t.weight, [Validators.required]),
+        ),
+      ),
+  );
+  weightsInvalid = computed(() =>
+    this.weightControls().valueChanges.pipe(
+      map((_) => this.weightControls().controls.some((c) => c.invalid)),
+    ),
   );
 
   tableColumns = ['number', 'task', 'weight'] as readonly string[];
@@ -245,7 +265,7 @@ export default class TaskBlocksAccordionItemComponent {
   }
 
   async saveWeights() {
-    const weights = this.weightControls().map((fc) => fc.value);
+    const weights = this.weightControls().value;
     await this.coursesFacade.updateTaskBlockWeights(
       this.taskBlock().courseId,
       this.taskBlock().id,

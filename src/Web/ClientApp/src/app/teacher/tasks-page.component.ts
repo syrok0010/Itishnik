@@ -23,7 +23,7 @@ import { RouterLink } from '@angular/router';
       appearance="primary"
       tuiButton
       type="button"
-      class="!absolute bottom-4 right-4 shadow-sm"
+      class="!absolute bottom-6 right-6"
       [routerLink]="['create']"
     >
       <tui-icon icon="@tui.plus" />

@@ -7,7 +7,7 @@ namespace Itishnik.Application.Courses.Commands.AddTaskToBlock;
 
 [Authorize(Policy = Policies.Owner)]
 [ResourceMetadata(nameof(Id), typeof(Course))]
-public record AddTaskToBlockCommand(Guid Id, Guid BlockId, Guid TaskId, int Weight = 0) : IRequest<TaskBlockResponse>;
+public record AddTaskToBlockCommand(Guid Id, Guid BlockId, Guid TaskId, int Weight = 1) : IRequest<TaskBlockResponse>;
 
 public class AddTaskToBlockCommandHandler(IApplicationDbContext context, IMapper mapper) 
     : IRequestHandler<AddTaskToBlockCommand, TaskBlockResponse>

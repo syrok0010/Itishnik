@@ -12,7 +12,7 @@
       <input tuiTextfieldLegacy placeholder="Найдите минимум массива" />
     </tui-input>
     <div>
-      <p class="text-xl font-semibold mb-2">Текст задания</p>
+      <p class="mb-2 text-xl font-semibold">Текст задания</p>
       <tui-editor formControlName="text"></tui-editor>
     </div>
     <div>
@@ -33,7 +33,6 @@
   <button
     tuiButton
     size="m"
-    iconEnd="@tui.save"
     type="submit"
     class="mr-auto"
     [disabled]="form.invalid"

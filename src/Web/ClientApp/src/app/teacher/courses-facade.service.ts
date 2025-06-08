@@ -54,11 +54,17 @@ export class CoursesFacadeService {
     switchMap((courseId) => this.coursesClient.getCourseById(courseId)),
     shareReplay(1),
   );
-  currentCoursesStudents$ = this._store.pipe(
+  currentCourseStudents$ = this._store.pipe(
     map((state) => state.currentCourseId),
     filter((courseId) => !!courseId),
     switchMap((courseId) => this.coursesClient.getStudents(courseId)),
     map((r) => r.students),
+    shareReplay(1),
+  );
+  currentCourseGrades$ = this._store.pipe(
+    map((state) => state.currentCourseId),
+    filter((courseId) => !!courseId),
+    switchMap((courseId) => this.coursesClient.getStudentsAndGrades(courseId)),
     shareReplay(1),
   );
 
@@ -140,6 +146,7 @@ export class CoursesFacadeService {
     taskBlockId: string,
     taskIds: string[],
   ): Promise<void> {
+    if (taskIds.length === 0) return;
     for (const taskId of taskIds) {
       await firstValueFrom(
         this.coursesClient.addTaskToBlock(

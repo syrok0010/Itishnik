@@ -1,0 +1,55 @@
+<tui-scrollbar>
+  <table
+    tuiTable
+    class="w-max table-fixed border-separate border-spacing-0"
+    [columns]="columns()"
+  >
+    <thead>
+      <tr tuiThGroup>
+        <th tuiTh class="!sticky !left-0 !z-50 w-80 !shadow-xl">Студент</th>
+        @for (name of taskBlocksNames(); track name) {
+          <th tuiTh class="w-32">{{ name }}</th>
+        }
+      </tr>
+    </thead>
+    <tbody tuiTbody [data]="studentsAndGrades()">
+      @for (student of studentsAndGrades(); track student) {
+        <tr tuiTr class="">
+          <td *tuiCell="'student'" tuiTd class="!sticky !z-50 !shadow-xl">
+            <div class="flex flex-row items-center gap-2">
+              <tui-avatar
+                [src]="student.fullName | tuiInitials"
+                [style.background]="student.fullName | tuiAutoColor"
+                size="m"
+              />
+              <span tuiTitle class="!whitespace-normal text-xl">
+                {{ student.fullName }}
+                <span tuiSubtitle class="!truncate text-base">{{
+                  student.email
+                }}</span>
+              </span>
+            </div>
+          </td>
+          @for (col of columns().slice(1); let index = $index; track col) {
+            <td *tuiCell="col" tuiTd>
+              <div
+                class="flex justify-center text-lg font-semibold"
+                [class.text-red-500]="
+                  !!student.grades[index] && student.grades[index] < 4
+                "
+              >
+                @if (!!student.grades[index]) {
+                  {{ student.grades[index] }}
+                } @else {
+                  <button appearance="flat" tuiButton type="button" size="m">
+                    Оценить
+                  </button>
+                }
+              </div>
+            </td>
+          }
+        </tr>
+      }
+    </tbody>
+  </table>
+</tui-scrollbar>

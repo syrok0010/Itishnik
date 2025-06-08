@@ -23,19 +23,21 @@
           <tr tuiTr>
             <td tuiTd *tuiCell="'number'">{{ task.position }}</td>
             <td tuiTd *tuiCell="'task'">
-              <div class="flex items-center justify-between pr-3.5">
+              <div class="flex items-center justify-between pr-1.5">
                 <span
                   [routerLink]="['/tasks', task.id]"
                   class="cursor-pointer hover:underline hover:underline-offset-4"
                   >{{ task.name }}</span
                 >
                 @if (!taskBlock().isPublic) {
-                  <tui-icon
-                    class="cursor-pointer text-lg text-red-300 transition-colors duration-300 hover:text-red-500"
-                    icon="@tui.trash"
+                  <button
+                    tuiIconButton
+                    appearance="flat-destructive"
+                    iconEnd="@tui.trash"
+                    type="button"
+                    size="s"
                     (click)="removeTaskFromBlock(task.id)"
-                  >
-                  </tui-icon>
+                  ></button>
                 }
               </div>
             </td>
@@ -45,7 +47,8 @@
                   <input
                     tuiInputNumber
                     [min]="1"
-                    [formControl]="weightControls()[task.position - 1]"
+                    [max]="10"
+                    [formControl]="weightControls().at(task.position - 1)"
                   />
                 </tui-textfield>
               } @else {
@@ -79,6 +82,7 @@
                 class="mr-auto"
                 size="m"
                 (click)="saveWeights()"
+                [disabled]="weightsInvalid() | async"
               >
                 Сохранить
               </button>
@@ -128,17 +132,19 @@
         />
       </label>
     </div>
-    <button
-      appearance="primary"
-      tuiButton
-      type="button"
-      class="mr-auto shadow-sm"
-      [disabled]="formGroup().invalid"
-      size="m"
-      (click)="saveTaskBlock()"
-    >
-      Сохранить
-    </button>
+    @if (!taskBlockFinished() || !taskBlock().isPublic) {
+      <button
+        appearance="primary"
+        tuiButton
+        type="button"
+        class="mr-auto shadow-sm"
+        [disabled]="formGroup().invalid"
+        size="m"
+        (click)="saveTaskBlock()"
+      >
+        Сохранить
+      </button>
+    }
   </div>
 
   <div class="flex flex-col gap-4">

@@ -17,22 +17,26 @@
           ></button>
         </div>
       }
-      <button
-        tuiIconButton
-        iconEnd="@tui.plus"
-        appearance="outline"
-        type="button"
-        (click)="addControl()"
-      ></button>
+      <div class="mt-2 flex flex-row justify-between">
+        <button
+          tuiButton
+          appearance="outline"
+          type="button"
+          size="m"
+          (click)="addControl()"
+        >
+          <tui-icon icon="@tui.plus" />
+        </button>
+        <button
+          tuiButton
+          type="submit"
+          size="m"
+          [disabled]="emailsArray.invalid || emailsArray.length === 0"
+        >
+          Пригласить
+        </button>
+      </div>
     </div>
-    <button
-      tuiButton
-      type="submit"
-      class="ml-auto"
-      [disabled]="emailsArray.invalid || emailsArray.length === 0"
-    >
-      Пригласить
-    </button>
   </form>
   <div class="flex w-2/3 flex-col gap-6">
     <div class="flex justify-between">
@@ -54,15 +58,13 @@
             [style.background]="student.fullName | tuiAutoColor"
             size="m"
           />
-          <span tuiTitle class="truncate text-2xl">
+          <span tuiTitle class="whitespace-normal">
             {{
               student.fullName === student.email
                 ? "ФИО не установлено"
                 : student.fullName
             }}
-            <span tuiSubtitle class="truncate text-lg">{{
-              student.email
-            }}</span>
+            <span tuiSubtitle class="truncate">{{ student.email }}</span>
           </span>
         </div>
       }
