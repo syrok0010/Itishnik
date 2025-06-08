@@ -6,6 +6,7 @@ import {
 import { taskResolver } from './teacher/task-resolver';
 import { studentCoursePageResolver } from './student/student-course-page/student-course-page.resolver';
 import { coursePageResolver } from './teacher/course-page/course-page.resolver';
+import { tuiGenerateDialogableRoute as tuiRouteDialog } from '@taiga-ui/kit';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/courses', pathMatch: 'full' },
@@ -19,6 +20,16 @@ export const routes: Routes = [
     canMatch: [isAdminOrTeacherGuard],
     loadComponent: () =>
       import('./teacher/courses-page/courses-page.component'),
+    children: [
+      tuiRouteDialog(
+        () => import('./components/create-course-dialog.component'),
+        {
+          dismissible: true,
+          label: 'Создать новый курс',
+          path: 'create',
+        },
+      ),
+    ],
   },
   {
     path: 'courses',

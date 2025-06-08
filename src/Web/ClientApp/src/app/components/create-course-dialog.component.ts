@@ -35,7 +35,7 @@ import { CoursesFacadeService } from '../teacher/courses-facade.service';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CreateCourseDialogComponent {
+export default class CreateCourseDialogComponent {
   courseName: FormControl = new FormControl('', Validators.required);
   public readonly context = injectContext<TuiDialogContext>();
   courseFacade = inject(CoursesFacadeService);
