@@ -8,14 +8,17 @@ import {
   ChangeTaskBlockTimelineCommand,
   ChangeWeightsInBlockCommand,
   CourseListResponse,
+  CourseResponse,
   CoursesClient,
+  CourseStudentListResponse,
   CreateCourseCommand,
   CreateTaskBlockCommand,
   DeleteTaskFromBlockCommand,
   InviteStudentsToCourseCommand,
+  StudentGradesResponse,
 } from '../web-api-client';
-import { BehaviorSubject, firstValueFrom, switchMap } from 'rxjs';
-import { distinctUntilChanged, filter, map, shareReplay } from 'rxjs/operators';
+import { BehaviorSubject, firstValueFrom, Observable, switchMap } from 'rxjs';
+import { distinctUntilChanged, map } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TuiAlertService } from '@taiga-ui/core';
 
@@ -23,18 +26,26 @@ export const coursesPageSize = 20;
 
 export interface CoursesState {
   coursesList: CourseListResponse[];
-  currentCourseId: string | null;
   totalPages: number | null;
   currentPage: number | null;
   ascending: boolean;
+
+  currentCourse: CourseResponse | null;
+  currentCourseStudents: CourseStudentListResponse | null;
+  currentCourseGrades: StudentGradesResponse[] | null;
+  currentCourseFeedbacks: [string, string[]][];
 }
 
 let _state: CoursesState = {
   coursesList: [],
-  currentCourseId: null,
   currentPage: null,
   totalPages: null,
   ascending: true,
+
+  currentCourse: null,
+  currentCourseGrades: null,
+  currentCourseStudents: null,
+  currentCourseFeedbacks: [],
 };
 
 @UntilDestroy()
@@ -48,24 +59,12 @@ export class CoursesFacadeService {
   private _store: BehaviorSubject<CoursesState> = new BehaviorSubject(_state);
 
   coursesList$ = this._store.pipe(map((state) => state.coursesList));
-  currentCourse$ = this._store.pipe(
-    map((state) => state.currentCourseId),
-    filter((courseId) => !!courseId),
-    switchMap((courseId) => this.coursesClient.getCourseById(courseId)),
-    shareReplay(1),
-  );
+  currentCourse$ = this._store.pipe(map((state) => state.currentCourse));
   currentCourseStudents$ = this._store.pipe(
-    map((state) => state.currentCourseId),
-    filter((courseId) => !!courseId),
-    switchMap((courseId) => this.coursesClient.getStudents(courseId)),
-    map((r) => r.students),
-    shareReplay(1),
+    map((state) => state.currentCourseStudents.students),
   );
   currentCourseGrades$ = this._store.pipe(
-    map((state) => state.currentCourseId),
-    filter((courseId) => !!courseId),
-    switchMap((courseId) => this.coursesClient.getStudentsAndGrades(courseId)),
-    shareReplay(1),
+    map((state) => state.currentCourseGrades),
   );
 
   constructor() {
@@ -90,8 +89,26 @@ export class CoursesFacadeService {
       );
   }
 
-  setCurrentCourseId(courseId: string) {
-    this._store.next((_state = { ..._state, currentCourseId: courseId }));
+  async setCurrentCourseId(courseId: string) {
+    const course = await firstValueFrom(
+      this.coursesClient.getCourseById(courseId),
+    );
+    const students = await firstValueFrom(
+      this.coursesClient.getStudents(courseId),
+    );
+    const grades = await firstValueFrom(
+      this.coursesClient.getStudentsAndGrades(courseId),
+    );
+
+    this._store.next(
+      (_state = {
+        ..._state,
+        currentCourse: course,
+        currentCourseStudents: students,
+        currentCourseGrades: grades,
+        currentCourseFeedbacks: [],
+      }),
+    );
   }
 
   async createCourse(name: string): Promise<void> {
@@ -363,5 +380,33 @@ export class CoursesFacadeService {
       ),
     );
     this._store.next(_state);
+  }
+
+  getFeedback(courseId: string, taskBlockId: string): Observable<string[]> {
+    if (!_state.currentCourseFeedbacks[taskBlockId]) {
+      this.coursesClient.getFeedbacks(courseId, taskBlockId).subscribe((r) =>
+        this._store.next(
+          (_state = {
+            ..._state,
+            currentCourseFeedbacks: [
+              ..._state.currentCourseFeedbacks.filter(
+                (e) => e[0] !== taskBlockId,
+              ),
+              [taskBlockId, r],
+            ],
+          }),
+        ),
+      );
+    }
+
+    return this._store.pipe(
+      map(
+        (state) =>
+          (state.currentCourseFeedbacks.find((a) => a[0] === taskBlockId) ?? [
+            '',
+            [],
+          ])[1],
+      ),
+    );
   }
 }

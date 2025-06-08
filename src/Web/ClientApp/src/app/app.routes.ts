@@ -5,6 +5,7 @@ import {
 } from '../api-authorization/auth-guards';
 import { taskResolver } from './teacher/task-resolver';
 import { studentCoursePageResolver } from './student/student-course-page/student-course-page.resolver';
+import { coursePageResolver } from './teacher/course-page/course-page.resolver';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/courses', pathMatch: 'full' },
@@ -37,6 +38,9 @@ export const routes: Routes = [
     path: 'courses/:id',
     canMatch: [isAdminOrTeacherGuard],
     canActivateChild: [isAdminOrTeacherGuard],
+    resolve: {
+      coursePageResolver,
+    },
     loadComponent: () => import('./teacher/course-page/course-page.component'),
     children: [
       {

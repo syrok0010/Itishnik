@@ -108,7 +108,6 @@ export default class CoursePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.coursesFacade.setCurrentCourseId(this.route.snapshot.params['id']);
     this.usersFacade.selectRoles(['Teacher']);
   }
 

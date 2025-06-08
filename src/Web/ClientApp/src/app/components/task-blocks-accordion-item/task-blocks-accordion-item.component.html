@@ -149,11 +149,9 @@
 
   <div class="flex flex-col gap-4">
     <h3 class="text-lg font-semibold">Фидбек студентов</h3>
-    <tui-carousel
-      [(index)]="index"
-      [itemsCount]="taskBlockComments().length > 1 ? 2 : 1"
-    >
-      @for (comment of taskBlockComments(); track comment) {
+    @let comments = taskBlockComments$() | async;
+    <tui-carousel [(index)]="index" [itemsCount]="comments.length > 1 ? 2 : 1">
+      @for (comment of comments; track comment) {
         <div *tuiItem class="rounded-xl border-2 border-gray-200">
           <tui-scrollbar class="p-4">
             <p class="h-24">
@@ -170,7 +168,7 @@
     <tui-pagination
       size="s"
       class="pagination"
-      [length]="taskBlockComments().length"
+      [length]="comments.length"
       [(index)]="index"
     />
   </div>
