@@ -204,9 +204,14 @@ export default class TaskBlocksAccordionItemComponent {
         [this.timeValidator()],
       ),
   );
-  weightControls = computed(() =>
-    new FormArray(this.taskBlock().tasks.map((t) => new FormControl(t.weight, [Validators.required])),
-    ));
+  weightControls = computed(
+    () =>
+      new FormArray(
+        this.taskBlock().tasks.map(
+          (t) => new FormControl(t.weight, [Validators.required]),
+        ),
+      ),
+  );
   weightsInvalid = computed(() =>
     this.weightControls().valueChanges.pipe(
       map((_) => this.weightControls().controls.some((c) => c.invalid)),

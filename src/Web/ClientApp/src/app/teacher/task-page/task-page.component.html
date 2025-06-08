@@ -83,8 +83,9 @@
           <ng-container *tuiItem>
             @defer (when creatingNewVersion()) {
               <div class="flex gap-4 *:flex-1">
-                <label class="flex flex-col gap-2 text-lg font-semibold border-r-2 border-gray-200 pr-4"
-                >Условие задачи
+                <label
+                  class="flex flex-col gap-2 border-r-2 border-gray-200 pr-4 text-lg font-semibold"
+                  >Условие задачи
                   <tui-editor formControlName="text" />
                   <tui-error
                     formControlName="text"
@@ -93,14 +94,14 @@
                 </label>
                 <div>
                   <label class="flex flex-col gap-2 text-lg font-semibold"
-                  >Решение задачи
+                    >Решение задачи
                     <tui-editor class="grow" formControlName="solutionText" />
                     <tui-error
                       formControlName="solutionText"
                       [error]="[] | tuiFieldError | async"
                     />
                   </label>
-                  <div class="flex justify-end gap-4 mt-2">
+                  <div class="mt-2 flex justify-end gap-4">
                     <button
                       tuiButton
                       size="m"
@@ -114,26 +115,26 @@
                       size="m"
                       (click)="saveNewVersion()"
                       [disabled]="
-                    newVersionForm.invalid ||
-                    !newVersionForm.controls.text.dirty
-                  "
+                        newVersionForm.invalid ||
+                        !newVersionForm.controls.text.dirty
+                      "
                     >
                       Сохранить
                     </button>
                   </div>
                 </div>
               </div>
-
-
             }
           </ng-container>
         </tui-expand>
       }
 
-      @for (version of currentTaskChain();
+      @for (
+        version of currentTaskChain();
         track version.id;
         let index = $index;
-        let first = $first) {
+        let first = $first
+      ) {
         <button [tuiAccordion]="first">
           Версия {{ taskChain.length - index }}
         </button>
@@ -155,7 +156,7 @@
               </div>
 
               @if (first) {
-                <div class="ml-auto flex gap-4 self-end mt-2">
+                <div class="ml-auto mt-2 flex gap-4 self-end">
                   @if (editingSolution()) {
                     <button
                       tuiButton
