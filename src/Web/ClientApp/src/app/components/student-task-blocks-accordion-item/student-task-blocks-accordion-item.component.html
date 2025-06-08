@@ -16,13 +16,15 @@
       ></tui-icon>
       Дедлайн: {{ taskBlock().endTime | date: "dd.MM.yyyy, HH:mm" }}
     </p>
-    <p class="flex items-center">
-      <tui-icon
-        icon="@tui.clock-fading"
-        class="mr-2 h-5 w-5 text-green-500"
-      ></tui-icon>
-      Время на выполнение: {{ timeAllowed() }}
-    </p>
+    @if (!!timeAllowed()) {
+      <p class="flex items-center">
+        <tui-icon
+          icon="@tui.clock-fading"
+          class="mr-2 h-5 w-5 text-green-500"
+        ></tui-icon>
+        Время на выполнение: {{ timeAllowed() }}
+      </p>
+    }
     <p class="flex items-center">
       <tui-icon
         icon="@tui.info"
@@ -88,6 +90,10 @@
           </div>
         }
       </div>
+      <p class="mt-2 text-center text-base italic text-gray-600">
+        Работа закончится автоматически по истечении времени выполнения. До
+        этого момента вы редактировать решения задач.
+      </p>
     </div>
   } @else if (status() === "CanStart") {
     <button

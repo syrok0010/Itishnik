@@ -3,6 +3,7 @@ import {
   EditSolutionCommand,
   GradedCourseResponse,
   GradedTaskBlockDto,
+  SolutionDto,
   StudentCourseResponse,
   StudentsClient,
 } from '../web-api-client';
@@ -118,7 +119,13 @@ export class StudentCoursesFacadeService {
               ? new GradedTaskBlockDto({
                   ...block,
                   solutions: block.solutions.map((solution) =>
-                    solution.task.id === taskId ? response : solution,
+                    solution.task.id === taskId
+                      ? new SolutionDto({
+                          ...response,
+                          weight: solution.weight,
+                          position: solution.position,
+                        })
+                      : solution,
                   ),
                 })
               : block,

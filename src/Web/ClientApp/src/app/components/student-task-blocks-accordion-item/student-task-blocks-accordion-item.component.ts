@@ -57,6 +57,8 @@ export default class StudentTaskBlocksAccordionItemComponent {
 
   timeAllowed = computed(() => {
     const timeStr = this.taskBlock().timeAllowed;
+    if (!timeStr) return null;
+
     const hours = parseInt(timeStr.substring(0, 2), 10);
     const minutes = parseInt(timeStr.substring(3, 5), 10);
     return `${hours} ч. ${minutes} мин.`;
@@ -65,6 +67,8 @@ export default class StudentTaskBlocksAccordionItemComponent {
   studentEndTime = computed(() => {
     const block = this.taskBlock();
     const blockEndMs = block.endTime.getTime();
+    if (!block.timeAllowed) return new Date(blockEndMs);
+
     const studentStartMs = block.studentStartTime
       ? block.studentStartTime.getTime()
       : Date.now();
