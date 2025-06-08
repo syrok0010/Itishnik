@@ -193,13 +193,7 @@ export default class TaskBlocksAccordionItemComponent {
       ),
   );
   weightControls = computed(() =>
-    this.taskBlock().weights.map((w) => new FormControl(w)),
-  );
-  taskBlockTableData = computed(() =>
-    this.taskBlock().tasks.map((t, i) => ({
-      task: t,
-      weight: this.taskBlock().weights[i],
-    })),
+    this.taskBlock().tasks.map((t) => new FormControl(t.weight)),
   );
 
   tableColumns = ['number', 'task', 'weight'] as readonly string[];

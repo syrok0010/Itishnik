@@ -18,26 +18,22 @@
           <th tuiTh class="w-2/12">Баллы</th>
         </tr>
       </thead>
-      <tbody tuiTbody [data]="taskBlockTableData()">
-        @for (
-          pair of taskBlockTableData();
-          let index = $index;
-          track pair.task.id
-        ) {
+      <tbody tuiTbody [data]="taskBlock().tasks">
+        @for (task of taskBlock().tasks; track task.id) {
           <tr tuiTr>
-            <td tuiTd *tuiCell="'number'">{{ index + 1 }}</td>
+            <td tuiTd *tuiCell="'number'">{{ task.position }}</td>
             <td tuiTd *tuiCell="'task'">
               <div class="flex items-center justify-between pr-3.5">
                 <span
-                  [routerLink]="['/tasks', pair.task.id]"
+                  [routerLink]="['/tasks', task.id]"
                   class="cursor-pointer hover:underline hover:underline-offset-4"
-                  >{{ pair.task.name }}</span
+                  >{{ task.name }}</span
                 >
                 @if (!taskBlock().isPublic) {
                   <tui-icon
                     class="cursor-pointer text-lg text-red-300 transition-colors duration-300 hover:text-red-500"
                     icon="@tui.trash"
-                    (click)="removeTaskFromBlock(pair.task.id)"
+                    (click)="removeTaskFromBlock(task.id)"
                   >
                   </tui-icon>
                 }
@@ -49,11 +45,11 @@
                   <input
                     tuiInputNumber
                     [min]="1"
-                    [formControl]="weightControls()[index]"
+                    [formControl]="weightControls()[task.position - 1]"
                   />
                 </tui-textfield>
               } @else {
-                {{ taskBlock().weights[index] }}
+                {{ task.weight }}
               }
             </td>
           </tr>
@@ -175,11 +171,16 @@
 </div>
 
 <ng-template #confirmPublishDialog>
-  <p class="mt-4 text-lg">После публикации вы <span class="font-semibold">не сможете изменить</span>:</p>
+  <p class="mt-4 text-lg">
+    После публикации вы <span class="font-semibold">не сможете изменить</span>:
+  </p>
   <ul class="list-disc pl-8 *:text-lg">
     <li>Название работы</li>
     <li>Время на ее выполнение</li>
-    <li>Время ее начала или конца в <span class="font-semibold">меньшую</span> сторону</li>
+    <li>
+      Время ее начала или конца в
+      <span class="font-semibold">меньшую</span> сторону
+    </li>
     <li>Список задач и их баллы</li>
   </ul>
 </ng-template>

@@ -4,7 +4,6 @@ import {
   inject,
   Injector,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TuiButton, TuiDialogContext } from '@taiga-ui/core';
 import {
@@ -16,29 +15,32 @@ import {
 import { SolutionDto } from '../web-api-client';
 import { injectContext } from '@taiga-ui/polymorpheus';
 import { StudentCoursesFacadeService } from '../student/student-courses-facade.service';
+import { CountdownTimerComponent } from './countdown-timer.component';
 
 export interface TaskSolutionDialogData {
   solution: SolutionDto;
   isEditable: boolean;
   courseId: string;
   taskBlockId: string;
+  studentEndTime: Date;
 }
 
 @Component({
   selector: 'app-task-solution-dialog',
-  standalone: true,
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     TuiEditorSocket,
     TuiEditor,
     TuiButton,
+    CountdownTimerComponent,
   ],
   template: `
-    <div class="flex min-h-[70dvh] min-w-[70dvw] flex-col">
+    <div class="flex min-h-[70dvh] w-[90dvw] flex-col">
       <div class="flex flex-grow gap-6 overflow-auto py-4">
         <div class="flex w-1/2 flex-col">
-          <h3 class="mb-3 text-xl font-semibold text-gray-800">Задание</h3>
+          <h3 class="mb-3 text-xl font-semibold text-gray-800">
+            Задание "{{ context.data.solution.task.name }}"
+          </h3>
           <tui-editor-socket
             class="flex-grow rounded-xl border-2 p-4"
             [content]="context.data.solution.task.text"
@@ -59,7 +61,11 @@ export interface TaskSolutionDialogData {
           }
         </div>
       </div>
-      <div class="flex justify-end gap-4 border-gray-200">
+      <div class="relative flex items-center justify-end gap-4 border-gray-200">
+        <app-countdown-timer
+          class="absolute left-1/2 -translate-x-1/2"
+          [targetDateTime]="context.data.studentEndTime"
+        />
         <button
           tuiButton
           type="button"
