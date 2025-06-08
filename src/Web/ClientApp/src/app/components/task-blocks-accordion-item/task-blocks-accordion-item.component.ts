@@ -32,8 +32,10 @@ import {
   TuiTextfield,
 } from '@taiga-ui/core';
 import {
+  TUI_CONFIRM,
   TuiBadge,
   TuiCarousel,
+  TuiConfirmData,
   TuiFieldErrorPipe,
   TuiInputNumber,
   TuiPagination,
@@ -121,7 +123,7 @@ export default class TaskBlocksAccordionItemComponent {
       if (
         startDay.toLocalNativeDate().getTime() +
           startTime.toAbsoluteMilliseconds() +
-          timeAllowedValue.toAbsoluteMilliseconds() >
+          timeAllowedValue?.toAbsoluteMilliseconds() >
         endDay.toLocalNativeDate().getTime() + endTime.toAbsoluteMilliseconds()
       ) {
         timeAllowed.setErrors({ timeOverflow: true });
@@ -183,7 +185,9 @@ export default class TaskBlocksAccordionItemComponent {
             Validators.required,
           ),
           timeAllowed: new FormControl<TuiTime | null>({
-            value: TuiTime.fromString(this.taskBlock().timeAllowed ?? ''),
+            value: !!this.taskBlock().timeAllowed
+              ? TuiTime.fromString(this.taskBlock().timeAllowed)
+              : null,
             disabled: this.taskBlock().isPublic,
           }),
         },
@@ -191,13 +195,7 @@ export default class TaskBlocksAccordionItemComponent {
       ),
   );
   weightControls = computed(() =>
-    this.taskBlock().weights.map((w) => new FormControl(w)),
-  );
-  taskBlockTableData = computed(() =>
-    this.taskBlock().tasks.map((t, i) => ({
-      task: t,
-      weight: this.taskBlock().weights[i],
-    })),
+    this.taskBlock().tasks.map((t) => new FormControl(t.weight)),
   );
 
   tableColumns = ['number', 'task', 'weight'] as readonly string[];
@@ -223,7 +221,7 @@ export default class TaskBlocksAccordionItemComponent {
       form.value.description,
       new Date(startTime),
       new Date(endTime),
-      form.getRawValue().timeAllowed.toString('HH:MM:SS'),
+      form.getRawValue().timeAllowed?.toString('HH:MM:SS'),
     );
   }
 
@@ -256,16 +254,22 @@ export default class TaskBlocksAccordionItemComponent {
   }
 
   async publish() {
-    if (
-      !(await firstValueFrom(
-        this.dialogs.open<boolean>(this.confirmPublishDialogRef(), {
-          dismissible: false,
-          closeable: false,
-          label: 'Вы хотите опубликовать блок?',
-        }),
-      ))
-    )
-      return;
+    const data: TuiConfirmData = {
+      content: this.confirmPublishDialogRef(),
+      yes: 'Опубликовать',
+      no: 'Отменить',
+    };
+
+    const shouldPublishSolution = await firstValueFrom(
+      this.dialogs.open<boolean>(TUI_CONFIRM, {
+        label: 'Опубликовать блок?',
+        size: 'm',
+        data,
+      }),
+    );
+
+    if (!shouldPublishSolution) return;
+
     await this.coursesFacade.publishTaskBlock(
       this.taskBlock().courseId,
       this.taskBlock().id,

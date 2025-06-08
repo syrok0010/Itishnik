@@ -4,6 +4,7 @@ import {
   isStudentGuard,
 } from '../api-authorization/auth-guards';
 import { taskResolver } from './teacher/task-resolver';
+import { studentCoursePageResolver } from './student/student-course-page/student-course-page.resolver';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/courses', pathMatch: 'full' },
@@ -21,8 +22,16 @@ export const routes: Routes = [
   {
     path: 'courses',
     canMatch: [isStudentGuard],
+    loadComponent: () => import('./student/student-courses-page.component'),
+  },
+  {
+    path: 'courses/:id',
+    canMatch: [isStudentGuard],
+    resolve: {
+      studentCoursePageResolver,
+    },
     loadComponent: () =>
-      import('./student/student-courses-page/student-courses-page.component'),
+      import('./student/student-course-page/student-course-page.component'),
   },
   {
     path: 'courses/:id',

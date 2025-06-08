@@ -6,13 +6,17 @@ namespace Itishnik.Application.Courses;
 public class TaskListDto
 {
     public Guid Id { get; init; }
+    public int Weight { get; init; }
+    public int Position { get; init; }
     public string Name { get; init; } = null!;
 
     private class Mapping : Profile
     {
         public Mapping()
         {
-            CreateMap<Task, TaskListDto>();
+            CreateMap<TaskBlockEntry, TaskListDto>()
+                .ForMember(tl => tl.Id, o => o.MapFrom(e => e.TaskId))
+                .ForMember(tl => tl.Name, o => o.MapFrom(e => e.Task.Name));
         }
     }
 }
@@ -24,7 +28,6 @@ public class TaskBlockResponse
     public string Name { get; init; } = null!;
     public string? Description { get; init; }
     public ICollection<TaskListDto> Tasks { get; init; } = null!;
-    public ICollection<int> Weights { get; init; } = null!;
     public DateTime? StartTime { get; init; }
     public DateTime? EndTime { get; init; }
     public TimeSpan? TimeAllowed { get; init; }
@@ -35,8 +38,7 @@ public class TaskBlockResponse
         public Mapping()
         {
             CreateMap<TaskBlock, TaskBlockResponse>()
-                .ForMember(tbr => tbr.Tasks, options => options.MapFrom(tb => tb.Tasks))
-                .ForMember(tbr => tbr.Weights, options => options.MapFrom(tb => tb.Weights));
+                .ForMember(tbr => tbr.Tasks, options => options.MapFrom(tb => tb.TasksEntries.OrderBy(x => x.Position)));
         }
     }
 }

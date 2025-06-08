@@ -131,7 +131,7 @@ export class TasksFacadeService {
     solutionText: string,
     isPublic: boolean,
     previousTaskId: string | null = null,
-  ): Promise<void> {
+  ): Promise<string> {
     const response = await firstValueFrom(
       this.tasksClient.createTask(
         new CreateTaskCommand({
@@ -173,6 +173,7 @@ export class TasksFacadeService {
         },
       )
       .subscribe();
+    return response[response.length - 1].id;
   }
 
   async editReferenceSolution(taskId: string, solutionText: string) {

@@ -1,5 +1,4 @@
 using Itishnik.Application.Common.Models;
-using Itishnik.Application.Courses;
 using Itishnik.Application.Students;
 using Itishnik.Application.Students.EditSolution;
 using Itishnik.Application.Students.GetCourseById;

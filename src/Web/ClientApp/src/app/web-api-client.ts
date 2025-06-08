@@ -2130,7 +2130,6 @@ export class TaskBlockResponse implements ITaskBlockResponse {
     name?: string;
     description?: string | undefined;
     tasks?: TaskListDto[];
-    weights?: number[];
     startTime?: Date | undefined;
     endTime?: Date | undefined;
     timeAllowed?: string | undefined;
@@ -2155,11 +2154,6 @@ export class TaskBlockResponse implements ITaskBlockResponse {
                 this.tasks = [] as any;
                 for (let item of _data["tasks"])
                     this.tasks!.push(TaskListDto.fromJS(item));
-            }
-            if (Array.isArray(_data["weights"])) {
-                this.weights = [] as any;
-                for (let item of _data["weights"])
-                    this.weights!.push(item);
             }
             this.startTime = _data["startTime"] ? new Date(_data["startTime"].toString()) : <any>undefined;
             this.endTime = _data["endTime"] ? new Date(_data["endTime"].toString()) : <any>undefined;
@@ -2186,11 +2180,6 @@ export class TaskBlockResponse implements ITaskBlockResponse {
             for (let item of this.tasks)
                 data["tasks"].push(item.toJSON());
         }
-        if (Array.isArray(this.weights)) {
-            data["weights"] = [];
-            for (let item of this.weights)
-                data["weights"].push(item);
-        }
         data["startTime"] = this.startTime ? this.startTime.toISOString() : <any>undefined;
         data["endTime"] = this.endTime ? this.endTime.toISOString() : <any>undefined;
         data["timeAllowed"] = this.timeAllowed;
@@ -2205,7 +2194,6 @@ export interface ITaskBlockResponse {
     name?: string;
     description?: string | undefined;
     tasks?: TaskListDto[];
-    weights?: number[];
     startTime?: Date | undefined;
     endTime?: Date | undefined;
     timeAllowed?: string | undefined;
@@ -2214,6 +2202,8 @@ export interface ITaskBlockResponse {
 
 export class TaskListDto implements ITaskListDto {
     id?: string;
+    weight?: number;
+    position?: number;
     name?: string;
 
     constructor(data?: ITaskListDto) {
@@ -2228,6 +2218,8 @@ export class TaskListDto implements ITaskListDto {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.weight = _data["weight"];
+            this.position = _data["position"];
             this.name = _data["name"];
         }
     }
@@ -2242,6 +2234,8 @@ export class TaskListDto implements ITaskListDto {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["weight"] = this.weight;
+        data["position"] = this.position;
         data["name"] = this.name;
         return data;
     }
@@ -2249,6 +2243,8 @@ export class TaskListDto implements ITaskListDto {
 
 export interface ITaskListDto {
     id?: string;
+    weight?: number;
+    position?: number;
     name?: string;
 }
 
@@ -3162,12 +3158,11 @@ export class GradedTaskBlockDto implements IGradedTaskBlockDto {
     description?: string | undefined;
     startTime?: Date;
     endTime?: Date;
-    timeAllowed?: string;
+    timeAllowed?: string | undefined;
     studentStartTime?: Date | undefined;
     grade?: number | undefined;
     taskCount?: number;
     solutions?: SolutionDto[] | undefined;
-    tasks?: TaskDto[] | undefined;
 
     constructor(data?: IGradedTaskBlockDto) {
         if (data) {
@@ -3193,11 +3188,6 @@ export class GradedTaskBlockDto implements IGradedTaskBlockDto {
                 this.solutions = [] as any;
                 for (let item of _data["solutions"])
                     this.solutions!.push(SolutionDto.fromJS(item));
-            }
-            if (Array.isArray(_data["tasks"])) {
-                this.tasks = [] as any;
-                for (let item of _data["tasks"])
-                    this.tasks!.push(TaskDto.fromJS(item));
             }
         }
     }
@@ -3225,11 +3215,6 @@ export class GradedTaskBlockDto implements IGradedTaskBlockDto {
             for (let item of this.solutions)
                 data["solutions"].push(item.toJSON());
         }
-        if (Array.isArray(this.tasks)) {
-            data["tasks"] = [];
-            for (let item of this.tasks)
-                data["tasks"].push(item.toJSON());
-        }
         return data;
     }
 }
@@ -3240,18 +3225,20 @@ export interface IGradedTaskBlockDto {
     description?: string | undefined;
     startTime?: Date;
     endTime?: Date;
-    timeAllowed?: string;
+    timeAllowed?: string | undefined;
     studentStartTime?: Date | undefined;
     grade?: number | undefined;
     taskCount?: number;
     solutions?: SolutionDto[] | undefined;
-    tasks?: TaskDto[] | undefined;
 }
 
 export class SolutionDto implements ISolutionDto {
     id?: string;
     text?: string;
     grade?: number | undefined;
+    weight?: number;
+    position?: number;
+    task?: TaskDto;
 
     constructor(data?: ISolutionDto) {
         if (data) {
@@ -3267,6 +3254,9 @@ export class SolutionDto implements ISolutionDto {
             this.id = _data["id"];
             this.text = _data["text"];
             this.grade = _data["grade"];
+            this.weight = _data["weight"];
+            this.position = _data["position"];
+            this.task = _data["task"] ? TaskDto.fromJS(_data["task"]) : <any>undefined;
         }
     }
 
@@ -3282,6 +3272,9 @@ export class SolutionDto implements ISolutionDto {
         data["id"] = this.id;
         data["text"] = this.text;
         data["grade"] = this.grade;
+        data["weight"] = this.weight;
+        data["position"] = this.position;
+        data["task"] = this.task ? this.task.toJSON() : <any>undefined;
         return data;
     }
 }
@@ -3290,6 +3283,9 @@ export interface ISolutionDto {
     id?: string;
     text?: string;
     grade?: number | undefined;
+    weight?: number;
+    position?: number;
+    task?: TaskDto;
 }
 
 export class TaskDto implements ITaskDto {

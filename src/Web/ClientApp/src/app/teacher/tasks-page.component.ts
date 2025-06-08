@@ -19,6 +19,7 @@ import { RouterLink } from '@angular/router';
   styles: [':host { @apply relative flex grow flex-col }'],
   template: ` <app-tasks-table />
     <button
+      style="view-transition-name: create-task-block"
       appearance="primary"
       tuiButton
       type="button"

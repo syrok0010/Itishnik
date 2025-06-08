@@ -10,14 +10,10 @@ using Role = Itishnik.Domain.Constants.Roles;
 
 namespace Itishnik.Infrastructure.Data;
 
-public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>, IApplicationDbContext
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IUser user)
+    : IdentityDbContext<ApplicationUser, IdentityRole<Guid>, Guid>(options), IApplicationDbContext
 {
-    private readonly IUser _user;
-
-    public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IUser user) : base(options)
-    {
-        _user = user;
-    }
+    private readonly IUser _user = user;
 
     public DbSet<Course> Courses => Set<Course>();
     public DbSet<File> Files => Set<File>();
@@ -60,11 +56,11 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             _user.Roles.Contains(Role.Administrator) ||
             (_user.Roles.Contains(Role.Teacher) && (task.IsPublic || task.TeacherId == _user.Id)) ||
             (_user.Roles.Contains(Role.Student) &&
-                task.TaskBlocks.Any(tb =>
-                    tb.IsPublic &&
+                task.TaskBlockEntries.Any(e =>
+                    e.TaskBlock.IsPublic &&
                     this.GradedCourses.Any(gc =>
                         gc.StudentId == _user.Id && 
-                        gc.CourseId == tb.CourseId
+                        gc.CourseId == e.TaskBlock.CourseId
                     )
                 )
             )
@@ -90,7 +86,7 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser, IdentityR
             (_user.Roles.Contains(Role.Teacher) &&
                 this.TaskBlocks
                     .Where(tb => tb.Course.TeacherId == _user.Id)
-                    .Any(tb => tb.Tasks.Any(t => t.Id == s.TaskId))
+                    .Any(tb => tb.TasksEntries.Any(t => t.TaskId == s.TaskId))
             ) ||
             (_user.Roles.Contains(Role.Student) && s.StudentId == _user.Id)
         );

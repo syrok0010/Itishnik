@@ -87,16 +87,9 @@
     </div>
   }
 
-  <label tuiLabel class="w-full grow">
+  <label class="flex w-full grow flex-col text-base">
     Описание курса
-    <tui-textfield>
-      <textarea
-        [formControl]="descriptionControl"
-        placeholder="Введите описание курса"
-        tuiTextarea
-        [min]="4"
-      ></textarea>
-    </tui-textfield>
+    <tui-editor [formControl]="descriptionControl" />
   </label>
 
   <button

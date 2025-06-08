@@ -9,9 +9,6 @@ public class EditSolutionCommandValidator : AbstractValidator<EditSolutionComman
         RuleFor(x => x.BlockId)
             .MustAsync((id, token) => context.GradedTaskBlocks.AnyAsync(b => b.Id == id, token))
             .WithMessage("Работа не существует");
-        RuleFor(x => x.TaskId)
-            .MustAsync((id, token) => context.GradedCourses.AnyAsync(c => c.Id == id, token))
-            .WithMessage("Задание не существует");
         RuleFor(x => x.Text)
             .NotNull()
             .NotEmpty()
@@ -26,23 +23,20 @@ public class EditSolutionCommandValidator : AbstractValidator<EditSolutionComman
         var block = await context.GradedTaskBlocks
             .Include(b => b.TaskBlock)
             .FirstAsync(b => b.Id == command.BlockId, token);
-        if (!block.TaskBlock.IsPublic ||
-            block.TaskBlock.StartTime is null ||
-            block.TaskBlock.EndTime is null ||
-            block.TaskBlock.TimeAllowed is null)
-        {
+        if (!block.TaskBlock.IsPublic || block.TaskBlock.StartTime is null || block.TaskBlock.EndTime is null)
             return false;
-        }
-        
-        var endTime = block.TaskBlock.EndTime.Value;
-        var timeAllowed = block.TaskBlock.TimeAllowed.Value;
-        var studentStartTime = block.StartTime;
 
+        if (block.TaskBlock.TimeAllowed is null)
+            return DateTime.UtcNow <= block.TaskBlock.EndTime;
+        
+        var endTime = block.TaskBlock.EndTime;
+        var timeAllowed = block.TaskBlock.TimeAllowed;
+        var studentStartTime = block.StartTime;
 
         var nearestEnd = studentStartTime + timeAllowed < endTime 
             ? studentStartTime + timeAllowed 
             : endTime;
 
-        return studentStartTime <= DateTime.Now && DateTime.Now <= nearestEnd;
+        return studentStartTime <= DateTime.UtcNow && DateTime.UtcNow <= nearestEnd;
     }
 }

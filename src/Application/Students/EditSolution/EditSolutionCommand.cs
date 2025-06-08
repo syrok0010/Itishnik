@@ -18,7 +18,9 @@ public class EditSolutionCommandHandler(IApplicationDbContext context, IMapper m
     
     public async Task<SolutionDto> Handle(EditSolutionCommand request, CancellationToken cancellationToken)
     {
-        var solution = await _context.Solutions.FirstAsync(s => s.TaskId == request.TaskId, cancellationToken);
+        var solution = await _context.Solutions
+            .Include(x => x.Task)
+            .FirstAsync(s => s.TaskId == request.TaskId, cancellationToken);
         solution.Text = request.Text;
         await _context.SaveChangesAsync(cancellationToken);
         return _mapper.Map<SolutionDto>(solution);

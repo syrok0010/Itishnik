@@ -23,7 +23,7 @@ public class ChangeTaskBlockTimelineCommandHandler(IApplicationDbContext context
     public async Task<TaskBlockResponse> Handle(ChangeTaskBlockTimelineCommand request, CancellationToken cancellationToken)
     {
         var taskBlock = await _context.TaskBlocks
-            .Include(block => block.Tasks)
+            .Include(block => block.TasksEntries).ThenInclude(e => e.Task)
             .FirstAsync(block => block.Id == request.TaskBlockId, cancellationToken);
         taskBlock.ChangeTimes(request.StartTime, request.EndTime, request.TimeAllowed);
         await _context.SaveChangesAsync(cancellationToken);
