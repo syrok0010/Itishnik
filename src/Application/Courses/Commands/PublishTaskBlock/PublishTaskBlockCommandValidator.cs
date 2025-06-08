@@ -28,12 +28,11 @@ public class PublishTaskBlockCommandValidator : AbstractValidator<PublishTaskBlo
             .FirstAsync(token) > TimeProvider.System.GetLocalNow();
     }
 
-    private async Task<bool> CheckTasksAndWeights(IApplicationDbContext context, Guid taskBlockId, CancellationToken cancellationToken)
+    private Task<bool> CheckTasksAndWeights(IApplicationDbContext context, Guid taskBlockId, CancellationToken cancellationToken)
     {
-        var taskBlock = await context.TaskBlocks
+        return context.TaskBlocks
             .Where(tb => tb.Id == taskBlockId)
-            .Include(tb => tb.Tasks)
+            .Select(taskBlock => taskBlock.TasksEntries.Any() && taskBlock.TasksEntries.Sum(e => e.Weight) == 10)
             .FirstAsync(cancellationToken);
-        return taskBlock.Tasks.Any() && taskBlock.Weights.Sum() == 10;
     }
 }

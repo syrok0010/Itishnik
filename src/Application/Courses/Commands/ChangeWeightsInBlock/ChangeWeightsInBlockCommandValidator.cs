@@ -24,7 +24,7 @@ public class ChangeWeightsInBlockCommandValidator : AbstractValidator<ChangeWeig
     {
         return await context.TaskBlocks
             .Where(tb => tb.Id == command.BlockId)
-            .Select(tb => tb.Weights.Count())
+            .Select(tb => tb.TasksEntries.Count())
             .FirstAsync(cancellationToken) == command.Weights.Count;
     }
 }

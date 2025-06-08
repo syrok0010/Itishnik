@@ -20,7 +20,7 @@ public class GetCourseByIdQueryHandler(IApplicationDbContext context, IMapper ma
         var gradedCourse = await _context.GradedCourses
             .Include(gc => gc.Course)
             .Include(gc => gc.GradedTaskBlocks).ThenInclude(gtb => gtb.Solutions).ThenInclude(s => s.Task)
-            .Include(gc => gc.GradedTaskBlocks).ThenInclude(gtb => gtb.TaskBlock).ThenInclude(tb => tb.Tasks)
+            .Include(gc => gc.GradedTaskBlocks).ThenInclude(gtb => gtb.TaskBlock).ThenInclude(tb => tb.TasksEntries)
             .AsNoTracking()
             .FirstAsync(gc => gc.Id == request.Id, cancellationToken);
 

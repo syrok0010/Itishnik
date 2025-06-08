@@ -19,7 +19,7 @@ public class DeleteTaskFromBlockCommandHandler(IApplicationDbContext context, IM
     public async Task Handle(DeleteTaskFromBlockCommand request, CancellationToken cancellationToken)
     {
         var taskBlock = await _context.TaskBlocks
-            .Include(tb => tb.Tasks)
+            .Include(tb => tb.TasksEntries)
             .FirstAsync(tb => tb.Id == request.BlockId, cancellationToken);
         var task = await _context.Tasks
             .FirstAsync(t => t.Id == request.TaskId, cancellationToken);

@@ -1559,13 +1559,6 @@
               "$ref": "#/components/schemas/TaskListDto"
             }
           },
-          "weights": {
-            "type": "array",
-            "items": {
-              "type": "integer",
-              "format": "int32"
-            }
-          },
           "startTime": {
             "type": "string",
             "format": "date-time",
@@ -1593,6 +1586,14 @@
           "id": {
             "type": "string",
             "format": "guid"
+          },
+          "weight": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
           },
           "name": {
             "type": "string"

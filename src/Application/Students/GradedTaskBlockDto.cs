@@ -30,7 +30,7 @@ public class GradedTaskBlockDto
                 .ForMember(w => w.TimeAllowed, options => options.MapFrom(gtb => gtb.TaskBlock.TimeAllowed))
                 .ForMember(w => w.StudentStartTime, options => options.MapFrom(gtb => gtb.StartTime))
                 .ForMember(w => w.Grade, options => options.MapFrom(gtb => gtb.Grade))
-                .ForMember(w => w.TaskCount, options => options.MapFrom(gtb => gtb.TaskBlock.Tasks.Count()))
+                .ForMember(w => w.TaskCount, options => options.MapFrom(gtb => gtb.TaskBlock.TasksEntries.Count()))
                 .ForMember(w => w.Solutions, options => options.MapFrom(gtb => gtb.StartTime == null ? null : gtb.Solutions));
         }
     }

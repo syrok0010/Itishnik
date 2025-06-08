@@ -16,7 +16,7 @@ public class ChangeCourseTeacherCommandHandler(IApplicationDbContext context, IM
     public async Task<CourseResponse> Handle(ChangeCourseTeacherCommand request, CancellationToken cancellationToken)
     {
         var course = await _context.Courses
-            .Include(x => x.TaskBlocks).ThenInclude(y => y.Tasks)
+            .Include(x => x.TaskBlocks).ThenInclude(y => y.TasksEntries).ThenInclude(x => x.Task)
             .FirstAsync(c => c.Id == request.CourseId, cancellationToken);
         var teacher = await _context.Teachers.FirstAsync(t => t.Id == request.NewTeacherId, cancellationToken);
         course.ChangeTeacher(teacher);

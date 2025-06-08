@@ -18,7 +18,7 @@ public class AddTaskToBlockCommandHandler(IApplicationDbContext context, IMapper
     public async Task<TaskBlockResponse> Handle(AddTaskToBlockCommand request, CancellationToken cancellationToken)
     {
         var taskBlock = await _context.TaskBlocks
-            .Include(tb => tb.Tasks)
+            .Include(tb => tb.TasksEntries).ThenInclude(e => e.Task)
             .FirstAsync(tb => tb.Id == request.BlockId, cancellationToken);
         var task = await _context.Tasks
             .FirstAsync(t => t.Id == request.TaskId, cancellationToken);

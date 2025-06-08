@@ -16,7 +16,7 @@ public class GetCourseByIdQueryHandler(IApplicationDbContext context, IMapper ma
         var course = await _context.Courses
             .AsNoTracking()
             .Include(x => x.Teacher)
-            .Include(x => x.TaskBlocks).ThenInclude(y => y.Tasks)
+            .Include(x => x.TaskBlocks).ThenInclude(y => y.TasksEntries).ThenInclude(x => x.Task)
             .FirstOrDefaultAsync(x => x.Id == request.Id, cancellationToken);
         return course is null ? null : _mapper.Map<CourseResponse>(course);
     }

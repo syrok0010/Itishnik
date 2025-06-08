@@ -3,8 +3,7 @@ namespace Itishnik.Domain.Entities;
 public class TaskBlock
 {
     private string _name = null!;
-    private readonly List<Task> _tasks = [];
-    private readonly List<int> _weights = [];
+    private readonly List<TaskBlockEntry> _taskEntries = [];
     private readonly HashSet<File> _files = [];
     private bool _isPublic;
     
@@ -25,9 +24,8 @@ public class TaskBlock
     public Course Course { get; private init; } = null!;
     public Guid CourseId { get; private init; }
 
-    public IEnumerable<Task> Tasks => _tasks;
+    public IEnumerable<TaskBlockEntry> TasksEntries => _taskEntries;
     public IEnumerable<File> Files => _files;
-    public IEnumerable<int> Weights => _weights;
 
     public DateTime? StartTime { get; private set; }
     public DateTime? EndTime { get; private set; }
@@ -53,8 +51,7 @@ public class TaskBlock
     public void AddTask(Task task, int weight=0)
     {
         ArgumentOutOfRangeException.ThrowIfNegative(weight, nameof(weight));
-        _tasks.Add(task);
-        _weights.Add(weight);
+        _taskEntries.Add(new TaskBlockEntry(this, task, _taskEntries.Count + 1, weight));
     }
     
     public void RemoveTask(Task task)
@@ -62,22 +59,23 @@ public class TaskBlock
         if (IsPublic)
             throw new InvalidOperationException("Нельзя удалить задачу из опубликованного блока");
 
-        var index = _tasks.IndexOf(task);
-        _tasks.RemoveAt(index);
-        _weights.RemoveAt(index);
+        var index = _taskEntries.FindIndex(e => e.TaskId == task.Id);
+        _taskEntries.RemoveAt(index);
     }
 
-    public void SetWeights(ICollection<int> values)
+    public void SetWeights(IList<int> values)
     {
         if (IsPublic)
             throw new InvalidOperationException("Нельзя удалить задачу из опубликованного блока");
-        if (values.Count != _weights.Count)
+        if (values.Count != _taskEntries.Count)
             throw new ArgumentException("Количества весов не совпадают");
         if (values.Any(v => v is < 0 or > 10))
             throw new ArgumentException("Один из весов вне допустимого диапазона");
-        
-        _weights.Clear();
-        _weights.AddRange(values);
+
+        for (int i = 0; i < _taskEntries.Count; i++)
+        {
+            _taskEntries[i].Weight = values[i];
+        }
     }
 
     public void AddFile(File file)
@@ -100,12 +98,12 @@ public class TaskBlock
                     throw new InvalidOperationException("Блок задач не опубликован");
             }
 
-            if (_tasks.Count == 0)
+            if (_taskEntries.Count == 0)
             {
                 throw new InvalidOperationException("Невозможно опубликовать пустой блок задач");
             }
     
-            if (_weights.Sum() != 10)
+            if (_taskEntries.Select(e => e.Weight).Sum() != 10)
             {
                 throw new InvalidOperationException("Сумма весов должна равняться 10");
             }
