@@ -123,7 +123,7 @@ export default class TaskBlocksAccordionItemComponent {
       if (
         startDay.toLocalNativeDate().getTime() +
           startTime.toAbsoluteMilliseconds() +
-          timeAllowedValue.toAbsoluteMilliseconds() >
+          timeAllowedValue?.toAbsoluteMilliseconds() >
         endDay.toLocalNativeDate().getTime() + endTime.toAbsoluteMilliseconds()
       ) {
         timeAllowed.setErrors({ timeOverflow: true });
@@ -185,7 +185,9 @@ export default class TaskBlocksAccordionItemComponent {
             Validators.required,
           ),
           timeAllowed: new FormControl<TuiTime | null>({
-            value: TuiTime.fromString(this.taskBlock().timeAllowed ?? ''),
+            value: !!this.taskBlock().timeAllowed
+              ? TuiTime.fromString(this.taskBlock().timeAllowed)
+              : null,
             disabled: this.taskBlock().isPublic,
           }),
         },
@@ -219,7 +221,7 @@ export default class TaskBlocksAccordionItemComponent {
       form.value.description,
       new Date(startTime),
       new Date(endTime),
-      form.getRawValue().timeAllowed.toString('HH:MM:SS'),
+      form.getRawValue().timeAllowed?.toString('HH:MM:SS'),
     );
   }
 
