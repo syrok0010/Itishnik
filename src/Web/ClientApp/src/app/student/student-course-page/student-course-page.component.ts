@@ -27,7 +27,7 @@ export default class StudentCoursePageComponent {
   protected readonly sortedTaskBlocks$ = this.currentCourse$.pipe(
     map((course) =>
       course.taskBlocks.sort(
-        (a, b) => a.startTime.getTime() - b.startTime.getTime(),
+        (a, b) => b.startTime.getTime() - a.startTime.getTime(),
       ),
     ),
   );
