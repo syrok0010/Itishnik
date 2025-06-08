@@ -54,6 +54,7 @@ public class IdentityService : IIdentityService
     public async Task<Result> CreateUserAsync<TUser>(TUser user) where TUser : ApplicationUser
     {
         var result = await _userManager.CreateAsync(user);
+        await _userManager.AddToRoleAsync(user, typeof(TUser).Name);
         return result.ToApplicationResult();
     }
 

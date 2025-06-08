@@ -62,7 +62,8 @@ namespace Itishnik.Web.Areas.Identity.Pages.Account
             if (result.Succeeded)
             {
                 _logger.LogInformation("User logged in.");
-                return LocalRedirect(returnUrl);
+                var user = await _userManager.FindByEmailAsync(Input.Email);
+                return LocalRedirect(user is Student {GroupNumber: 100} ? "/activate" : returnUrl);
             }
 
             if (result.RequiresTwoFactor)
@@ -75,9 +76,6 @@ namespace Itishnik.Web.Areas.Identity.Pages.Account
             }
 
             ModelState.AddModelError(string.Empty, "Неверные логин или пароль");
-            var user = await _userManager.FindByEmailAsync(Input.Email);
-            if (user is Student {GroupNumber: 100})
-                return LocalRedirect("/activate");
 
             return Page();
         }
