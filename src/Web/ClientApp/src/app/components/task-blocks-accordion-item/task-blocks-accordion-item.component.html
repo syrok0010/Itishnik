@@ -19,16 +19,24 @@
         </tr>
       </thead>
       <tbody tuiTbody [data]="taskBlock().tasks">
+        @let previousTasks = allTasksPreCurrentBlock() | async;
         @for (task of taskBlock().tasks; track task.id) {
           <tr tuiTr>
             <td tuiTd *tuiCell="'number'">{{ task.position }}</td>
             <td tuiTd *tuiCell="'task'">
               <div class="flex items-center justify-between pr-1.5">
-                <span
-                  [routerLink]="['/tasks', task.id]"
-                  class="cursor-pointer hover:underline hover:underline-offset-4"
-                  >{{ task.name }}</span
-                >
+                <div class="flex items-center gap-4">
+                  <span
+                    [routerLink]="['/tasks', task.id]"
+                    class="cursor-pointer hover:underline hover:underline-offset-4"
+                    >{{ task.name }}</span
+                  >
+                  @if (previousTasks.includes(task.id)) {
+                    <tui-badge appearance="warning" size="xl"
+                      >Задача уже задавалась ранее</tui-badge
+                    >
+                  }
+                </div>
                 @if (!taskBlock().isPublic) {
                   <button
                     tuiIconButton

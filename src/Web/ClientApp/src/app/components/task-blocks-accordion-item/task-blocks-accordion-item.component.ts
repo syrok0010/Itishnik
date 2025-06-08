@@ -221,6 +221,18 @@ export default class TaskBlocksAccordionItemComponent {
       map((_) => this.weightControls().controls.some((c) => c.invalid)),
     ),
   );
+  allTasksPreCurrentBlock = computed(() =>
+    this.coursesFacade.currentCourse$.pipe(
+      map((course) => {
+        const index = course.taskBlocks.findIndex(
+          (block) => block.id === this.taskBlock().id,
+        );
+        return course.taskBlocks
+          .slice(index + 1)
+          .flatMap((block) => block.tasks.map((task) => task.id));
+      }),
+    ),
+  );
 
   tableColumns = ['number', 'task', 'weight'] as readonly string[];
 
