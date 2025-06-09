@@ -6,7 +6,9 @@ using Itishnik.Domain.Entities;
 
 namespace Itishnik.Application.Courses.Commands.GetAiVerdict;
 
-public record GetAiVerdictCommand(Guid TaskBlockId, Guid SolutionId) : IRequest<AiVerdictResponse>;
+[Authorize(Policy = Policies.OwnerOrAdmin)]
+[ResourceMetadata(nameof(CourseId), typeof(Course))]
+public record GetAiVerdictCommand(Guid CourseId, Guid TaskBlockId, Guid SolutionId) : IRequest<AiVerdictResponse>;
 
 public class GetAiVerdictCommandHandler(IApplicationDbContext context, IAiService aiService)
     : IRequestHandler<GetAiVerdictCommand, AiVerdictResponse>

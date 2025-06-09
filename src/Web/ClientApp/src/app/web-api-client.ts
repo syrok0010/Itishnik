@@ -33,7 +33,7 @@ export interface ICoursesClient {
     changeTeacher(id: string, command: ChangeCourseTeacherCommand): Observable<CourseResponse>;
     inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<CourseStudentListResponse>;
     getFeedbacks(id: string, blockId: string): Observable<string[]>;
-    getAiVerdict(id: string, command: GetAiVerdictCommand): Observable<AiVerdictResponse>;
+    getAiVerdict(id: string, blockId: string, command: GetAiVerdictCommand): Observable<AiVerdictResponse>;
 }
 
 @Injectable({
@@ -1064,11 +1064,14 @@ export class CoursesClient implements ICoursesClient {
         return _observableOf(null as any);
     }
 
-    getAiVerdict(id: string, command: GetAiVerdictCommand): Observable<AiVerdictResponse> {
-        let url_ = this.baseUrl + "/api/Courses/{id}/verdict";
+    getAiVerdict(id: string, blockId: string, command: GetAiVerdictCommand): Observable<AiVerdictResponse> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/verdict";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (blockId === undefined || blockId === null)
+            throw new Error("The parameter 'blockId' must be defined.");
+        url_ = url_.replace("{blockId}", encodeURIComponent("" + blockId));
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -1104,7 +1107,11 @@ export class CoursesClient implements ICoursesClient {
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 200) {
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
@@ -3188,6 +3195,7 @@ export interface IAiVerdictResponse {
 }
 
 export class GetAiVerdictCommand implements IGetAiVerdictCommand {
+    courseId?: string;
     taskBlockId?: string;
     solutionId?: string;
 
@@ -3202,6 +3210,7 @@ export class GetAiVerdictCommand implements IGetAiVerdictCommand {
 
     init(_data?: any) {
         if (_data) {
+            this.courseId = _data["courseId"];
             this.taskBlockId = _data["taskBlockId"];
             this.solutionId = _data["solutionId"];
         }
@@ -3216,6 +3225,7 @@ export class GetAiVerdictCommand implements IGetAiVerdictCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["courseId"] = this.courseId;
         data["taskBlockId"] = this.taskBlockId;
         data["solutionId"] = this.solutionId;
         return data;
@@ -3223,6 +3233,7 @@ export class GetAiVerdictCommand implements IGetAiVerdictCommand {
 }
 
 export interface IGetAiVerdictCommand {
+    courseId?: string;
     taskBlockId?: string;
     solutionId?: string;
 }

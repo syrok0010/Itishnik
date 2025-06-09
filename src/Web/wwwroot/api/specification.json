@@ -829,7 +829,7 @@
         }
       }
     },
-    "/api/Courses/{id}/verdict": {
+    "/api/Courses/{id}/{blockId}/verdict": {
       "post": {
         "tags": [
           "Courses"
@@ -845,6 +845,16 @@
               "format": "guid"
             },
             "x-position": 1
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
           }
         ],
         "requestBody": {
@@ -857,9 +867,12 @@
             }
           },
           "required": true,
-          "x-position": 2
+          "x-position": 3
         },
         "responses": {
+          "400": {
+            "description": ""
+          },
           "200": {
             "description": "",
             "content": {
@@ -2018,6 +2031,10 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "courseId": {
+            "type": "string",
+            "format": "guid"
+          },
           "taskBlockId": {
             "type": "string",
             "format": "guid"

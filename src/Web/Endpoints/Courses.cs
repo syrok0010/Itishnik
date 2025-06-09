@@ -47,11 +47,12 @@ public class Courses : EndpointGroupBase
             .MapPatch(ChangeTeacher, "{id}/teacher")
             .MapPost(InviteStudents, "{id}/invite")
             .MapGet(GetFeedbacks, "{id}/{blockId}/feedbacks")
-            .MapPost(GetAiVerdict, "{id}/verdict");
+            .MapPost(GetAiVerdict, "{id}/{blockId}/verdict");
     }
 
-    public async Task<Ok<AiVerdictResponse>> GetAiVerdict(ISender sender, Guid id, [FromBody] GetAiVerdictCommand command)
+    public async Task<Results<BadRequest, Ok<AiVerdictResponse>>> GetAiVerdict(ISender sender, Guid id, Guid blockId, [FromBody] GetAiVerdictCommand command)
     {
+        if (command.CourseId != id || command.TaskBlockId != blockId) return TypedResults.BadRequest();
         var response = await sender.Send(command);
         return TypedResults.Ok(response);
     }
