@@ -1,6 +1,7 @@
 using AutoMapper;
 using Itishnik.Application.Common.Interfaces;
 using Itishnik.Application.Users.Commands.ActivateStudent;
+using Itishnik.Application.Users.Commands.InviteTeachers;
 using Itishnik.Application.Users.Queries.GetUserList;
 using Itishnik.Domain.Entities;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -27,7 +28,8 @@ public class Users : EndpointGroupBase
         
         groupBuilder
             .MapGet(GetUsers)
-            .MapPost(ActivateStudent, "activate-student");
+            .MapPost(ActivateStudent, "activate-student")
+            .MapPost(InviteTeachers, "invite-teachers");
     }
 
     private static AuthState GetAuthState(IUser user) => new(user.Id ?? Guid.Empty, user.Roles);
@@ -49,5 +51,11 @@ public class Users : EndpointGroupBase
     {
         await sender.Send(command);
         return TypedResults.Ok();
+    }
+
+    private static async Task<Ok<UserDto[]>> InviteTeachers(ISender sender, InviteTeachersCommand command)
+    {
+        var response = await sender.Send(command);
+        return TypedResults.Ok(response);
     }
 }

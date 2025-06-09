@@ -22,12 +22,19 @@ export class NavMenuComponent {
     ['Оценки', '/grades'],
   ] as const;
 
+  readonly adminLinks: [string, string][] = [
+    ...this.teacherLinks,
+    ['Преподаватели', '/teachers'],
+  ] as const;
+
   usersFacade = inject(UsersFacadeService);
   links$ = this.usersFacade.authInfo$.pipe(
     map((authInfo) =>
-      authInfo.roles.includes('Student')
-        ? this.studentLinks
-        : this.teacherLinks,
+      authInfo.roles.includes('Administrator')
+        ? this.adminLinks
+        : authInfo.roles.includes('Teacher')
+          ? this.teacherLinks
+          : this.studentLinks,
     ),
   );
 

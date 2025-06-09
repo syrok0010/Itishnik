@@ -1532,6 +1532,41 @@
           }
         }
       }
+    },
+    "/api/Users/invite-teachers": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "InviteTeachers",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/InviteTeachersCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserDto"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2472,6 +2507,18 @@
           },
           "educationalProgram": {
             "type": "string"
+          }
+        }
+      },
+      "InviteTeachersCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "emails": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           }
         }
       }

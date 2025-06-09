@@ -1,6 +1,6 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-interface HasFio {
+export interface HasFio {
   surname: string;
   name: string;
   patronymic: string;

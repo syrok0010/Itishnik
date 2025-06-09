@@ -13,9 +13,9 @@ import {
 import { TuiInputModule, TuiInputYearModule } from '@taiga-ui/legacy';
 import { TuiButton, TuiNumberFormat, TuiTextfield } from '@taiga-ui/core';
 import { TuiInputNumber } from '@taiga-ui/kit';
-import { UsersFacadeService } from '../users-facade.service';
+import { UsersFacadeService } from '../../users-facade.service';
 import { Router } from '@angular/router';
-import { ActivateStudentCommand } from '../web-api-client';
+import { ActivateStudentCommand } from '../../web-api-client';
 import { firstValueFrom } from 'rxjs';
 
 @Component({

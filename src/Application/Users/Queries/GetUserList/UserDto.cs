@@ -20,7 +20,6 @@ public class UserDto
         {
             CreateMap<ApplicationUser, UserDto>();
             CreateMap<Student, UserDto>();
-            CreateMap<ApplicationUser, UserDto>();
             CreateMap<Teacher, UserDto>();
         }
     }

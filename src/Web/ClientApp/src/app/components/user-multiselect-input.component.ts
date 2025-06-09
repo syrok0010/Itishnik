@@ -69,7 +69,7 @@ export default class UserMultiselectInputComponent
   private readonly usersFacade = inject(UsersFacadeService);
   usersControl = new FormControl<UserDto[]>([]);
 
-  allUsers: Signal<UserDto[]> = toSignal(this.usersFacade.selectedUsers);
+  allUsers: Signal<UserDto[]> = toSignal(this.usersFacade.selectedUsers$);
 
   ngOnInit() {
     this.usersFacade.selectRoles(this.roles());

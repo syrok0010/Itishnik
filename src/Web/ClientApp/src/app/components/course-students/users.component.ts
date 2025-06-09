@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  output,
+} from '@angular/core';
 import {
   FormArray,
   FormControl,
@@ -15,21 +21,24 @@ import {
   TuiTextfield,
   TuiTitle,
 } from '@taiga-ui/core';
-import { CoursesFacadeService } from '../../teacher/courses-facade.service';
-import { combineLatest, firstValueFrom, startWith } from 'rxjs';
-import { map } from 'rxjs/operators';
-import { AsyncPipe } from '@angular/common';
+import { startWith } from 'rxjs';
 import { TuiAvatar } from '@taiga-ui/kit';
+import { toSignal } from '@angular/core/rxjs-interop';
+
+export interface User {
+  id: string;
+  email: string;
+  fullName: string;
+}
 
 @Component({
-  selector: 'app-course-students',
+  selector: 'app-users',
   imports: [
     ReactiveFormsModule,
     TuiTextfieldControllerModule,
     TuiInputModule,
     TuiButton,
     TuiTextfield,
-    AsyncPipe,
     FormsModule,
     TuiAutoColorPipe,
     TuiAvatar,
@@ -37,28 +46,35 @@ import { TuiAvatar } from '@taiga-ui/kit';
     TuiTitle,
     TuiIcon,
   ],
-  templateUrl: './course-students.component.html',
+  templateUrl: './users.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export default class CourseStudentsComponent {
-  coursesFacade = inject(CoursesFacadeService);
+export default class UsersComponent {
   emailsArray = new FormArray<FormControl<string>>([this.getEmailControl()]);
   search = new FormControl('');
+  readonly existingUsers = input<User[]>();
+  readonly headers = input.required<{ invite: string; list: string }>();
 
-  existingStudents$ = this.coursesFacade.currentCourseStudents$;
-  filteredStudents$ = combineLatest([
-    this.existingStudents$,
+  readonly addUsers = output<string[]>();
+
+  private readonly searchSignal = toSignal(
     this.search.valueChanges.pipe(startWith('')),
-  ]).pipe(
-    map(([students, search]) =>
-      students.filter(
-        (s) =>
-          s.fullName.toLowerCase().includes(search.toLowerCase()) ||
-          s.email.toLowerCase().includes(search.toLowerCase()),
-      ),
-    ),
+    { initialValue: '' },
   );
+  readonly filteredStudents = computed(() => {
+    const students = this.existingUsers();
+    const searchTerm = this.searchSignal().toLowerCase();
 
+    if (!searchTerm) {
+      return students;
+    }
+
+    return students.filter(
+      (s) =>
+        s.fullName.toLowerCase().includes(searchTerm) ||
+        s.email.toLowerCase().includes(searchTerm),
+    );
+  });
   getEmailControl() {
     return new FormControl('', [Validators.required, Validators.email]);
   }
@@ -74,9 +90,8 @@ export default class CourseStudentsComponent {
     }, 0);
   }
 
-  async inviteStudents() {
-    const course = await firstValueFrom(this.coursesFacade.currentCourse$);
-    await this.coursesFacade.inviteStudents(course.id, this.emailsArray.value);
+  async invite() {
+    this.addUsers.emit(this.emailsArray.value);
     this.emailsArray.reset();
   }
 }

@@ -87,7 +87,7 @@ export default class CoursePageComponent implements OnInit {
   usersFacade = inject(UsersFacadeService);
 
   currentCourse = toSignal(this.coursesFacade.currentCourse$);
-  allTeachers = toSignal(this.usersFacade.selectedUsers);
+  allTeachers = toSignal(this.usersFacade.selectedUsers$);
 
   description = computed(() => this.currentCourse()?.description);
   descriptionControl = new FormControl<string | null>('');

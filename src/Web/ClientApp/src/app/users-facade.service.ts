@@ -2,13 +2,20 @@ import { inject, Injectable } from '@angular/core';
 import {
   ActivateStudentCommand,
   AuthState,
+  InviteTeachersCommand,
   UserDto,
   UsersClient,
 } from './web-api-client';
-import { shareReplay, switchMap } from 'rxjs/operators';
-import { firstValueFrom, Observable, startWith, Subject } from 'rxjs';
+import { filter, shareReplay, switchMap } from 'rxjs/operators';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  Observable,
+  startWith,
+  Subject,
+} from 'rxjs';
 
-export type Role = 'Teacher' | 'Student';
+export type Role = 'Administrator' | 'Teacher' | 'Student';
 
 export function getFullName(user: UserDto) {
   const result = user.surname + ' ' + user.name[0].toUpperCase() + '.';
@@ -35,9 +42,11 @@ export class UsersFacadeService {
     shareReplay(1),
   );
 
-  selectedRoles = new Subject<Role[]>();
-  selectedUsers = this.selectedRoles.pipe(
+  selectedRoles = new BehaviorSubject<Role[]>([]);
+  selectedUsers$ = this.selectedRoles.pipe(
+    filter((roles) => roles.length > 0),
     switchMap((roles) => this.usersClient.getUsers(roles)),
+    shareReplay(1),
   );
 
   selectRoles(roles: Role[]) {
@@ -47,5 +56,12 @@ export class UsersFacadeService {
   async activateUser(activationInfo: ActivateStudentCommand) {
     await firstValueFrom(this.usersClient.activateStudent(activationInfo));
     this.refetchSubject.next();
+  }
+
+  async inviteTeachers(emails: string[]) {
+    await firstValueFrom(
+      this.usersClient.inviteTeachers(new InviteTeachersCommand({ emails })),
+    );
+    this.selectedRoles.next(this.selectedRoles.value);
   }
 }

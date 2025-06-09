@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import {
+  isAdminGuard,
   isAdminOrTeacherGuard,
   isStudentGuard,
 } from '../api-authorization/auth-guards';
@@ -12,8 +13,14 @@ export const routes: Routes = [
   { path: '', redirectTo: '/courses', pathMatch: 'full' },
   {
     path: 'activate',
+    canMatch: [isStudentGuard],
     loadComponent: () =>
-      import('./activate-student-page/activate-student-page.component'),
+      import('./student/activate-student-page/activate-student-page.component'),
+  },
+  {
+    path: 'teachers',
+    canMatch: [isAdminGuard],
+    loadComponent: () => import('./admin/teachers-page.component'),
   },
   {
     path: 'courses',
@@ -69,7 +76,7 @@ export const routes: Routes = [
       {
         path: 'students',
         loadComponent: () =>
-          import('./components/course-students/course-students.component'),
+          import('./teacher/course-page/students-tab.component'),
       },
       {
         path: 'grades',

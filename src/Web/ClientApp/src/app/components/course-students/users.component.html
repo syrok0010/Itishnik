@@ -1,11 +1,11 @@
 <div class="flex gap-8">
-  <form class="flex w-1/3 flex-col gap-6" (ngSubmit)="inviteStudents()">
-    <h1 class="text-xl font-semibold">Пригласить студентов</h1>
+  <form class="flex w-1/3 flex-col gap-6" (ngSubmit)="invite()">
+    <h1 class="text-xl font-semibold">{{ headers().invite }}</h1>
     <div class="flex flex-col gap-2">
       @for (email of emailsArray.controls; let index = $index; track index) {
         <div class="flex gap-2">
           <tui-input [formControl]="email" class="flex-1">
-            Почта студента {{ index + 1 }}
+            Почта {{ index + 1 }}
             <input tuiTextfieldLegacy type="email" />
           </tui-input>
           <button
@@ -40,7 +40,7 @@
   </form>
   <div class="flex w-2/3 flex-col gap-6">
     <div class="flex justify-between">
-      <h1 class="text-xl font-semibold">Студенты на курсе</h1>
+      <h1 class="text-xl font-semibold">{{ headers().list }}</h1>
       <tui-input
         class="w-1/3"
         [formControl]="search"
@@ -51,7 +51,7 @@
       </tui-input>
     </div>
     <div class="grid grid-cols-3 gap-4">
-      @for (student of filteredStudents$ | async; track student.id) {
+      @for (student of filteredStudents(); track student.id) {
         <div class="flex gap-2">
           <tui-avatar
             [src]="student.fullName | tuiInitials"
