@@ -46,6 +46,7 @@ import {
   CdkVirtualForOf,
   CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
+import { startWith } from 'rxjs';
 
 @Component({
   selector: 'app-tasks-table',
@@ -132,7 +133,10 @@ export default class TasksTableComponent {
 
   constructor() {
     this.filterForm.valueChanges
-      .pipe(takeUntilDestroyed())
+      .pipe(
+        startWith({ name: '', authorIds: [], tagIds: [] }),
+        takeUntilDestroyed(),
+      )
       .subscribe((filters) =>
         this.taskFacade.setFilters(filters as FilterState),
       );
