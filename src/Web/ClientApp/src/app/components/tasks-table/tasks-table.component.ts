@@ -75,7 +75,16 @@ import { GlobalLoadingService } from '../../global-loading.service';
     TuiScrollable,
   ],
   templateUrl: './tasks-table.component.html',
-  styles: [':host { @apply flex grow flex-col gap-4}'],
+  styles: [
+    `
+      :host {
+        @apply flex grow flex-col;
+      }
+      :host ::ng-deep tui-scrollbar .t-content {
+        height: auto !important;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class TasksTableComponent {
@@ -173,15 +182,5 @@ export default class TasksTableComponent {
       this.taskFacade.nextPage();
 
     this.isAtBottom.set(total > 0 && end === total);
-  }
-
-  tableHeightClass() {
-    if (this.filteredTasks().length === 0) {
-      return 'h-14';
-    }
-    if (!this.selectMode()) {
-      return 'h-[calc(100dvh-60px-56px-5rem)]';
-    }
-    return 'h-[60dvh]';
   }
 }

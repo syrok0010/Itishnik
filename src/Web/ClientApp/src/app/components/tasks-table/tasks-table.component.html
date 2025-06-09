@@ -1,7 +1,6 @@
 <div
-  class="relative flex w-full grow flex-col gap-4 rounded-lg bg-white {{
-    selectMode() ? 'min-w-[70dvw]' : 'p-4'
-  }}"
+  class="relative flex w-full grow flex-col gap-4 rounded-lg bg-white"
+  [class.p-4]="!selectMode()"
 >
   @if (filtering()) {
     <div class="flex justify-between gap-4" [formGroup]="filterForm">
@@ -18,10 +17,10 @@
     </div>
   }
   @if (initialLoadDone()) {
-    <tui-scrollbar>
+    <tui-scrollbar class="grow">
       <cdk-virtual-scroll-viewport
         #viewport
-        class="tui-zero-scrollbar {{ tableHeightClass() }}"
+        class="tui-zero-scrollbar h-full"
         appendOnly
         tuiScrollable
         autosize
@@ -30,6 +29,7 @@
         <table
           tuiTable
           size="l"
+          class="w-full"
           [columns]="columns()"
           [tuiSortBy]="currentSortBy()"
           (tuiSortChange)="sortChanged($event)"

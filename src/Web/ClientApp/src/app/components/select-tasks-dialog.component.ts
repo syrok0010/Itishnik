@@ -18,6 +18,7 @@ import { AsyncPipe } from '@angular/common';
       #taskTable
       [selectMode]="true"
       [excludeTaskIds]="context.data"
+      class="block h-[60dvh] w-[90dvw]"
     />
     <div class="mt-4 flex">
       <button

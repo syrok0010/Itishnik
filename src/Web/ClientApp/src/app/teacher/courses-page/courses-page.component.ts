@@ -44,6 +44,17 @@ import { GlobalLoadingService } from '../../global-loading.service';
     RouterOutlet,
   ],
   templateUrl: './courses-page.component.html',
+  styles: [
+    `
+      :host {
+        @apply relative w-full rounded-lg bg-white p-4;
+      }
+
+      :host ::ng-deep tui-scrollbar .t-content {
+        height: auto !important;
+      }
+    `,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export default class CoursesPageComponent {
