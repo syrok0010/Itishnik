@@ -1447,7 +1447,7 @@ export interface ITasksClient {
     setTaskTags(id: string, command: SetTaskTagsCommand): Observable<TaskResponse[]>;
     publish(id: string): Observable<TaskResponse[]>;
     editReferenceSolution(id: string, command: EditReferenceSolutionCommand): Observable<TaskResponse>;
-    generateTask(id: string, command: GenerateTaskCommand): Observable<AiGeneratedTaskResponse>;
+    generateTask(command: GenerateTaskCommand): Observable<AiGeneratedTaskResponse>;
 }
 
 @Injectable({
@@ -1942,11 +1942,8 @@ export class TasksClient implements ITasksClient {
         return _observableOf(null as any);
     }
 
-    generateTask(id: string, command: GenerateTaskCommand): Observable<AiGeneratedTaskResponse> {
-        let url_ = this.baseUrl + "/api/Tasks/{id}/generate";
-        if (id === undefined || id === null)
-            throw new Error("The parameter 'id' must be defined.");
-        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+    generateTask(command: GenerateTaskCommand): Observable<AiGeneratedTaskResponse> {
+        let url_ = this.baseUrl + "/api/Tasks/generate";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -1982,11 +1979,7 @@ export class TasksClient implements ITasksClient {
             (response as any).error instanceof Blob ? (response as any).error : undefined;
 
         let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
-        if (status === 400) {
-            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
-            return throwException("A server side error occurred.", status, _responseText, _headers);
-            }));
-        } else if (status === 200) {
+        if (status === 200) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
@@ -4231,9 +4224,7 @@ export interface IEditReferenceSolutionCommand {
 }
 
 export class AiGeneratedTaskResponse implements IAiGeneratedTaskResponse {
-    name?: string;
-    text?: string;
-    solution?: string;
+    task?: string;
 
     constructor(data?: IAiGeneratedTaskResponse) {
         if (data) {
@@ -4246,9 +4237,7 @@ export class AiGeneratedTaskResponse implements IAiGeneratedTaskResponse {
 
     init(_data?: any) {
         if (_data) {
-            this.name = _data["name"];
-            this.text = _data["text"];
-            this.solution = _data["solution"];
+            this.task = _data["task"];
         }
     }
 
@@ -4261,22 +4250,21 @@ export class AiGeneratedTaskResponse implements IAiGeneratedTaskResponse {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["name"] = this.name;
-        data["text"] = this.text;
-        data["solution"] = this.solution;
+        data["task"] = this.task;
         return data;
     }
 }
 
 export interface IAiGeneratedTaskResponse {
-    name?: string;
-    text?: string;
-    solution?: string;
+    task?: string;
 }
 
 export class GenerateTaskCommand implements IGenerateTaskCommand {
-    taskId?: string;
-    additionalInformation?: string | undefined;
+    topic?: string;
+    difficulty?: string;
+    taskType?: string;
+    info?: string | undefined;
+    theme?: string | undefined;
 
     constructor(data?: IGenerateTaskCommand) {
         if (data) {
@@ -4289,8 +4277,11 @@ export class GenerateTaskCommand implements IGenerateTaskCommand {
 
     init(_data?: any) {
         if (_data) {
-            this.taskId = _data["taskId"];
-            this.additionalInformation = _data["additionalInformation"];
+            this.topic = _data["topic"];
+            this.difficulty = _data["difficulty"];
+            this.taskType = _data["taskType"];
+            this.info = _data["info"];
+            this.theme = _data["theme"];
         }
     }
 
@@ -4303,15 +4294,21 @@ export class GenerateTaskCommand implements IGenerateTaskCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        data["taskId"] = this.taskId;
-        data["additionalInformation"] = this.additionalInformation;
+        data["topic"] = this.topic;
+        data["difficulty"] = this.difficulty;
+        data["taskType"] = this.taskType;
+        data["info"] = this.info;
+        data["theme"] = this.theme;
         return data;
     }
 }
 
 export interface IGenerateTaskCommand {
-    taskId?: string;
-    additionalInformation?: string | undefined;
+    topic?: string;
+    difficulty?: string;
+    taskType?: string;
+    info?: string | undefined;
+    theme?: string | undefined;
 }
 
 export class AuthState implements IAuthState {
