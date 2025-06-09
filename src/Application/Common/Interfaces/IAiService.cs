@@ -9,4 +9,9 @@ public interface IAiService
         string taskText,
         string solutionText,
         string referenceText);
+    
+    Task<AiGeneratedTaskResponse> GenerateTaskAsync(
+        string taskText, 
+        List<string> tags,
+        string additionalInformation);
 }
