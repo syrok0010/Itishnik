@@ -1,7 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { TuiSortChange, TuiTable } from '@taiga-ui/addon-table';
 import { CoursesFacadeService } from '../courses-facade.service';
-import { AsyncPipe } from '@angular/common';
 import {
   TuiButton,
   TuiIcon,
@@ -12,24 +18,24 @@ import {
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { TuiCell } from '@taiga-ui/layout';
 import {
-  CdkFixedSizeVirtualScroll,
   CdkVirtualForOf,
   CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
-import { pageSize } from '../tasks-facade.service';
+import { CdkAutoSizeVirtualScroll } from '@angular/cdk-experimental/scrolling';
 import { TuiEditorSocket } from '@taiga-ui/editor';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { GlobalLoadingService } from '../../global-loading.service';
 
 @Component({
   selector: 'app-courses-page',
   imports: [
     TuiTable,
-    AsyncPipe,
     TuiButton,
     TuiIcon,
     RouterLink,
     TuiCell,
     TuiTitle,
-    CdkFixedSizeVirtualScroll,
+    CdkAutoSizeVirtualScroll,
     TuiScrollable,
     TuiScrollbar,
     CdkVirtualScrollViewport,
@@ -42,15 +48,42 @@ import { TuiEditorSocket } from '@taiga-ui/editor';
 })
 export default class CoursesPageComponent {
   coursesFacade = inject(CoursesFacadeService);
-  coursesList$ = this.coursesFacade.coursesList$;
+  globalLoading = inject(GlobalLoadingService);
+
+  coursesList = toSignal(this.coursesFacade.coursesList$);
+  isLoading = toSignal(this.coursesFacade.isLoading$);
+  isAtBottom = signal(false);
+  initialLoadDone = signal(false);
+
+  shouldShowLoader = computed(
+    () => this.isLoading() && (!this.coursesList() || this.isAtBottom()),
+  );
 
   readonly columns = ['course', 'students', 'taskBlocks', 'description'];
+
+  constructor() {
+    effect(() => {
+      this.globalLoading.setManualLoading(this.shouldShowLoader());
+    });
+    effect(() => {
+      if (this.coursesList() !== undefined) {
+        this.initialLoadDone.set(true);
+      }
+    });
+  }
 
   sort(e: TuiSortChange<{ name: any }>) {
     this.coursesFacade.setSorting(e.sortDirection === 1);
   }
 
-  async scrollChanged(currentElement: number, total: number) {
-    if (total - currentElement <= pageSize) await this.coursesFacade.nextPage();
+  async onViewportScroll(viewport: CdkVirtualScrollViewport) {
+    const end = viewport.getRenderedRange().end;
+    const total = viewport.getDataLength();
+
+    const prefetchThreshold = 10;
+    if (total > 0 && end >= total - prefetchThreshold)
+      await this.coursesFacade.nextPage();
+
+    this.isAtBottom.set(total > 0 && end === total);
   }
 }

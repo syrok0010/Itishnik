@@ -18,7 +18,13 @@ import {
   StudentGradesResponse,
   TaskBlockResponse,
 } from '../web-api-client';
-import { BehaviorSubject, firstValueFrom, Observable, switchMap } from 'rxjs';
+import {
+  BehaviorSubject,
+  firstValueFrom,
+  Observable,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { distinctUntilChanged, map } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { TuiAlertService } from '@taiga-ui/core';
@@ -30,6 +36,7 @@ export interface CoursesState {
   totalPages: number | null;
   currentPage: number | null;
   ascending: boolean;
+  isLoading: boolean;
 
   currentCourse: CourseResponse | null;
   currentCourseStudents: CourseStudentListResponse | null;
@@ -42,6 +49,7 @@ let _state: CoursesState = {
   currentPage: null,
   totalPages: null,
   ascending: true,
+  isLoading: true,
 
   currentCourse: null,
   currentCourseGrades: null,
@@ -59,6 +67,7 @@ export class CoursesFacadeService {
 
   private _store: BehaviorSubject<CoursesState> = new BehaviorSubject(_state);
 
+  isLoading$ = this._store.pipe(map((state) => state.isLoading));
   coursesList$ = this._store.pipe(map((state) => state.coursesList));
   currentCourse$ = this._store.pipe(map((state) => state.currentCourse));
   currentCourseStudents$ = this._store.pipe(
@@ -73,6 +82,7 @@ export class CoursesFacadeService {
       .pipe(
         map((s) => s.ascending),
         distinctUntilChanged(),
+        tap(() => this._store.next((_state = { ..._state, isLoading: true }))),
         switchMap((a) =>
           this.coursesClient.getCoursesList(a, 1, coursesPageSize),
         ),
@@ -85,6 +95,7 @@ export class CoursesFacadeService {
             totalPages: x.totalPages,
             currentPage: x.pageNumber,
             coursesList: x.items,
+            isLoading: false,
           }),
         ),
       );
@@ -454,21 +465,27 @@ export class CoursesFacadeService {
   }
 
   async nextPage() {
-    if (_state.currentPage === _state.totalPages) return;
-    const response = await firstValueFrom(
-      this.coursesClient.getCoursesList(
-        _state.ascending,
-        _state.currentPage + 1,
-        coursesPageSize,
-      ),
-    );
-    this._store.next(
-      (_state = {
-        ..._state,
-        coursesList: [..._state.coursesList, ...response.items],
-        currentPage: _state.currentPage + 1,
-      }),
-    );
+    if (_state.currentPage === _state.totalPages || _state.isLoading) return;
+
+    this._store.next((_state = { ..._state, isLoading: true }));
+    try {
+      const response = await firstValueFrom(
+        this.coursesClient.getCoursesList(
+          _state.ascending,
+          _state.currentPage + 1,
+          coursesPageSize,
+        ),
+      );
+      this._store.next(
+        (_state = {
+          ..._state,
+          coursesList: [..._state.coursesList, ...response.items],
+          currentPage: _state.currentPage + 1,
+        }),
+      );
+    } finally {
+      this._store.next((_state = { ..._state, isLoading: false }));
+    }
   }
 
   async inviteStudents(courseId: string, emails: string[]) {

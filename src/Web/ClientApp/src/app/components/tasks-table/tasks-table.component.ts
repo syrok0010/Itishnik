@@ -2,13 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
   signal,
 } from '@angular/core';
 import {
   FilterState,
-  pageSize,
   TasksFacadeService,
 } from '../../teacher/tasks-facade.service';
 import { Role } from '../../users-facade.service';
@@ -42,11 +42,12 @@ import TagMultiselectInputComponent from '../tag-multiselect-input.component';
 import { TuiInputModule } from '@taiga-ui/legacy';
 import UserMultiselectInputComponent from '../user-multiselect-input.component';
 import {
-  CdkFixedSizeVirtualScroll,
   CdkVirtualForOf,
   CdkVirtualScrollViewport,
 } from '@angular/cdk/scrolling';
 import { startWith } from 'rxjs';
+import { CdkAutoSizeVirtualScroll } from '@angular/cdk-experimental/scrolling';
+import { GlobalLoadingService } from '../../global-loading.service';
 
 @Component({
   selector: 'app-tasks-table',
@@ -69,7 +70,7 @@ import { startWith } from 'rxjs';
     TuiCheckbox,
     TuiScrollbar,
     CdkVirtualScrollViewport,
-    CdkFixedSizeVirtualScroll,
+    CdkAutoSizeVirtualScroll,
     CdkVirtualForOf,
     TuiScrollable,
   ],
@@ -83,11 +84,19 @@ export default class TasksTableComponent {
   readonly excludeTaskIds = input<string[]>([]);
 
   taskFacade = inject(TasksFacadeService);
+  globalLoading = inject(GlobalLoadingService);
   tasks = toSignal(this.taskFacade.taskList$);
   filteredTasks = computed(() =>
     this.excludeTaskIds() !== null && this.excludeTaskIds().length > 0
       ? this.tasks().filter((t) => !this.excludeTaskIds().includes(t.id))
       : this.tasks(),
+  );
+  isLoading = toSignal(this.taskFacade.isLoading$);
+  isAtBottom = signal(false);
+  initialLoadDone = signal(false);
+
+  shouldShowLoader = computed(
+    () => this.isLoading() && (!this.tasks() || this.isAtBottom()),
   );
 
   selectedArray = computed(
@@ -140,6 +149,14 @@ export default class TasksTableComponent {
       .subscribe((filters) =>
         this.taskFacade.setFilters(filters as FilterState),
       );
+    effect(() => {
+      this.globalLoading.setManualLoading(this.shouldShowLoader());
+    });
+    effect(() => {
+      if (this.tasks() !== undefined) {
+        this.initialLoadDone.set(true);
+      }
+    });
   }
 
   sortChanged(e: TuiSortChange<Partial<Record<keyof TaskListResponse, any>>>) {
@@ -147,10 +164,15 @@ export default class TasksTableComponent {
     this.currentSortBy.set(e.sortKey);
   }
 
-  async scrollChanged(currentElement: number) {
-    const totalLoadedElements = this.filteredTasks().length;
-    if (totalLoadedElements - currentElement <= pageSize)
-      await this.taskFacade.nextPage();
+  onViewportScroll(viewport: CdkVirtualScrollViewport) {
+    const end = viewport.getRenderedRange().end;
+    const total = viewport.getDataLength();
+
+    const prefetchThreshold = 10;
+    if (total > 0 && end >= total - prefetchThreshold)
+      this.taskFacade.nextPage();
+
+    this.isAtBottom.set(total > 0 && end === total);
   }
 
   tableHeightClass() {

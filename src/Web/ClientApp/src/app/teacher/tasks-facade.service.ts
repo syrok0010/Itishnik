@@ -14,6 +14,7 @@ import {
   firstValueFrom,
   of,
   switchMap,
+  tap,
   throwError,
 } from 'rxjs';
 import { filter, map, distinctUntilChanged, catchError } from 'rxjs/operators';
@@ -32,6 +33,8 @@ export interface FilterState {
 
 export interface TasksState {
   taskList: TaskListResponse[];
+  isLoading: boolean;
+
   totalPages: number | null;
   currentPage: number | null;
   tasks: TaskResponse[];
@@ -41,6 +44,7 @@ export interface TasksState {
 
 let _state: TasksState = {
   taskList: [],
+  isLoading: false,
   currentPage: null,
   totalPages: null,
   tasks: [],
@@ -64,6 +68,7 @@ export class TasksFacadeService {
 
   private _store: BehaviorSubject<TasksState> = new BehaviorSubject(_state);
 
+  isLoading$ = this._store.pipe(map((state) => state.isLoading));
   taskList$ = this._store.pipe(map((state) => state.taskList));
   currentTaskChain$ = this._store.pipe(
     filter((state) => !!state.currentTaskId),
@@ -87,6 +92,7 @@ export class TasksFacadeService {
       .pipe(
         map((state) => state.filterState),
         distinctUntilChanged(),
+        tap(() => this._store.next((_state = { ..._state, isLoading: true }))),
         switchMap((filters) =>
           this.tasksClient.getTaskList(
             filters.tagIds,
@@ -121,6 +127,7 @@ export class TasksFacadeService {
             totalPages: x.totalPages,
             currentPage: x.pageNumber,
             taskList: x?.items,
+            isLoading: false,
           }),
         ),
       );
@@ -304,24 +311,30 @@ export class TasksFacadeService {
   }
 
   async nextPage() {
-    if (_state.currentPage === _state.totalPages) return;
-    const response = await firstValueFrom(
-      this.tasksClient.getTaskList(
-        _state.filterState.authorIds,
-        _state.filterState.authorIds,
-        _state.filterState.name,
-        _state.filterState.sortBy,
-        _state.filterState.ascending,
-        _state.currentPage + 1,
-        pageSize,
-      ),
-    );
-    this._store.next(
-      (_state = {
-        ..._state,
-        taskList: [..._state.taskList, ...response.items],
-        currentPage: _state.currentPage + 1,
-      }),
-    );
+    if (_state.currentPage === _state.totalPages || _state.isLoading) return;
+
+    this._store.next((_state = { ..._state, isLoading: true }));
+    try {
+      const response = await firstValueFrom(
+        this.tasksClient.getTaskList(
+          _state.filterState.tagIds,
+          _state.filterState.authorIds,
+          _state.filterState.name,
+          _state.filterState.sortBy,
+          _state.filterState.ascending,
+          _state.currentPage + 1,
+          pageSize,
+        ),
+      );
+      this._store.next(
+        (_state = {
+          ..._state,
+          taskList: [..._state.taskList, ...response.items],
+          currentPage: _state.currentPage + 1,
+        }),
+      );
+    } finally {
+      this._store.next((_state = { ..._state, isLoading: false }));
+    }
   }
 }
