@@ -3,13 +3,13 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TuiIcon } from '@taiga-ui/core';
 import { UsersFacadeService } from '../users-facade.service';
 import { map } from 'rxjs/operators';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, TuiIcon, AsyncPipe],
+  imports: [RouterLink, RouterLinkActive, TuiIcon, AsyncPipe, NgOptimizedImage],
 })
 export class NavMenuComponent {
   readonly teacherLinks: [string, string][] = [

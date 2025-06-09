@@ -1,7 +1,15 @@
 <header class="flex w-full justify-center bg-white shadow-sm">
-  <nav class="container flex items-center justify-between">
-    <div class="flex h-full gap-x-6 py-4">
-      <a class="text-lg font-medium"> Лого </a>
+  <nav class="container relative flex h-[60px] items-center justify-between">
+    <img
+      ngSrc="assets/logo.png"
+      alt="Логотип нашего приложения"
+      height="45"
+      width="100"
+      class="aspect-auto"
+    />
+    <div
+      class="absolute left-1/2 flex h-full -translate-x-1/2 items-center gap-x-6 py-4"
+    >
       @for (link of links$ | async; track link[0]) {
         <a
           routerLinkActive="text-indigo-600 font-semibold"
@@ -9,7 +17,7 @@
           class="text-lg font-medium text-gray-600 transition-colors duration-200 ease-in-out hover:text-primary"
           [routerLink]="link[1]"
         >
-          {{link[0]}}
+          {{ link[0] }}
         </a>
       }
     </div>
