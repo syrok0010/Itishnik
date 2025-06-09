@@ -15,6 +15,7 @@ import { TasksFacadeService } from '../tasks-facade.service';
 import {
   TuiAutoColorPipe,
   TuiButton,
+  tuiDialog,
   TuiDialogService,
   TuiError,
   TuiInitialsPipe,
@@ -52,6 +53,7 @@ import {
 } from '@taiga-ui/editor';
 import { firstValueFrom } from 'rxjs';
 import { UsersFacadeService } from '../../users-facade.service';
+import TagsManagementDialogComponent from '../../components/tags-management-dialog.component';
 
 export function textDifferentFromLatest(
   latestTextSignal: Signal<string | undefined>,
@@ -121,6 +123,13 @@ export default class TaskPageComponent {
   private readonly taskFacade = inject(TasksFacadeService);
   private readonly userFacade = inject(UsersFacadeService);
   private readonly dialogs = inject(TuiDialogService);
+  private readonly tagsManagementDialog = tuiDialog(
+    TagsManagementDialogComponent,
+    {
+      label: 'Создание тэга',
+      size: 'l',
+    },
+  );
   id: string = this.route.snapshot.paramMap.get('id');
 
   authInfo = toSignal(this.userFacade.authInfo$);
@@ -179,7 +188,9 @@ export default class TaskPageComponent {
 
   protected showEditTagsDialog(): void {
     this.dialogs
-      .open(this.editTagsDialogTemplate(), { label: 'Редактировать теги' })
+      .open(this.editTagsDialogTemplate(), {
+        label: 'Редактировать теги задачи',
+      })
       .subscribe();
   }
 
@@ -245,5 +256,9 @@ export default class TaskPageComponent {
       }),
     );
     if (save) await this.saveNewVersion();
+  }
+
+  openTagsManagementDialog() {
+    this.tagsManagementDialog().subscribe();
   }
 }

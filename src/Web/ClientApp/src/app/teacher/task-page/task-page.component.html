@@ -59,13 +59,22 @@
           </div>
 
           @if (isAuthor()) {
-            <button
-              tuiIconButton
-              iconStart="@tui.pen"
-              size="m"
-              appearance="outline"
-              (click)="showEditTagsDialog()"
-            ></button>
+            <div class="flex gap-2">
+              <button
+                tuiIconButton
+                iconStart="@tui.pen"
+                size="m"
+                appearance="outline"
+                (click)="showEditTagsDialog()"
+              ></button>
+              <button
+                tuiIconButton
+                iconStart="@tui.plus"
+                size="m"
+                appearance="outline"
+                (click)="openTagsManagementDialog()"
+              ></button>
+            </div>
           }
         </div>
         @if (isAuthor()) {

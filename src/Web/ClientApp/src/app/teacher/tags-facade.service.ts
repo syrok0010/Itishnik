@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
-import { Tag, TasksClient } from '../web-api-client';
+import { CreateTagCommand, Tag, TasksClient } from '../web-api-client';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 export interface TagsState {
@@ -28,5 +28,13 @@ export class TagsFacadeService {
       .getTagList()
       .pipe(untilDestroyed(this))
       .subscribe((tags) => this._store.next((_state = { ..._state, tags })));
+  }
+
+  async createTag(tag: string) {
+    const newTag = await firstValueFrom(
+      this.tasksClient.createTag(new CreateTagCommand({ text: tag })),
+    );
+
+    this._store.next((_state = { ..._state, tags: [..._state.tags, newTag] }));
   }
 }
