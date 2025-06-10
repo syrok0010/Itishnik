@@ -17,7 +17,7 @@ public class GetAiVerdictCommandValidator : AbstractValidator<GetAiVerdictComman
             .WithMessage("Решение не существует");
         RuleFor(x => x)
             .MustAsync((cmd, token) => RelationsCheck(context, cmd, token))
-            .WithMessage("Ошибка");
+            .WithMessage("Нарушение связи между курсом, заданием и решением");
 
     }
 
