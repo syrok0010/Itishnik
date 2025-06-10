@@ -12,7 +12,7 @@
     >
       @for (link of links$ | async; track link[0]) {
         <a
-          routerLinkActive="text-indigo-600 font-semibold"
+          routerLinkActive="text-primary font-semibold"
           [routerLinkActiveOptions]="{ exact: false }"
           class="text-lg font-medium text-gray-600 transition-colors duration-200 ease-in-out hover:text-primary"
           [routerLink]="link[1]"

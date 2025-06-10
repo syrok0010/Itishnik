@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        primary: "var(--tui-text-action)",
+        primary: "var(--tui-background-accent-1)",
       },
     },
   },
