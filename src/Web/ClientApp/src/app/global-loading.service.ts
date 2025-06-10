@@ -19,6 +19,7 @@ import {
 } from 'rxjs';
 import { map, filter, distinctUntilChanged, shareReplay } from 'rxjs/operators';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { PolymorpheusContent } from '@taiga-ui/polymorpheus';
 
 @UntilDestroy()
 @Injectable({
@@ -27,6 +28,9 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 export class GlobalLoadingService {
   private readonly routerLoading = new BehaviorSubject<boolean>(false);
   private readonly manualLoading = new BehaviorSubject<boolean>(false);
+  private readonly loaderContent = new BehaviorSubject<PolymorpheusContent>(
+    null,
+  );
 
   private router = inject(Router);
 
@@ -40,6 +44,8 @@ export class GlobalLoadingService {
     distinctUntilChanged(),
     untilDestroyed(this),
   );
+
+  public readonly loaderContent$ = this.loaderContent.asObservable();
 
   public readonly showLoader$: Observable<boolean> = this.isLoadingActual$.pipe(
     switchMap((isLoading) =>
@@ -88,8 +94,13 @@ export class GlobalLoadingService {
   /**
    * Устанавливает состояние ручной загрузки.
    * @param isLoading true, если ручная операция началась, false - если закончилась.
+   * @param text Текст, который будет отображен
    */
-  public setManualLoading(isLoading: boolean): void {
+  public setManualLoading(
+    isLoading: boolean,
+    text: PolymorpheusContent = null,
+  ): void {
     this.manualLoading.next(isLoading);
+    this.loaderContent.next(isLoading ? text : null);
   }
 }

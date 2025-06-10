@@ -2,6 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import {
   CreateTaskCommand,
   EditReferenceSolutionCommand,
+  GenerateTaskCommand,
   PaginatedListOfTaskListResponse,
   SetTaskTagsCommand,
   SwaggerException,
@@ -336,5 +337,9 @@ export class TasksFacadeService {
     } finally {
       this._store.next((_state = { ..._state, isLoading: false }));
     }
+  }
+
+  generate(command: GenerateTaskCommand) {
+    return firstValueFrom(this.tasksClient.generateTask(command));
   }
 }

@@ -4,7 +4,18 @@
   style="view-transition-name: create-task-block"
   (ngSubmit)="createTask()"
 >
-  <h1 class="text-2xl font-bold">Создать новое задание</h1>
+  <div class="flex justify-between">
+    <h1 class="text-2xl font-bold">Создать новое задание</h1>
+
+    <button
+      type="button"
+      class="gemini-generate-button"
+      (click)="showGenerateDialog()"
+    >
+      <span class="icon">✨</span>
+      <span class="text">Сгенерировать</span>
+    </button>
+  </div>
 
   <div class="flex flex-col gap-4">
     <tui-input formControlName="name" [tuiTextfieldLabelOutside]="true">
@@ -13,7 +24,7 @@
     </tui-input>
     <div>
       <p class="mb-2 text-xl font-semibold">Текст задания</p>
-      <tui-editor formControlName="text" />
+      <tui-editor #textEditor formControlName="text" />
       <tui-error
         class="mt-2"
         formControlName="text"
@@ -22,7 +33,7 @@
     </div>
     <div>
       <p class="mb-2 text-xl font-semibold">Решение задания</p>
-      <tui-editor formControlName="solutionText"></tui-editor>
+      <tui-editor #solutionEditor formControlName="solutionText"></tui-editor>
       <tui-error
         class="mt-2"
         formControlName="solutionText"
@@ -44,7 +55,7 @@
     tuiButton
     size="m"
     type="submit"
-    class="mr-auto"
+    class="mr-auto mt-4"
     [disabled]="form.invalid"
   >
     Сохранить

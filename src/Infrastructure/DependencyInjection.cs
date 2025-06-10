@@ -1,4 +1,5 @@
-﻿using Itishnik.Application.Common.Interfaces;
+﻿using System.Net;
+using Itishnik.Application.Common.Interfaces;
 using Itishnik.Domain.Constants;
 using Itishnik.Domain.Entities;
 using Itishnik.Infrastructure.Data;
@@ -22,12 +23,17 @@ public static class DependencyInjection
     public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
         var connectionString = builder.Configuration.GetConnectionString("ItishnikDb");
+        string? proxyAddress = builder.Configuration["ProxyAddress"];
         Guard.Against.Null(connectionString, message: "Connection string 'ItishnikDb' not found.");
         builder.Services.AddHttpClient<IAiService, AiService>(client =>
         {
             client.BaseAddress = new Uri("https://generativelanguage.googleapis.com");
             client.DefaultRequestHeaders.Add("Accept", "application/json");
-        });
+        }).ConfigurePrimaryHttpMessageHandler(() => 
+            string.IsNullOrEmpty(proxyAddress) 
+                ? new HttpClientHandler() 
+                : new HttpClientHandler { Proxy = new WebProxy(proxyAddress), UseProxy = true }
+        );
 
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();

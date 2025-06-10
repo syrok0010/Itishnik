@@ -1,5 +1,10 @@
 <tui-root>
-  <tui-loader [overlay]="true" [showLoader]="showLoader$ | async" size="xl">
+  <tui-loader
+    [overlay]="true"
+    [showLoader]="showLoader$ | async"
+    size="xl"
+    [textContent]="loadingService.loaderContent$ | async"
+  >
     <div class="flex min-h-dvh flex-col bg-gray-100">
       <app-nav-menu class="shrink-0" />
       <main

@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.gemini-generate-button {
+  @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border-none px-6 py-2.5 text-base font-semibold text-white transition-all duration-300 ease-out;
+  background: linear-gradient(110deg, #6d7bff 0%, #d16de0 100%);
+  box-shadow: 0 4px 15px rgba(162, 110, 220, 0.25);
+}
+
+.gemini-generate-button .icon {
+  @apply text-xl leading-none transition-transform duration-300 ease-out;
+}
+
+.gemini-generate-button:disabled,
+.gemini-generate-button.is-disabled {
+  @apply cursor-not-allowed shadow-none;
+  filter: grayscale(80%) opacity(60%);
+  transform: none;
+}
+
+.gemini-generate-button:not(:disabled):not(.is-disabled):hover {
+  @apply -translate-y-0.5 brightness-105;
+  box-shadow: 0 8px 25px rgba(162, 110, 220, 0.4);
+}
+
+.gemini-generate-button:not(:disabled):not(.is-disabled):hover .icon {
+  @apply scale-125;
+}
+
+.gemini-generate-button:not(:disabled):not(.is-disabled):active {
+  @apply translate-y-0 brightness-95 duration-100;
+  box-shadow: 0 2px 10px rgba(162, 110, 220, 0.2);
+}

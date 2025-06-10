@@ -62,7 +62,7 @@ public class AiService(HttpClient httpClient, IConfiguration configuration) : IA
             generationConfig = new
             {
                 responseMimeType = "application/json",
-                temperature = 0.5,
+                temperature = 0.8,
                 maxOutputTokens = 8192
             }
         };
@@ -91,7 +91,6 @@ public class AiService(HttpClient httpClient, IConfiguration configuration) : IA
         string? idea = null,
         string? theme = null)
     {
-        
         return $$"""
             Роль: Ты — креативный и опытный составитель задач по программированию и алгоритмам. Твоя задача — сгенерировать текст ОДНОЙ задачи в формате Markdown на основе заданных параметров.
             
@@ -99,8 +98,8 @@ public class AiService(HttpClient httpClient, IConfiguration configuration) : IA
             - **Тема (основной алгоритм/структура данных):** {{topic}}
             - **Сложность:** {{difficulty}}
             - **Тип задачи:** {{taskType}}
-            - **Общая мысль (если есть):** {{idea ?? "нет"}}
-            - **Тематика/Сеттинг (если есть):** {{theme ?? "нет"}}
+            - **Общая мысль/Суть/Задумка (если есть):** {{idea ?? "нет"}}
+            - **Тематика/Сеттинг/Стиль (если есть):** {{theme ?? "нет"}}
             
             СТРУКТУРА ВЫХОДНОГО JSON ДОЛЖНА БЫТЬ СТРОГО СЛЕДУЮЩЕЙ:
             ```json
