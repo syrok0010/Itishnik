@@ -958,6 +958,29 @@
         }
       }
     },
+    "/api/Students/grades": {
+      "get": {
+        "tags": [
+          "Students"
+        ],
+        "operationId": "GetStudentGrades",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/StudentGradesResponse"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Students/courses/{id}/start": {
       "patch": {
         "tags": [
@@ -1914,6 +1937,11 @@
               "format": "int32",
               "nullable": true
             }
+          },
+          "courseGrade": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
           }
         }
       },
