@@ -1,8 +1,10 @@
 using Itishnik.Application.Common.Models;
+using Itishnik.Application.Courses;
 using Itishnik.Application.Students;
 using Itishnik.Application.Students.EditSolution;
 using Itishnik.Application.Students.GetCourseById;
 using Itishnik.Application.Students.GetCourses;
+using Itishnik.Application.Students.GetStudentAllGrades;
 using Itishnik.Application.Students.SendFeedback;
 using Itishnik.Application.Students.StartTaskBlock;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -17,6 +19,7 @@ public class Students : EndpointGroupBase
             .RequireAuthorization()
             .MapGet(GetCourses, "/courses")
             .MapGet(GetCourse, "/courses/{id}")
+            .MapGet(GetStudentGrades, "/grades")
             .MapPatch(StartTaskBlock, "/courses/{id}/start")
             .MapPatch(EditSolution, "/courses/{id}/{blockId}/{taskId}/solution")
             .MapPatch(SendFeedback, "courses/{id}/{blockId}/feedback");
@@ -32,6 +35,12 @@ public class Students : EndpointGroupBase
     public async Task<Ok<StudentCourseResponse>> GetCourse(ISender sender, Guid id)
     {
         var response = await sender.Send(new GetCourseByIdQuery(id));
+        return TypedResults.Ok(response);
+    }
+    
+    public async Task<Ok<StudentGradesResponse[]>> GetStudentGrades(ISender sender)
+    {
+        var response = await sender.Send(new GetStudentAllGradesQuery());
         return TypedResults.Ok(response);
     }
 

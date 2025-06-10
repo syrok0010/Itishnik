@@ -15,6 +15,7 @@ import {
   CreateTaskBlockCommand,
   DeleteTaskFromBlockCommand,
   InviteStudentsToCourseCommand,
+  SetStudentCourseGradeCommand,
   StudentGradesResponse,
   TaskBlockResponse,
 } from '../web-api-client';
@@ -411,9 +412,13 @@ export class CoursesFacadeService {
         appearance: 'positive',
       })
       .subscribe();
+    const grades = await firstValueFrom(
+      this.coursesClient.getStudentsAndGrades(courseId),
+    );
     this._store.next(
       (_state = {
         ..._state,
+        currentCourseGrades: grades,
         currentCourse: new CourseResponse({
           ..._state.currentCourse,
           taskBlocks: [
@@ -527,5 +532,40 @@ export class CoursesFacadeService {
           ])[1],
       ),
     );
+  }
+
+  async setStudentCourseGrade(
+    courseId: string,
+    studentId: string,
+    grade: number,
+  ) {
+    grade = !!grade ? grade : 0;
+    await firstValueFrom(
+      this.coursesClient.setStudentCourseGrade(
+        courseId,
+        new SetStudentCourseGradeCommand({ grade, studentId, courseId }),
+      ),
+    );
+    this.alerts
+      .open('Оценка студента за курс обновлена', {
+        autoClose: 3000,
+        appearance: 'positive',
+      })
+      .subscribe();
+  }
+
+  refetchGrades() {
+    if (!_state.currentCourse?.id) return;
+    this.coursesClient
+      .getStudentsAndGrades(_state.currentCourse.id)
+      .pipe(untilDestroyed(this))
+      .subscribe((grades) =>
+        this._store.next(
+          (_state = {
+            ..._state,
+            currentCourseGrades: grades,
+          }),
+        ),
+      );
   }
 }

@@ -26,6 +26,7 @@ export interface ICoursesClient {
     changeTaskBlockTimeline(id: string, blockId: string, command: ChangeTaskBlockTimelineCommand): Observable<TaskBlockResponse>;
     changeTaskBlockName(id: string, blockId: string, command: ChangeTaskBlockNameCommand): Observable<TaskBlockResponse>;
     changeDescription(id: string, command: ChangeCourseDescriptionCommand): Observable<CourseResponse>;
+    setStudentCourseGrade(id: string, command: SetStudentCourseGradeCommand): Observable<void>;
     addTaskToBlock(id: string, blockId: string, command: AddTaskToBlockCommand): Observable<TaskBlockResponse>;
     deleteTaskFromBlock(id: string, blockId: string, command: DeleteTaskFromBlockCommand): Observable<void>;
     changeWeights(id: string, blockId: string, command: ChangeWeightsInBlockCommand): Observable<TaskBlockResponse>;
@@ -657,6 +658,61 @@ export class CoursesClient implements ICoursesClient {
         return _observableOf(null as any);
     }
 
+    setStudentCourseGrade(id: string, command: SetStudentCourseGradeCommand): Observable<void> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/set-grade";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processSetStudentCourseGrade(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processSetStudentCourseGrade(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<void>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<void>;
+        }));
+    }
+
+    protected processSetStudentCourseGrade(response: HttpResponseBase): Observable<void> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return _observableOf(null as any);
+            }));
+        } else if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
     addTaskToBlock(id: string, blockId: string, command: AddTaskToBlockCommand): Observable<TaskBlockResponse> {
         let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/task";
         if (id === undefined || id === null)
@@ -1130,6 +1186,7 @@ export class CoursesClient implements ICoursesClient {
 export interface IStudentsClient {
     getCourses(pageNumber: number | undefined, pageSize: number | undefined): Observable<PaginatedListOfGradedCourseResponse>;
     getCourse(id: string): Observable<StudentCourseResponse>;
+    getStudentGrades(): Observable<StudentGradesResponse[]>;
     startTaskBlock(id: string, blockId: string): Observable<GradedTaskBlockDto>;
     editSolution(id: string, blockId: string, taskId: string, command: EditSolutionCommand): Observable<SolutionDto>;
     sendFeedback(id: string, blockId: string, command: SendFeedbackCommand): Observable<FeedbackDto>;
@@ -1245,6 +1302,61 @@ export class StudentsClient implements IStudentsClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = StudentCourseResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    getStudentGrades(): Observable<StudentGradesResponse[]> {
+        let url_ = this.baseUrl + "/api/Students/grades";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("get", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetStudentGrades(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetStudentGrades(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<StudentGradesResponse[]>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<StudentGradesResponse[]>;
+        }));
+    }
+
+    protected processGetStudentGrades(response: HttpResponseBase): Observable<StudentGradesResponse[]> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            if (Array.isArray(resultData200)) {
+                result200 = [] as any;
+                for (let item of resultData200)
+                    result200!.push(StudentGradesResponse.fromJS(item));
+            }
+            else {
+                result200 = <any>null;
+            }
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
@@ -2805,6 +2917,7 @@ export class StudentGradesResponse implements IStudentGradesResponse {
     fullName?: string;
     email?: string;
     grades?: (number | undefined)[];
+    courseGrade?: number | undefined;
 
     constructor(data?: IStudentGradesResponse) {
         if (data) {
@@ -2826,6 +2939,7 @@ export class StudentGradesResponse implements IStudentGradesResponse {
                 for (let item of _data["grades"])
                     this.grades!.push(item);
             }
+            this.courseGrade = _data["courseGrade"];
         }
     }
 
@@ -2847,6 +2961,7 @@ export class StudentGradesResponse implements IStudentGradesResponse {
             for (let item of this.grades)
                 data["grades"].push(item);
         }
+        data["courseGrade"] = this.courseGrade;
         return data;
     }
 }
@@ -2857,6 +2972,7 @@ export interface IStudentGradesResponse {
     fullName?: string;
     email?: string;
     grades?: (number | undefined)[];
+    courseGrade?: number | undefined;
 }
 
 export class ChangeTaskBlockDescriptionCommand implements IChangeTaskBlockDescriptionCommand {
@@ -3037,6 +3153,50 @@ export class ChangeCourseDescriptionCommand implements IChangeCourseDescriptionC
 export interface IChangeCourseDescriptionCommand {
     id?: string;
     description?: string | undefined;
+}
+
+export class SetStudentCourseGradeCommand implements ISetStudentCourseGradeCommand {
+    courseId?: string;
+    studentId?: string;
+    grade?: number;
+
+    constructor(data?: ISetStudentCourseGradeCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.courseId = _data["courseId"];
+            this.studentId = _data["studentId"];
+            this.grade = _data["grade"];
+        }
+    }
+
+    static fromJS(data: any): SetStudentCourseGradeCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new SetStudentCourseGradeCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["courseId"] = this.courseId;
+        data["studentId"] = this.studentId;
+        data["grade"] = this.grade;
+        return data;
+    }
+}
+
+export interface ISetStudentCourseGradeCommand {
+    courseId?: string;
+    studentId?: string;
+    grade?: number;
 }
 
 export class AddTaskToBlockCommand implements IAddTaskToBlockCommand {
