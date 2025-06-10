@@ -829,6 +829,63 @@
         }
       }
     },
+    "/api/Courses/{id}/{blockId}/verdict": {
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "GetAiVerdict",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GetAiVerdictCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 3
+        },
+        "responses": {
+          "400": {
+            "description": ""
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiVerdictResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Students/courses": {
       "get": {
         "tags": [
@@ -1419,6 +1476,53 @@
         }
       }
     },
+    "/api/Tasks/{id}/generate": {
+      "post": {
+        "tags": [
+          "Tasks"
+        ],
+        "operationId": "GenerateTask",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/GenerateTaskCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "400": {
+            "description": ""
+          },
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AiGeneratedTaskResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Users/auth-info": {
       "get": {
         "tags": [
@@ -1995,6 +2099,34 @@
           }
         }
       },
+      "AiVerdictResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "score": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "GetAiVerdictCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "courseId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "taskBlockId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "solutionId": {
+            "type": "string",
+            "format": "guid"
+          }
+        }
+      },
       "PaginatedListOfGradedCourseResponse": {
         "type": "object",
         "additionalProperties": false,
@@ -2423,6 +2555,35 @@
           },
           "text": {
             "type": "string"
+          }
+        }
+      },
+      "AiGeneratedTaskResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          },
+          "solution": {
+            "type": "string"
+          }
+        }
+      },
+      "GenerateTaskCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "taskId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "additionalInformation": {
+            "type": "string",
+            "nullable": true
           }
         }
       },

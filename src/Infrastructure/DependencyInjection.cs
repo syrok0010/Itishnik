@@ -23,6 +23,11 @@ public static class DependencyInjection
     {
         var connectionString = builder.Configuration.GetConnectionString("ItishnikDb");
         Guard.Against.Null(connectionString, message: "Connection string 'ItishnikDb' not found.");
+        builder.Services.AddHttpClient<IAiService, AiService>(client =>
+        {
+            client.BaseAddress = new Uri("https://generativelanguage.googleapis.com");
+            client.DefaultRequestHeaders.Add("Accept", "application/json");
+        });
 
         builder.Services.AddScoped<ISaveChangesInterceptor, AuditableEntityInterceptor>();
         builder.Services.AddScoped<ISaveChangesInterceptor, DispatchDomainEventsInterceptor>();

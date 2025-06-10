@@ -33,6 +33,7 @@ export interface ICoursesClient {
     changeTeacher(id: string, command: ChangeCourseTeacherCommand): Observable<CourseResponse>;
     inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<CourseStudentListResponse>;
     getFeedbacks(id: string, blockId: string): Observable<string[]>;
+    getAiVerdict(id: string, blockId: string, command: GetAiVerdictCommand): Observable<AiVerdictResponse>;
 }
 
 @Injectable({
@@ -1062,6 +1063,68 @@ export class CoursesClient implements ICoursesClient {
         }
         return _observableOf(null as any);
     }
+
+    getAiVerdict(id: string, blockId: string, command: GetAiVerdictCommand): Observable<AiVerdictResponse> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/verdict";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (blockId === undefined || blockId === null)
+            throw new Error("The parameter 'blockId' must be defined.");
+        url_ = url_.replace("{blockId}", encodeURIComponent("" + blockId));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGetAiVerdict(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGetAiVerdict(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AiVerdictResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AiVerdictResponse>;
+        }));
+    }
+
+    protected processGetAiVerdict(response: HttpResponseBase): Observable<AiVerdictResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AiVerdictResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
 }
 
 export interface IStudentsClient {
@@ -1384,6 +1447,7 @@ export interface ITasksClient {
     setTaskTags(id: string, command: SetTaskTagsCommand): Observable<TaskResponse[]>;
     publish(id: string): Observable<TaskResponse[]>;
     editReferenceSolution(id: string, command: EditReferenceSolutionCommand): Observable<TaskResponse>;
+    generateTask(id: string, command: GenerateTaskCommand): Observable<AiGeneratedTaskResponse>;
 }
 
 @Injectable({
@@ -1869,6 +1933,65 @@ export class TasksClient implements ITasksClient {
         } else if (status === 400) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
             return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    generateTask(id: string, command: GenerateTaskCommand): Observable<AiGeneratedTaskResponse> {
+        let url_ = this.baseUrl + "/api/Tasks/{id}/generate";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ : any = {
+            body: content_,
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("post", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processGenerateTask(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processGenerateTask(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<AiGeneratedTaskResponse>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<AiGeneratedTaskResponse>;
+        }));
+    }
+
+    protected processGenerateTask(response: HttpResponseBase): Observable<AiGeneratedTaskResponse> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 400) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("A server side error occurred.", status, _responseText, _headers);
+            }));
+        } else if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AiGeneratedTaskResponse.fromJS(resultData200);
+            return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {
             return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
@@ -3155,6 +3278,86 @@ export interface IInviteStudentsToCourseCommand {
     emails?: string[];
 }
 
+export class AiVerdictResponse implements IAiVerdictResponse {
+    score?: number;
+
+    constructor(data?: IAiVerdictResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.score = _data["score"];
+        }
+    }
+
+    static fromJS(data: any): AiVerdictResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AiVerdictResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["score"] = this.score;
+        return data;
+    }
+}
+
+export interface IAiVerdictResponse {
+    score?: number;
+}
+
+export class GetAiVerdictCommand implements IGetAiVerdictCommand {
+    courseId?: string;
+    taskBlockId?: string;
+    solutionId?: string;
+
+    constructor(data?: IGetAiVerdictCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.courseId = _data["courseId"];
+            this.taskBlockId = _data["taskBlockId"];
+            this.solutionId = _data["solutionId"];
+        }
+    }
+
+    static fromJS(data: any): GetAiVerdictCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new GetAiVerdictCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["courseId"] = this.courseId;
+        data["taskBlockId"] = this.taskBlockId;
+        data["solutionId"] = this.solutionId;
+        return data;
+    }
+}
+
+export interface IGetAiVerdictCommand {
+    courseId?: string;
+    taskBlockId?: string;
+    solutionId?: string;
+}
+
 export class PaginatedListOfGradedCourseResponse implements IPaginatedListOfGradedCourseResponse {
     items?: GradedCourseResponse[];
     pageNumber?: number;
@@ -4085,6 +4288,90 @@ export class EditReferenceSolutionCommand implements IEditReferenceSolutionComma
 export interface IEditReferenceSolutionCommand {
     taskId?: string;
     text?: string;
+}
+
+export class AiGeneratedTaskResponse implements IAiGeneratedTaskResponse {
+    name?: string;
+    text?: string;
+    solution?: string;
+
+    constructor(data?: IAiGeneratedTaskResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.name = _data["name"];
+            this.text = _data["text"];
+            this.solution = _data["solution"];
+        }
+    }
+
+    static fromJS(data: any): AiGeneratedTaskResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AiGeneratedTaskResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
+        data["text"] = this.text;
+        data["solution"] = this.solution;
+        return data;
+    }
+}
+
+export interface IAiGeneratedTaskResponse {
+    name?: string;
+    text?: string;
+    solution?: string;
+}
+
+export class GenerateTaskCommand implements IGenerateTaskCommand {
+    taskId?: string;
+    additionalInformation?: string | undefined;
+
+    constructor(data?: IGenerateTaskCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.taskId = _data["taskId"];
+            this.additionalInformation = _data["additionalInformation"];
+        }
+    }
+
+    static fromJS(data: any): GenerateTaskCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new GenerateTaskCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["taskId"] = this.taskId;
+        data["additionalInformation"] = this.additionalInformation;
+        return data;
+    }
+}
+
+export interface IGenerateTaskCommand {
+    taskId?: string;
+    additionalInformation?: string | undefined;
 }
 
 export class AuthState implements IAuthState {

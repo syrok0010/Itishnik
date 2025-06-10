@@ -3,6 +3,7 @@ using Itishnik.Application.Tasks;
 using Itishnik.Application.Tasks.Commands.CreateTag;
 using Itishnik.Application.Tasks.Commands.CreateTask;
 using Itishnik.Application.Tasks.Commands.EditReferenceSolution;
+using Itishnik.Application.Tasks.Commands.GenerateTask;
 using Itishnik.Application.Tasks.Commands.PublishTask;
 using Itishnik.Application.Tasks.Commands.SetTaskTags;
 using Itishnik.Application.Tasks.Queries.GetTagList;
@@ -25,7 +26,15 @@ public class Tasks : EndpointGroupBase
             .MapGet(GetTaskWithAllVersions, "{id}")
             .MapPatch(SetTaskTags, "{id}/tags")
             .MapPatch(Publish, "{id}/publish")
-            .MapPatch(EditReferenceSolution, "{id}/solution");
+            .MapPatch(EditReferenceSolution, "{id}/solution")
+            .MapPost(GenerateTask, "{id}/generate");
+    }
+
+    public async Task<Results<BadRequest, Ok<AiGeneratedTaskResponse>>> GenerateTask(ISender sender, Guid id, GenerateTaskCommand command)
+    {
+        if (id != command.TaskId) return TypedResults.BadRequest();
+        var response = await sender.Send(command);
+        return TypedResults.Ok(response);
     }
     
     public async Task<Created<TaskResponse[]>> CreateTask(ISender sender, CreateTaskCommand command)

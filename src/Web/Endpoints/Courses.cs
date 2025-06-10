@@ -10,6 +10,7 @@ using Itishnik.Application.Courses.Commands.ChangeWeightsInBlock;
 using Itishnik.Application.Courses.Commands.CreateCourse;
 using Itishnik.Application.Courses.Commands.CreateTaskBlock;
 using Itishnik.Application.Courses.Commands.DeleteTaskFromBlock;
+using Itishnik.Application.Courses.Commands.GetAiVerdict;
 using Itishnik.Application.Courses.Commands.InviteStudentsToCourse;
 using Itishnik.Application.Courses.Commands.PublishTaskBlock;
 using Itishnik.Application.Courses.Queries.GetCourseById;
@@ -45,7 +46,15 @@ public class Courses : EndpointGroupBase
             .MapPost(PublishBlock, "{id}/{blockId}/publish")
             .MapPatch(ChangeTeacher, "{id}/teacher")
             .MapPost(InviteStudents, "{id}/invite")
-            .MapGet(GetFeedbacks, "{id}/{blockId}/feedbacks");
+            .MapGet(GetFeedbacks, "{id}/{blockId}/feedbacks")
+            .MapPost(GetAiVerdict, "{id}/{blockId}/verdict");
+    }
+
+    public async Task<Results<BadRequest, Ok<AiVerdictResponse>>> GetAiVerdict(ISender sender, Guid id, Guid blockId, [FromBody] GetAiVerdictCommand command)
+    {
+        if (command.CourseId != id || command.TaskBlockId != blockId) return TypedResults.BadRequest();
+        var response = await sender.Send(command);
+        return TypedResults.Ok(response);
     }
     
     public async Task<Created<CourseResponse>> CreateCourse(ISender sender, CreateCourseCommand command)
