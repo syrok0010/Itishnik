@@ -13,12 +13,12 @@ using Itishnik.Application.Courses.Commands.DeleteTaskFromBlock;
 using Itishnik.Application.Courses.Commands.GetAiVerdict;
 using Itishnik.Application.Courses.Commands.InviteStudentsToCourse;
 using Itishnik.Application.Courses.Commands.PublishTaskBlock;
+using Itishnik.Application.Courses.Commands.SetStudentCourseGrade;
 using Itishnik.Application.Courses.Queries.GetCourseById;
 using Itishnik.Application.Courses.Queries.GetCourseList;
 using Itishnik.Application.Courses.Queries.GetGradesOnCourse;
 using Itishnik.Application.Courses.Queries.GetFeedbacks;
 using Itishnik.Application.Courses.Queries.GetStudentsOnCourse;
-using Itishnik.Application.Students;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -40,6 +40,7 @@ public class Courses : EndpointGroupBase
             .MapPatch(ChangeTaskBlockTimeline, "{id}/{blockId}/timeline")
             .MapPatch(ChangeTaskBlockName, "{id}/{blockId}/name")
             .MapPatch(ChangeDescription, "{id}/description")
+            .MapPost(SetStudentCourseGrade, "{id}/set-grade")
             .MapPost(AddTaskToBlock, "{id}/{blockId}/task")
             .MapDelete(DeleteTaskFromBlock, "{id}/{blockId}/task")
             .MapPatch(ChangeWeights, "{id}/{blockId}/gradeWeights")
@@ -201,5 +202,15 @@ public class Courses : EndpointGroupBase
     {
         var response = await sender.Send(new GetFeedbacksQuery(id, blockId));
         return TypedResults.Ok(response);
+    }
+    
+    public async Task<Results<Ok, BadRequest>> SetStudentCourseGrade(
+        ISender sender, 
+        Guid id, 
+        SetStudentCourseGradeCommand command)
+    {
+        if (command.CourseId != id) return TypedResults.BadRequest();
+        await sender.Send(command);
+        return TypedResults.Ok();
     }
 }
