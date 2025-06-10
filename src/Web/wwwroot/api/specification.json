@@ -1476,24 +1476,12 @@
         }
       }
     },
-    "/api/Tasks/{id}/generate": {
+    "/api/Tasks/generate": {
       "post": {
         "tags": [
           "Tasks"
         ],
         "operationId": "GenerateTask",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "guid"
-            },
-            "x-position": 1
-          }
-        ],
         "requestBody": {
           "x-name": "command",
           "content": {
@@ -1504,12 +1492,9 @@
             }
           },
           "required": true,
-          "x-position": 2
+          "x-position": 1
         },
         "responses": {
-          "400": {
-            "description": ""
-          },
           "200": {
             "description": "",
             "content": {
@@ -2577,11 +2562,20 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "taskId": {
-            "type": "string",
-            "format": "guid"
+          "topic": {
+            "type": "string"
           },
-          "additionalInformation": {
+          "difficulty": {
+            "type": "string"
+          },
+          "taskType": {
+            "type": "string"
+          },
+          "idea": {
+            "type": "string",
+            "nullable": true
+          },
+          "theme": {
             "type": "string",
             "nullable": true
           }

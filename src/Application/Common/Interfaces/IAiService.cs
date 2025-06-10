@@ -9,9 +9,11 @@ public interface IAiService
         string taskText,
         string solutionText,
         string referenceText);
-    
+
     Task<AiGeneratedTaskResponse> GenerateTaskAsync(
-        string taskText, 
-        List<string> tags,
-        string additionalInformation);
+        string topic,
+        string difficulty, 
+        string taskType, 
+        string? idea = null,
+        string? theme = null);
 }
