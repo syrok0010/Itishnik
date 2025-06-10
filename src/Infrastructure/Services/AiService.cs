@@ -46,23 +46,18 @@ public class AiService(HttpClient httpClient, IConfiguration configuration) : IA
         return verdict;
     }
 
-    public async Task<AiGeneratedTaskResponse> GenerateTaskAsync(
-        string topic, 
-        string difficulty,
-        string taskType, 
-        string? info = null,
-        string? theme = null)
+    public async Task<AiGeneratedTaskResponse> GenerateTaskAsync(string taskText, List<string> tags, string additionalInformation)
     {
         const string modelName = "gemini-2.0-flash";
         var requestUrl = $"/v1beta/models/{modelName}:generateContent?key={_configuration["GoogleAi:ApiKey"]}";
-        var prompt = GenerateTaskPrompt(topic, difficulty, taskType, info, theme);
+        var prompt = GenerateTaskPrompt(taskText, tags, additionalInformation);
         var requestPayload = new
         {
             contents = new[] { new { parts = new[] { new { text = prompt } } } },
             generationConfig = new
             {
                 responseMimeType = "application/json",
-                temperature = 0.5,
+                temperature = 0.3,
                 maxOutputTokens = 8192
             }
         };
@@ -76,7 +71,7 @@ public class AiService(HttpClient httpClient, IConfiguration configuration) : IA
         if (string.IsNullOrWhiteSpace(innerJsonString))
             throw new FormatException("Ошибка: Gemini API вернул пустой или некорректный ответ.");
         
-        var generatedTask = JsonSerializer.Deserialize<AiGeneratedTaskResponse>(innerJsonString[1..^1], JsonOptions);
+        var generatedTask = JsonSerializer.Deserialize<AiGeneratedTaskResponse>(innerJsonString, JsonOptions);
     
         if (generatedTask is null)
             throw new NullReferenceException("Сгенерированная задача пуста после десериализации.");
@@ -84,42 +79,50 @@ public class AiService(HttpClient httpClient, IConfiguration configuration) : IA
         return generatedTask;
     }
 
-    private string GenerateTaskPrompt(
-        string topic, 
-        string difficulty,
-        string taskType, 
-        string? info = null,
-        string? theme = null)
+    private string GenerateTaskPrompt(string taskText, List<string> tags, string additionalInformation)
     {
+        var tagsString = tags.Count != 0 ? string.Join(", ", tags) : "Нет";
         
-        return $"""
-            Роль: Ты — креативный и опытный составитель задач по программированию и алгоритмам. Твоя задача — сгенерировать текст ОДНОЙ задачи в формате Markdown на основе заданных параметров.
-            
-            ПАРАМЕТРЫ ДЛЯ ГЕНЕРАЦИИ:
-            - **Тема (основной алгоритм/структура данных):** {topic}
-            - **Сложность:** {difficulty}
-            - **Тип задачи:** {taskType}
-            - **Общая мысль (если есть):** {info ?? "нет"}
-            - **Тематика/Сеттинг (если есть):** {theme ?? "нет"}
-            
-            Пример структуры твоего ответа:
-            ```markdown
-            # Название Задачи
-            
-            ## Текст задачи
-            ...
-            
-            ## Условие
-            ...
-            
-            ## Формат ввода
-            ...
-            
-            ## Формат вывода
-            ...
-            
-            ## Пример
-            ...
+        return $$"""
+            Роль: Ты — эксперт в области составления учебных задач по курсу "Алгоритмы и структуры данных". Твоя задача — сгенерировать новую задачу на основе примера и вернуть ее в строго заданном JSON формате.
+
+            Твоя задача: На основе предоставленной задачи-примера и ключевых особенностей, сформулированных преподавателем, создай НОВУЮ, уникальную задачу.
+
+            Входные данные от преподавателя для генерации:
+
+            *   [ИСХОДНАЯ ЗАДАЧА]
+                {{taskText}}
+
+            *   [КЛЮЧЕВЫЕ ОСОБЕННОСТИ НОВОЙ ЗАДАЧИ]
+                {{additionalInformation}}
+
+            *   [ЖЕЛАТЕЛЬНЫЕ ТЭГИ ДЛЯ КОНТЕКСТА]
+                {{tagsString}}
+
+            ИНСТРУКЦИЯ ПО ГЕНЕРАЦИИ И ФОРМАТИРОВАНИЮ:
+
+            1.  **Проанализируй** исходную задачу, чтобы понять ее суть, основной алгоритм и сложность.
+            2.  **Придумай** совершенно новый сюжет и контекст для задачи.
+            3.  **Скомпонуй** весь текст задачи в одно поле `text`. Используй Markdown для форматирования (заголовки `##`, списки `-`, блоки кода ```). Поле `text` должно содержать:
+                *   Легенду (сюжет).
+                *   Формальную постановку условия.
+                *   Описание формата входных данных.
+                *   Описание формата выходных данных.
+                *   Ограничения.
+                *   Как минимум один наглядный пример с вводом и выводом.
+            4.  **Скомпонуй** полное решение в одно поле `solution`. Это поле должно включать:
+                *   Описание алгоритмической идеи.
+                *   Анализ временной и пространственной сложности.
+                *   Псевдокод или готовый код на C++/Python.
+            5.  **Упакуй** результат в ОДИН валидный JSON-объект. Не добавляй никакого текста, комментариев или объяснений до или после JSON.
+
+            СТРУКТУРА ВЫХОДНОГО JSON ДОЛЖНА БЫТЬ СТРОГО СЛЕДУЮЩЕЙ:
+            ```json
+            {
+              "name": "Название новой задачи",
+              "text": "## Легенда\nТекст легенды...\n\n## Условие\nТекст условия...\n\n## Формат ввода\nОписание...\n\n## Формат вывода\nОписание...\n\n## Ограничения\n- 1 <= N <= 100000\n\n## Пример\n**Ввод:**\n```\n5\n1 2 3 4 5\n```\n**Вывод:**\n```\nYES\n```",
+              "solution": "## Идея решения\nОсновная идея заключается в использовании...\n\n## Сложность\n- Временная: O(N log N)\n- Пространственная: O(1)\n\n## Псевдокод\n```\nfunction solve(data):\n  // ... логика решения\n  return result\n```"
+            }
             ```
             """;
     }

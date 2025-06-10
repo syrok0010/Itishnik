@@ -1,31 +1,23 @@
 using Itishnik.Application.Common.Interfaces;
 using Itishnik.Application.Common.Models;
-using Itishnik.Application.Common.Security;
-using Itishnik.Domain.Constants;
 
 namespace Itishnik.Application.Tasks.Commands.GenerateTask;
 
-[Authorize(Roles = Roles.Teacher)]
-public record GenerateTaskCommand(
-    string Topic, 
-    string Difficulty,
-    string TaskType, 
-    string? Info = null,
-    string? Theme = null)
+public record GenerateTaskCommand(Guid TaskId, string? AdditionalInformation = null)
     : IRequest<AiGeneratedTaskResponse>;
 
-public class GenerateTaskCommandHandler(IAiService aiService)
+public class GenerateTaskCommandHandler(IAiService aiService, IApplicationDbContext context)
     : IRequestHandler<GenerateTaskCommand, AiGeneratedTaskResponse>
 {
     private readonly IAiService _aiService = aiService;
+    private readonly IApplicationDbContext _context = context;
     
     public async Task<AiGeneratedTaskResponse> Handle(GenerateTaskCommand request, CancellationToken cancellationToken)
     {
-        return await _aiService.GenerateTaskAsync(
-            request.Topic, 
-            request.Difficulty, 
-            request.TaskType, 
-            request.Info, 
-            request.Theme);
+        var task = await _context.Tasks
+            .Include(t => t.Tags)
+            .FirstAsync(t => t.Id == request.TaskId, cancellationToken);
+        var tags = task.Tags.Select(t => t.Text).ToList();
+        return await _aiService.GenerateTaskAsync(task.Text, tags, request.AdditionalInformation ?? "Не представлено");
     }
 }

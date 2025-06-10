@@ -27,11 +27,12 @@ public class Tasks : EndpointGroupBase
             .MapPatch(SetTaskTags, "{id}/tags")
             .MapPatch(Publish, "{id}/publish")
             .MapPatch(EditReferenceSolution, "{id}/solution")
-            .MapPost(GenerateTask, "generate");
+            .MapPost(GenerateTask, "{id}/generate");
     }
 
-    public async Task<Ok<AiGeneratedTaskResponse>> GenerateTask(ISender sender, GenerateTaskCommand command)
+    public async Task<Results<BadRequest, Ok<AiGeneratedTaskResponse>>> GenerateTask(ISender sender, Guid id, GenerateTaskCommand command)
     {
+        if (id != command.TaskId) return TypedResults.BadRequest();
         var response = await sender.Send(command);
         return TypedResults.Ok(response);
     }

@@ -6,14 +6,8 @@ public class GenerateTaskCommandValidator : AbstractValidator<GenerateTaskComman
 {
     public GenerateTaskCommandValidator(IApplicationDbContext context)
     {
-        RuleFor(x => x.Topic)
-            .NotEmpty()
-            .WithMessage("Тема не задана");
-        RuleFor(x => x.Difficulty)
-            .NotEmpty()
-            .WithMessage("Сложность не задана");
-        RuleFor(x => x.TaskType)
-            .NotEmpty()
-            .WithMessage("Тип задачи не задан");
+        RuleFor(x => x.TaskId)
+            .MustAsync((id, token) => context.Tasks.AnyAsync(t => t.Id == id, token))
+            .WithMessage("Задача не существует");
     }
 }
