@@ -1,7 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import UsersComponent, {
-  User,
-} from '../../components/course-students/users.component';
+import UsersComponent, { User } from '../../components/users/users.component';
 import { firstValueFrom } from 'rxjs';
 import { CoursesFacadeService } from '../courses-facade.service';
 import { AsyncPipe } from '@angular/common';
