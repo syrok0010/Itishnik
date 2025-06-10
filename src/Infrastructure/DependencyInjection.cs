@@ -23,7 +23,7 @@ public static class DependencyInjection
     public static void AddInfrastructureServices(this IHostApplicationBuilder builder)
     {
         var connectionString = builder.Configuration.GetConnectionString("ItishnikDb");
-        string? proxyAddress = builder.Configuration["ProxyAddress"];
+        string? proxyAddress = builder.Configuration["GeminiProxyAddress"];
         Guard.Against.Null(connectionString, message: "Connection string 'ItishnikDb' not found.");
         builder.Services.AddHttpClient<IAiService, AiService>(client =>
         {
