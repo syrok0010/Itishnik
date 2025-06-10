@@ -6,6 +6,7 @@ import {
   SendFeedbackCommand,
   SolutionDto,
   StudentCourseResponse,
+  StudentGradesResponse,
   StudentsClient,
 } from '../web-api-client';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -16,11 +17,13 @@ import { TuiAlertService } from '@taiga-ui/core';
 export interface StudentCoursesState {
   coursesList: GradedCourseResponse[];
   currentCourse: StudentCourseResponse | null;
+  studentAllGrades: StudentGradesResponse[];
 }
 
 let _state: StudentCoursesState = {
   coursesList: [],
   currentCourse: null,
+  studentAllGrades: [],
 };
 
 @UntilDestroy()
@@ -36,8 +39,20 @@ export class StudentCoursesFacadeService {
 
   coursesList$ = this._store.pipe(map((state) => state.coursesList));
   currentCourse$ = this._store.pipe(map((state) => state.currentCourse));
+  studentAllGrades$ = this._store.pipe(map((state) => state.studentAllGrades));
 
   constructor() {
+    this.studentClient
+      .getStudentGrades()
+      .pipe(untilDestroyed(this))
+      .subscribe((x) =>
+        this._store.next(
+          (_state = {
+            ..._state,
+            studentAllGrades: x,
+          }),
+        ),
+      );
     this.studentClient
       .getCourses(1, 30)
       .pipe(untilDestroyed(this))

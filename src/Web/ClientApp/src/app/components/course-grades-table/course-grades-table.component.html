@@ -6,16 +6,29 @@
   >
     <thead>
       <tr tuiThGroup>
-        <th tuiTh class="!sticky !left-0 !z-50 w-80 !shadow-xl">Студент</th>
+        <th tuiTh class="!sticky !left-0 !z-30 w-72 bg-white">Студент</th>
+        <th tuiTh class="!sticky !left-[18rem] !z-30 w-20 bg-white">
+          Оценка за курс
+        </th>
+        <th
+          tuiTh
+          class="!sticky !left-[23rem] !z-30 w-20 bg-white !shadow-[10px_0px_15px_-3px_rgba(0,0,0,0.1)]"
+        >
+          Средняя оценка
+        </th>
         @for (name of taskBlocksNames(); track name) {
           <th tuiTh class="w-32">{{ name }}</th>
         }
       </tr>
     </thead>
     <tbody tuiTbody [data]="studentsAndGrades()">
-      @for (student of studentsAndGrades(); track student) {
+      @for (
+        student of studentsAndGrades();
+        let rowIndex = $index;
+        track student
+      ) {
         <tr tuiTr class="">
-          <td *tuiCell="'student'" tuiTd class="!sticky !z-50 !shadow-xl">
+          <td *tuiCell="'student'" tuiTd class="!sticky !left-0 !z-20 bg-white">
             <div class="flex flex-row items-center gap-2">
               <tui-avatar
                 [src]="student.fullName | tuiInitials"
@@ -30,7 +43,38 @@
               </span>
             </div>
           </td>
-          @for (col of columns().slice(1); let index = $index; track col) {
+          <td
+            *tuiCell="'courseGrade'"
+            tuiTd
+            class="!sticky !left-[18rem] !z-20 bg-white"
+          >
+            <tui-textfield
+              class="flex h-full place-content-center"
+              [tuiTextfieldSize]="'l'"
+            >
+              <input
+                class="!border-b-0 text-lg font-semibold"
+                tuiInputNumber
+                [min]="0"
+                [max]="10"
+                [formControl]="courseGradeControls().at(rowIndex)"
+              />
+            </tui-textfield>
+          </td>
+          <td
+            *tuiCell="'averageGrade'"
+            tuiTd
+            class="!sticky !left-[23rem] !z-20 bg-white !shadow-[10px_0px_15px_-3px_rgba(0,0,0,0.1)]"
+          >
+            @let averageGrade = average(student.grades);
+            <div
+              class="flex justify-center text-lg font-semibold"
+              [class.text-red-500]="averageGrade < 4"
+            >
+              {{ averageGrade }}
+            </div>
+          </td>
+          @for (col of columns().slice(3); let index = $index; track col) {
             <td *tuiCell="col" tuiTd>
               <div
                 class="flex justify-center text-lg font-semibold"

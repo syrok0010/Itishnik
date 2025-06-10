@@ -492,6 +492,46 @@
         }
       }
     },
+    "/api/Courses/{id}/set-grade": {
+      "post": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "SetStudentCourseGrade",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SetStudentCourseGradeCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 2
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Courses/{id}/{blockId}/task": {
       "post": {
         "tags": [
@@ -2018,6 +2058,24 @@
           "description": {
             "type": "string",
             "nullable": true
+          }
+        }
+      },
+      "SetStudentCourseGradeCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "courseId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "studentId": {
+            "type": "string",
+            "format": "guid"
+          },
+          "grade": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       },
