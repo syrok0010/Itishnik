@@ -20,7 +20,12 @@ import { AsyncPipe } from '@angular/common';
       [excludeTaskIds]="context.data"
       class="block h-[60dvh] w-[90dvw]"
     />
-    <div class="mt-4 flex">
+    <div class="relative mt-4 flex items-center">
+      <p
+        class="absolute left-1/2 -translate-x-1/2 text-base italic text-gray-600"
+      >
+        В таблице отображаются только последние версии задач
+      </p>
       <button
         class="ml-auto"
         tuiButton
