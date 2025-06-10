@@ -18,7 +18,9 @@ using Itishnik.Application.Courses.Queries.GetCourseById;
 using Itishnik.Application.Courses.Queries.GetCourseList;
 using Itishnik.Application.Courses.Queries.GetGradesOnCourse;
 using Itishnik.Application.Courses.Queries.GetFeedbacks;
+using Itishnik.Application.Courses.Queries.GetGradedTaskBlock;
 using Itishnik.Application.Courses.Queries.GetStudentsOnCourse;
+using Itishnik.Application.Students;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
@@ -48,6 +50,7 @@ public class Courses : EndpointGroupBase
             .MapPatch(ChangeTeacher, "{id}/teacher")
             .MapPost(InviteStudents, "{id}/invite")
             .MapGet(GetFeedbacks, "{id}/{blockId}/feedbacks")
+            .MapGet(GetGradedTaskBlock, "{id}/{blockId}/student-solution")
             .MapPost(GetAiVerdict, "{id}/{blockId}/verdict");
     }
 
@@ -212,5 +215,13 @@ public class Courses : EndpointGroupBase
         if (command.CourseId != id) return TypedResults.BadRequest();
         await sender.Send(command);
         return TypedResults.Ok();
+    }
+
+    public async Task<Results<Ok<GradedTaskBlockDto>, BadRequest>> GetGradedTaskBlock(ISender sender, Guid id, Guid blockId, [AsParameters] GetGradedTaskBlockQuery query)
+    {
+        if (query.CourseId != id || query.TaskBlockId != blockId) return TypedResults.BadRequest();
+
+        var response = await sender.Send(query);
+        return TypedResults.Ok(response);
     }
 }

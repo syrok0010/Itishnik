@@ -1,6 +1,7 @@
 using AutoMapper;
 using Itishnik.Application.Common.Interfaces;
 using Itishnik.Application.Users.Commands.ActivateStudent;
+using Itishnik.Application.Users.Commands.ActivateTeacher;
 using Itishnik.Application.Users.Commands.InviteTeachers;
 using Itishnik.Application.Users.Queries.GetUserList;
 using Itishnik.Domain.Entities;
@@ -29,6 +30,7 @@ public class Users : EndpointGroupBase
         groupBuilder
             .MapGet(GetUsers)
             .MapPost(ActivateStudent, "activate-student")
+            .MapPost(ActivateTeacher, "activate-teacher")
             .MapPost(InviteTeachers, "invite-teachers");
     }
 
@@ -48,6 +50,12 @@ public class Users : EndpointGroupBase
     }
 
     private static async Task<Results<Ok, BadRequest>> ActivateStudent(ISender sender, ActivateStudentCommand command)
+    {
+        await sender.Send(command);
+        return TypedResults.Ok();
+    }
+    
+    private static async Task<Results<Ok, BadRequest>> ActivateTeacher(ISender sender, ActivateTeacherCommand command)
     {
         await sender.Send(command);
         return TypedResults.Ok();

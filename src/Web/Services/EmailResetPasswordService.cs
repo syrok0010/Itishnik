@@ -49,6 +49,6 @@ public class EmailResetPasswordService(
         await _emailSender.SendEmailAsync(
             email,
             "Восстановление пароля",
-            $"Пожалуйста <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>кликните по ссылке</a>, чтобы установить новый пароль.");
+            $"<a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>Кликните по ссылке</a>, чтобы установить новый пароль.");
     }
 }

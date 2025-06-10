@@ -869,6 +869,81 @@
         }
       }
     },
+    "/api/Courses/{id}/{blockId}/student-solution": {
+      "get": {
+        "tags": [
+          "Courses"
+        ],
+        "operationId": "GetGradedTaskBlock",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          },
+          {
+            "name": "blockId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 2
+          },
+          {
+            "name": "CourseId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 3
+          },
+          {
+            "name": "TaskBlockId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 4
+          },
+          {
+            "name": "StudentId",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 5
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GradedTaskBlockDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Courses/{id}/{blockId}/verdict": {
       "post": {
         "tags": [
@@ -1685,6 +1760,34 @@
         }
       }
     },
+    "/api/Users/activate-teacher": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "operationId": "ActivateTeacher",
+        "requestBody": {
+          "x-name": "command",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ActivateTeacherCommand"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 1
+        },
+        "responses": {
+          "200": {
+            "description": ""
+          },
+          "400": {
+            "description": ""
+          }
+        }
+      }
+    },
     "/api/Users/invite-teachers": {
       "post": {
         "tags": [
@@ -2170,6 +2273,106 @@
           }
         }
       },
+      "GradedTaskBlockDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "feedback": {
+            "type": "string",
+            "nullable": true
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "timeAllowed": {
+            "type": "string",
+            "format": "duration",
+            "nullable": true
+          },
+          "studentStartTime": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "grade": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "taskCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "solutions": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/SolutionDto"
+            }
+          }
+        }
+      },
+      "SolutionDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "text": {
+            "type": "string"
+          },
+          "grade": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "weight": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "task": {
+            "$ref": "#/components/schemas/TaskDto"
+          }
+        }
+      },
+      "TaskDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      },
       "AiVerdictResponse": {
         "type": "object",
         "additionalProperties": false,
@@ -2281,106 +2484,6 @@
             "items": {
               "$ref": "#/components/schemas/GradedTaskBlockDto"
             }
-          }
-        }
-      },
-      "GradedTaskBlockDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "name": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string",
-            "nullable": true
-          },
-          "feedback": {
-            "type": "string",
-            "nullable": true
-          },
-          "startTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "endTime": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "timeAllowed": {
-            "type": "string",
-            "format": "duration",
-            "nullable": true
-          },
-          "studentStartTime": {
-            "type": "string",
-            "format": "date-time",
-            "nullable": true
-          },
-          "grade": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "taskCount": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "solutions": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/SolutionDto"
-            }
-          }
-        }
-      },
-      "SolutionDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "text": {
-            "type": "string"
-          },
-          "grade": {
-            "type": "integer",
-            "format": "int32",
-            "nullable": true
-          },
-          "weight": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "position": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "task": {
-            "$ref": "#/components/schemas/TaskDto"
-          }
-        }
-      },
-      "TaskDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "name": {
-            "type": "string"
-          },
-          "text": {
-            "type": "string"
           }
         }
       },
@@ -2748,6 +2851,22 @@
           },
           "educationalProgram": {
             "type": "string"
+          }
+        }
+      },
+      "ActivateTeacherCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "surname": {
+            "type": "string"
+          },
+          "patronymic": {
+            "type": "string",
+            "nullable": true
           }
         }
       },
