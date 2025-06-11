@@ -1,15 +1,41 @@
-import { Component, inject } from '@angular/core';
+import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { TuiIcon } from '@taiga-ui/core';
+import {
+  TuiAutoColorPipe,
+  TuiButton,
+  TuiIcon,
+  TuiInitialsPipe,
+  TuiPopup,
+  TuiTitle,
+} from '@taiga-ui/core';
 import { UsersFacadeService } from '../users-facade.service';
 import { map } from 'rxjs/operators';
 import { AsyncPipe, NgOptimizedImage } from '@angular/common';
+import { FullNamePipe, HasFio } from '../components/full-name-pipe.pipe';
+import { TuiAvatar, TuiDrawer } from '@taiga-ui/kit';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, TuiIcon, AsyncPipe, NgOptimizedImage],
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    TuiIcon,
+    AsyncPipe,
+    NgOptimizedImage,
+    FullNamePipe,
+    TuiDrawer,
+    TuiInitialsPipe,
+    TuiAutoColorPipe,
+    TuiAvatar,
+    TuiTitle,
+    TuiPopup,
+    TuiButton,
+    FormsModule,
+  ],
 })
 export class NavMenuComponent {
   readonly teacherLinks: [string, string][] = [
@@ -48,4 +74,9 @@ export class NavMenuComponent {
         : result;
     }),
   );
+
+  user = toSignal(this.usersFacade.currentUser$);
+  role = toSignal(this.usersFacade.authInfo$.pipe(map((i) => i.roles[0])));
+  fio = computed(() => this.user() as HasFio);
+  open = signal(false);
 }

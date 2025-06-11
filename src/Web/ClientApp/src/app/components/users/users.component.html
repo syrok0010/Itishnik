@@ -51,21 +51,21 @@
       </tui-input>
     </div>
     <div class="grid grid-cols-3 gap-4">
-      @for (student of filteredStudents(); track student.id) {
-        <div class="flex gap-2">
+      @for (user of filteredUsers(); track user.id) {
+        <div class="flex gap-2" [tuiHint]="user.group ?? ''">
           <tui-avatar
-            [src]="student.fullName | tuiInitials"
-            [style.background]="student.fullName | tuiAutoColor"
+            [src]="user.fullName | tuiInitials"
+            [style.background]="user.fullName | tuiAutoColor"
             size="m"
           />
           <span tuiTitle class="whitespace-normal">
             {{
-              student.fullName === student.email ||
-              student.fullName.toLowerCase().includes("не установлено")
+              user.fullName === user.email ||
+              user.fullName.toLowerCase().includes("не установлено")
                 ? "ФИО не установлено"
-                : student.fullName
+                : user.fullName
             }}
-            <span tuiSubtitle class="truncate">{{ student.email }}</span>
+            <span tuiSubtitle class="truncate">{{ user.email }}</span>
           </span>
         </div>
       }

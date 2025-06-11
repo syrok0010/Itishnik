@@ -26,6 +26,7 @@ import { of } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { GradedTaskBlockResponse } from '../../web-api-client';
 import GradeTaskBlockDialogComponent from '../grade-task-block-dialog.component';
+import { DecimalPipe } from '@angular/common';
 
 @UntilDestroy()
 @Component({
@@ -43,6 +44,7 @@ import GradeTaskBlockDialogComponent from '../grade-task-block-dialog.component'
     TuiInputNumber,
     TuiIcon,
     TuiHint,
+    DecimalPipe,
   ],
   templateUrl: './course-grades-table.component.html',
   styles: ``,
@@ -58,6 +60,7 @@ export default class CourseGradesTableComponent {
       map((v) => v.sort((a, b) => a.fullName.localeCompare(b.fullName))),
     ),
   );
+  studentList = toSignal(this.coursesFacade.currentCourseStudents$);
   taskBlocks = toSignal(
     this.coursesFacade.currentCourse$.pipe(map((c) => c.taskBlocks)),
   );
@@ -142,5 +145,9 @@ export default class CourseGradesTableComponent {
 
   inFuture(date: Date) {
     return Date.now() > date.getTime();
+  }
+
+  getHint(email: string) {
+    return this.studentList().find((t) => t.email === email)?.group ?? '';
   }
 }
