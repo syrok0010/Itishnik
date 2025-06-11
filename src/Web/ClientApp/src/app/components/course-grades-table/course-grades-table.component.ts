@@ -133,4 +133,8 @@ export default class CourseGradesTableComponent {
       taskBlock,
     }).subscribe();
   }
+
+  inFuture(date: Date) {
+    return Date.now() > date.getTime();
+  }
 }

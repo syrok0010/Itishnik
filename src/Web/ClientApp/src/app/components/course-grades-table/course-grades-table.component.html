@@ -78,42 +78,38 @@
           @for (col of columns().slice(3); let index = $index; track col) {
             <td *tuiCell="col" tuiTd>
               <div
-                class="flex justify-center text-lg font-semibold"
+                class="relative flex items-center justify-center text-lg font-semibold"
                 [class.text-red-500]="
                   !!student.grades[index]?.grade &&
                   student.grades[index].grade < 4
                 "
               >
-                <!-- Был добавлел в курс после блока -->
+                <!-- Был добавлен в курс после блока -->
                 @if (index < skippedBlocks) {
+                  –
                   <tui-icon
                     icon="@tui.info"
                     tuiHint="Добавлен на курс позднее"
-                    class="text-amber-500"
+                    class="absolute left-[90%] -top-1/2 -translate-x-1/4 text-amber-500"
                   />
                 } @else if (
                   student.grades[index].grade !== null &&
                   student.grades[index].grade !== undefined
                 ) {
                   <!-- Есть оценка -->
-                  {{ student.grades[index].grade }}
+                  <span>
+                    {{ student.grades[index].grade }}
+                  </span>
                   @if (student.grades[index].solutionsIsEmpty) {
                     <!-- Есть оценка и массив решений - пуст -->
                     <tui-icon
                       icon="@tui.info"
                       tuiHint="Студент не начинал решение работы"
-                      class="text-red-500"
+                      class="absolute left-[90%] -top-1/2 -translate-x-1/4 text-red-500"
                     />
                   }
-                } @else if (student.grades[index].solutionsIsEmpty) {
-                  <!-- Нет оценки и пустое решение -->
-                  <tui-icon
-                    icon="@tui.info"
-                    tuiHint="Студент не начинал решение работы"
-                    class="text-green-500"
-                  />
                 } @else {
-                  <!-- Нет оценки и не пустое решение -->
+                  <!-- Нет оценки -->
                   <button
                     appearance="flat"
                     tuiButton
@@ -126,6 +122,7 @@
                         student.grades[index].id
                       )
                     "
+                    [disabled]="!inFuture(taskBlocks()[index].endTime)"
                   >
                     Оценить
                   </button>
