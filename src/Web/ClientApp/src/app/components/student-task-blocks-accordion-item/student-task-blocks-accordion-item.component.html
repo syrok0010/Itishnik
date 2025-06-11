@@ -85,7 +85,7 @@
                 <span
                   class="text-xl font-bold"
                   [class.text-green-500]="!!solution.grade"
-                >{{ solution.grade ?? "—" }} / {{ solution.weight }}</span
+                  >{{ solution.grade ?? "—" }} / {{ solution.weight }}</span
                 >
               </div>
             </div>
@@ -103,7 +103,7 @@
           <span
             class="text-xl font-bold"
             [class.text-green-500]="!!taskBlock().grade"
-          >{{ taskBlock().grade ?? "—" }} / 10</span
+            >{{ taskBlock().grade ?? "—" }} / 10</span
           >
         </div>
       }
@@ -115,7 +115,7 @@
           [formControl]="feedbackControl()"
         ></textarea>
       </tui-textfield>
-      @if (status() === 'Solving') {
+      @if (status() === "Solving") {
         <button tuiButton size="m" (click)="saveFeedback()" class="mt-4">
           Сохранить
         </button>

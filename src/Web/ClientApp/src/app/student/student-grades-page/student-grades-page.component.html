@@ -1,0 +1,65 @@
+<div class="grid grid-cols-3 gap-x-12 gap-y-8 py-4">
+  @for (course of coursesAndGrades(); track course) {
+    <div
+      class="relative flex w-full flex-col items-center gap-4 rounded-lg bg-white p-6 shadow-lg transition-all duration-300 hover:scale-105"
+    >
+      <h1 class="text-wrap text-2xl font-bold">
+        {{ course.courseName }}
+      </h1>
+      @if (!!course.grades && course.grades.length > 0) {
+        <div
+          class="flex w-full flex-col divide-y-2 divide-blue-300 rounded-lg border-2 border-blue-300"
+        >
+          @for (taskBlock of course.grades; track taskBlock) {
+            <div
+              class="flex flex-row items-center justify-between gap-4 px-4 py-2 text-lg transition-all duration-300 hover:bg-blue-100"
+            >
+              <span class="text-wrap">
+                {{ taskBlock.name }}
+              </span>
+              @if (!!taskBlock.grade) {
+                <tui-badge
+                  [appearance]="
+                    taskBlock.grade < 4
+                      ? 'negative'
+                      : taskBlock.grade > 7
+                        ? 'positive'
+                        : 'warning'
+                  "
+                  size="xl"
+                  class="!font-medium"
+                >
+                  {{ taskBlock.grade }}
+                </tui-badge>
+              } @else {
+                <tui-badge
+                  appearance="neutral"
+                  size="xl"
+                  class="!pb-1 !font-medium"
+                >
+                  –
+                </tui-badge>
+              }
+            </div>
+          }
+          <div
+            class="flex flex-row items-center justify-between gap-4 px-4 py-2 text-lg transition-all duration-300 hover:bg-blue-100"
+          >
+            <span class="text-wrap">Средняя оценка</span>
+            <tui-badge
+              appearance="primary"
+              size="xl"
+              class="!pb-1 !font-medium"
+            >
+              {{ average(course.grades) | number: "1.1-1" }}
+            </tui-badge>
+          </div>
+        </div>
+      } @else {
+        <h3 class="absolute top-1/2 mx-auto text-lg italic text-gray-600">
+          Работ пока нет
+        </h3>
+      }
+    </div>
+  }
+</div>

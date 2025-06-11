@@ -1,5 +1,5 @@
 <div
-  class="w-full h-full flex flex-col transform overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:scale-105"
+  class="flex h-full w-full transform flex-col overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:scale-105"
   style="view-transition-name: course-card-{{ course().id }}"
 >
   <img
@@ -8,7 +8,7 @@
     class="h-40 w-full object-cover"
   />
 
-  <div class="p-6 flex flex-col grow justify-between gap-4">
+  <div class="flex grow flex-col justify-between gap-4 p-6">
     <h2
       class="text-xl font-bold"
       style="view-transition-name: course-title-{{ course().id }}"
@@ -21,8 +21,11 @@
         class="flex items-center"
         style="view-transition-name: course-grade-{{ course().id }}"
       >
-        <tui-icon icon="@tui.award" class="mr-2 h-6 w-6 text-green-600"></tui-icon>
-        <p class="text-lg font-semibold">Оценка: {{ course().grade }}</p>
+        <tui-icon
+          icon="@tui.award"
+          class="mr-1 h-5 w-5 text-green-600"
+        ></tui-icon>
+        <p class="text-base font-semibold">Оценка: {{ course().grade }}</p>
       </div>
     } @else if (
       course().nearestTaskBlockStart && course().nearestTaskBlockEnd

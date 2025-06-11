@@ -1,7 +1,7 @@
 <div class="mb-4 flex w-1/2 flex-row justify-stretch gap-4">
   <tui-input tuiTextfieldSize="m" [formControl]="nameControl" class="flex-1"
-    >Введите название работы</tui-input
-  >
+    >Введите название работы
+  </tui-input>
 
   <button
     appearance="primary"
@@ -24,6 +24,10 @@
     <tui-expand>
       <app-task-blocks-accordion-item [taskBlock]="taskBlock" />
     </tui-expand>
+  } @empty {
+    <h3 class="text-center text-lg italic text-gray-600">
+      Не опубликованных работ нет
+    </h3>
   }
 </tui-accordion>
 
@@ -36,5 +40,9 @@
     <tui-expand>
       <app-task-blocks-accordion-item [taskBlock]="taskBlock" />
     </tui-expand>
+  } @empty {
+    <h3 class="text-center text-lg italic text-gray-600">
+      Опубликованных работ нет
+    </h3>
   }
 </tui-accordion>

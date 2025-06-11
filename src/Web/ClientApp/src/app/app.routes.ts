@@ -59,6 +59,12 @@ export const routes: Routes = [
       import('./student/student-course-page/student-course-page.component'),
   },
   {
+    path: 'grades',
+    canMatch: [isStudentGuard],
+    loadComponent: () =>
+      import('./student/student-grades-page/student-grades-page.component'),
+  },
+  {
     path: 'courses/:id',
     canMatch: [isAdminOrTeacherGuard],
     canActivateChild: [isAdminOrTeacherGuard],
