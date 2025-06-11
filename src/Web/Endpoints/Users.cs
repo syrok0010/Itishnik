@@ -26,6 +26,11 @@ public class Users : EndpointGroupBase
             .MapGet("user", GetCurrentUser)
             .WithName("UserInfo")
             .RequireAuthorization();
+
+        groupBuilder
+            .Map("change-password", ChangePassword)
+            .WithName("ChangePassword")
+            .RequireAuthorization();
         
         groupBuilder
             .MapGet(GetUsers)
@@ -65,5 +70,17 @@ public class Users : EndpointGroupBase
     {
         var response = await sender.Send(command);
         return TypedResults.Ok(response);
+    }
+
+    private static async Task<Results<Ok, BadRequest, BadRequest<string[]>>> ChangePassword(UserManager<ApplicationUser> userManager, IUser userService, string oldPassword, string newPassword)
+    {
+        var user = await userManager.FindByIdAsync(userService.Id.ToString()!);
+        if (user is null)
+            return TypedResults.BadRequest();
+        
+        var result = await userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+        return !result.Succeeded 
+            ? TypedResults.BadRequest(result.Errors.Select(e => e.Description).ToArray()) 
+            : TypedResults.Ok();
     }
 }
