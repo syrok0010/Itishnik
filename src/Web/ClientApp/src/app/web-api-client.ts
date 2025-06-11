@@ -36,6 +36,7 @@ export interface ICoursesClient {
     getFeedbacks(id: string, blockId: string): Observable<string[]>;
     getGradedTaskBlock(id: string, blockId: string, studentId: string): Observable<GradedTaskBlockDto>;
     getAiVerdict(id: string, blockId: string, command: GetAiVerdictCommand): Observable<AiVerdictResponse>;
+    evaluateSolution(id: string, blockId: string, taskId: string, solutionId: string, grade: number): Observable<SolutionDto>;
 }
 
 @Injectable({
@@ -1234,6 +1235,70 @@ export class CoursesClient implements ICoursesClient {
             let result200: any = null;
             let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
             result200 = AiVerdictResponse.fromJS(resultData200);
+            return _observableOf(result200);
+            }));
+        } else if (status !== 200 && status !== 204) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            }));
+        }
+        return _observableOf(null as any);
+    }
+
+    evaluateSolution(id: string, blockId: string, taskId: string, solutionId: string, grade: number): Observable<SolutionDto> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/{taskId}/{solutionId}/grade?";
+        if (id === undefined || id === null)
+            throw new Error("The parameter 'id' must be defined.");
+        url_ = url_.replace("{id}", encodeURIComponent("" + id));
+        if (blockId === undefined || blockId === null)
+            throw new Error("The parameter 'blockId' must be defined.");
+        url_ = url_.replace("{blockId}", encodeURIComponent("" + blockId));
+        if (taskId === undefined || taskId === null)
+            throw new Error("The parameter 'taskId' must be defined.");
+        url_ = url_.replace("{taskId}", encodeURIComponent("" + taskId));
+        if (solutionId === undefined || solutionId === null)
+            throw new Error("The parameter 'solutionId' must be defined.");
+        url_ = url_.replace("{solutionId}", encodeURIComponent("" + solutionId));
+        if (grade === undefined || grade === null)
+            throw new Error("The parameter 'grade' must be defined and cannot be null.");
+        else
+            url_ += "grade=" + encodeURIComponent("" + grade) + "&";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ : any = {
+            observe: "response",
+            responseType: "blob",
+            headers: new HttpHeaders({
+                "Accept": "application/json"
+            })
+        };
+
+        return this.http.request("patch", url_, options_).pipe(_observableMergeMap((response_ : any) => {
+            return this.processEvaluateSolution(response_);
+        })).pipe(_observableCatch((response_: any) => {
+            if (response_ instanceof HttpResponseBase) {
+                try {
+                    return this.processEvaluateSolution(response_ as any);
+                } catch (e) {
+                    return _observableThrow(e) as any as Observable<SolutionDto>;
+                }
+            } else
+                return _observableThrow(response_) as any as Observable<SolutionDto>;
+        }));
+    }
+
+    protected processEvaluateSolution(response: HttpResponseBase): Observable<SolutionDto> {
+        const status = response.status;
+        const responseBlob =
+            response instanceof HttpResponse ? response.body :
+            (response as any).error instanceof Blob ? (response as any).error : undefined;
+
+        let _headers: any = {}; if (response.headers) { for (let key of response.headers.keys()) { _headers[key] = response.headers.get(key); }}
+        if (status === 200) {
+            return blobToText(responseBlob).pipe(_observableMergeMap((_responseText: string) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = SolutionDto.fromJS(resultData200);
             return _observableOf(result200);
             }));
         } else if (status !== 200 && status !== 204) {

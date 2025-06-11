@@ -10,6 +10,7 @@ using Itishnik.Application.Courses.Commands.ChangeWeightsInBlock;
 using Itishnik.Application.Courses.Commands.CreateCourse;
 using Itishnik.Application.Courses.Commands.CreateTaskBlock;
 using Itishnik.Application.Courses.Commands.DeleteTaskFromBlock;
+using Itishnik.Application.Courses.Commands.EvaluateSolutionByTeacher;
 using Itishnik.Application.Courses.Commands.GetAiVerdict;
 using Itishnik.Application.Courses.Commands.InviteStudentsToCourse;
 using Itishnik.Application.Courses.Commands.PublishTaskBlock;
@@ -51,9 +52,22 @@ public class Courses : EndpointGroupBase
             .MapPost(InviteStudents, "{id}/invite")
             .MapGet(GetFeedbacks, "{id}/{blockId}/feedbacks")
             .MapGet(GetGradedTaskBlock, "{id}/{blockId}/student-solution/{studentId}")
-            .MapPost(GetAiVerdict, "{id}/{blockId}/verdict");
+            .MapPost(GetAiVerdict, "{id}/{blockId}/verdict")
+            .MapPatch(EvaluateSolution, "{id}/{blockId}/{taskId}/{solutionId}/grade");
     }
 
+    public async Task<Ok<SolutionDto>> EvaluateSolution(
+        ISender sender,
+        Guid id, 
+        Guid blockId, 
+        Guid taskId,
+        Guid solutionId, 
+        int grade)
+    {
+        var response = await sender.Send(new EvaluateSolutionByTeacherCommand(id, blockId, taskId, solutionId, grade));
+        return TypedResults.Ok(response);
+    }
+    
     public async Task<Results<BadRequest, Ok<AiVerdictResponse>>> GetAiVerdict(ISender sender, Guid id, Guid blockId, [FromBody] GetAiVerdictCommand command)
     {
         if (command.CourseId != id || command.TaskBlockId != blockId) return TypedResults.BadRequest();
