@@ -20,7 +20,7 @@ public class StudentGradesResponse
                 .ForMember(sgr => sgr.Email, options => options.MapFrom(gc => gc.Student.Email))
                 .ForMember(sgr => sgr.CourseGrade,
                     options => options.MapFrom(gc => gc.Grade))
-                .ForMember(sgr => sgr.Grades, options => options.MapFrom(gc => gc.GradedTaskBlocks));
+                .ForMember(sgr => sgr.Grades, options => options.MapFrom(gc => gc.GradedTaskBlocks.OrderBy(gtb => gtb.TaskBlock.StartTime)));
         }
     }
 }
