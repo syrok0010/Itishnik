@@ -30,12 +30,15 @@ public class GradedTaskBlockResponse
     public Guid Id { get; set; }
     public string Name { get; set; } = null!;
     public int? Grade { get; set; }
+    public bool SolutionsIsEmpty { get; set; }
+    
     private class Mapping : Profile
     {
         public Mapping()
         {
             CreateMap<GradedTaskBlock, GradedTaskBlockResponse>()
-                .ForMember(gt => gt.Name, options => options.MapFrom(gt => gt.TaskBlock.Name));
+                .ForMember(gt => gt.Name, options => options.MapFrom(gt => gt.TaskBlock.Name))
+                .ForMember(gt => gt.SolutionsIsEmpty, options => options.MapFrom(gt => !gt.Solutions.Any()));
         }
     }
 }

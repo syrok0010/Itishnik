@@ -34,7 +34,7 @@ export interface ICoursesClient {
     changeTeacher(id: string, command: ChangeCourseTeacherCommand): Observable<CourseResponse>;
     inviteStudents(id: string, command: InviteStudentsToCourseCommand): Observable<CourseStudentListResponse>;
     getFeedbacks(id: string, blockId: string): Observable<string[]>;
-    getGradedTaskBlock(id: string, blockId: string, courseId: string, taskBlockId: string, studentId: string): Observable<GradedTaskBlockDto>;
+    getGradedTaskBlock(id: string, blockId: string, studentId: string): Observable<GradedTaskBlockDto>;
     getAiVerdict(id: string, blockId: string, command: GetAiVerdictCommand): Observable<AiVerdictResponse>;
 }
 
@@ -1121,26 +1121,17 @@ export class CoursesClient implements ICoursesClient {
         return _observableOf(null as any);
     }
 
-    getGradedTaskBlock(id: string, blockId: string, courseId: string, taskBlockId: string, studentId: string): Observable<GradedTaskBlockDto> {
-        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/student-solution?";
+    getGradedTaskBlock(id: string, blockId: string, studentId: string): Observable<GradedTaskBlockDto> {
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/student-solution/{studentId}";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
         if (blockId === undefined || blockId === null)
             throw new Error("The parameter 'blockId' must be defined.");
         url_ = url_.replace("{blockId}", encodeURIComponent("" + blockId));
-        if (courseId === undefined || courseId === null)
-            throw new Error("The parameter 'courseId' must be defined and cannot be null.");
-        else
-            url_ += "CourseId=" + encodeURIComponent("" + courseId) + "&";
-        if (taskBlockId === undefined || taskBlockId === null)
-            throw new Error("The parameter 'taskBlockId' must be defined and cannot be null.");
-        else
-            url_ += "TaskBlockId=" + encodeURIComponent("" + taskBlockId) + "&";
         if (studentId === undefined || studentId === null)
-            throw new Error("The parameter 'studentId' must be defined and cannot be null.");
-        else
-            url_ += "StudentId=" + encodeURIComponent("" + studentId) + "&";
+            throw new Error("The parameter 'studentId' must be defined.");
+        url_ = url_.replace("{studentId}", encodeURIComponent("" + studentId));
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ : any = {
@@ -3103,6 +3094,7 @@ export class GradedTaskBlockResponse implements IGradedTaskBlockResponse {
     id?: string;
     name?: string;
     grade?: number | undefined;
+    solutionsIsEmpty?: boolean;
 
     constructor(data?: IGradedTaskBlockResponse) {
         if (data) {
@@ -3118,6 +3110,7 @@ export class GradedTaskBlockResponse implements IGradedTaskBlockResponse {
             this.id = _data["id"];
             this.name = _data["name"];
             this.grade = _data["grade"];
+            this.solutionsIsEmpty = _data["solutionsIsEmpty"];
         }
     }
 
@@ -3133,6 +3126,7 @@ export class GradedTaskBlockResponse implements IGradedTaskBlockResponse {
         data["id"] = this.id;
         data["name"] = this.name;
         data["grade"] = this.grade;
+        data["solutionsIsEmpty"] = this.solutionsIsEmpty;
         return data;
     }
 }
@@ -3141,6 +3135,7 @@ export interface IGradedTaskBlockResponse {
     id?: string;
     name?: string;
     grade?: number | undefined;
+    solutionsIsEmpty?: boolean;
 }
 
 export class ChangeTaskBlockDescriptionCommand implements IChangeTaskBlockDescriptionCommand {

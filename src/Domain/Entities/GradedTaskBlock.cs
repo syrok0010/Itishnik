@@ -2,7 +2,6 @@ namespace Itishnik.Domain.Entities;
 
 public class GradedTaskBlock
 {
-    private int? _grade;
     private string? _feedback;
     private readonly HashSet<Solution> _solutions = [];
     
@@ -56,13 +55,15 @@ public class GradedTaskBlock
 
     public int? Grade
     {
-        get => _grade;
-        set =>
-            _grade = value switch
-            {
-                null => throw new ArgumentNullException(nameof(value), nameof(Grade)),
-                < 0 or > 10 => throw new ArgumentOutOfRangeException(nameof(Grade), "Оценка должна быть в диапазоне от 0 до 10 включительно"),
-                _ => value
-            };
+        get
+        {
+            if (StartTime is null)
+                return TaskBlock.EndTime >= DateTime.UtcNow ? null : 0;
+
+            if (_solutions.Count == 0)
+                throw new InvalidOperationException("Не загружены решения");
+
+            return Solutions.Where(x => x.Grade != null).Sum(x => x.Grade);
+        }
     }
 }

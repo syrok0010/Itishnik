@@ -50,7 +50,7 @@ public class Courses : EndpointGroupBase
             .MapPatch(ChangeTeacher, "{id}/teacher")
             .MapPost(InviteStudents, "{id}/invite")
             .MapGet(GetFeedbacks, "{id}/{blockId}/feedbacks")
-            .MapGet(GetGradedTaskBlock, "{id}/{blockId}/student-solution")
+            .MapGet(GetGradedTaskBlock, "{id}/{blockId}/student-solution/{studentId}")
             .MapPost(GetAiVerdict, "{id}/{blockId}/verdict");
     }
 
@@ -217,11 +217,9 @@ public class Courses : EndpointGroupBase
         return TypedResults.Ok();
     }
 
-    public async Task<Results<Ok<GradedTaskBlockDto>, BadRequest>> GetGradedTaskBlock(ISender sender, Guid id, Guid blockId, [AsParameters] GetGradedTaskBlockQuery query)
+    public async Task<Results<Ok<GradedTaskBlockDto>, BadRequest>> GetGradedTaskBlock(ISender sender, Guid id, Guid blockId, Guid studentId)
     {
-        if (query.CourseId != id || query.TaskBlockId != blockId) return TypedResults.BadRequest();
-
-        var response = await sender.Send(query);
+        var response = await sender.Send(new GetGradedTaskBlockQuery(id, blockId, studentId));
         return TypedResults.Ok(response);
     }
 }

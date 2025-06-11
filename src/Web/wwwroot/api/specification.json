@@ -869,7 +869,7 @@
         }
       }
     },
-    "/api/Courses/{id}/{blockId}/student-solution": {
+    "/api/Courses/{id}/{blockId}/student-solution/{studentId}": {
       "get": {
         "tags": [
           "Courses"
@@ -897,34 +897,14 @@
             "x-position": 2
           },
           {
-            "name": "CourseId",
-            "in": "query",
+            "name": "studentId",
+            "in": "path",
             "required": true,
             "schema": {
               "type": "string",
               "format": "guid"
             },
             "x-position": 3
-          },
-          {
-            "name": "TaskBlockId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "guid"
-            },
-            "x-position": 4
-          },
-          {
-            "name": "StudentId",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "guid"
-            },
-            "x-position": 5
           }
         ],
         "responses": {
@@ -2101,6 +2081,9 @@
             "type": "integer",
             "format": "int32",
             "nullable": true
+          },
+          "solutionsIsEmpty": {
+            "type": "boolean"
           }
         }
       },

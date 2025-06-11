@@ -15,11 +15,13 @@ public class GetGradedTaskBlockQueryHandler(IApplicationDbContext db, IMapper ma
     private readonly IApplicationDbContext _db = db;
     private readonly IMapper _mapper = mapper;
 
-    public Task<GradedTaskBlockDto?> Handle(GetGradedTaskBlockQuery request, CancellationToken cancellationToken)
+    public async Task<GradedTaskBlockDto?> Handle(GetGradedTaskBlockQuery request, CancellationToken cancellationToken)
     {
-        return _db.GradedTaskBlocks
+        var gtb = await _db.GradedTaskBlocks
+            .Include(x => x.Solutions).ThenInclude(x => x.Task)
+            .Include(x => x.TaskBlock).ThenInclude(x => x.TasksEntries)
             .Where(gtb => gtb.StudentId == request.StudentId && gtb.TaskBlockId == request.TaskBlockId)
-            .ProjectTo<GradedTaskBlockDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken);
+        return _mapper.Map<GradedTaskBlockDto>(gtb);
     }
 }
