@@ -25,6 +25,7 @@ import { TuiAvatar, TuiInputNumber } from '@taiga-ui/kit';
 import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { GradedTaskBlockResponse } from '../../web-api-client';
 
 @UntilDestroy()
 @Component({
@@ -70,16 +71,14 @@ export default class CourseGradesTableComponent {
     'student',
     'courseGrade',
     'averageGrade',
-    ...(!!this.studentsAndGrades()
-      ? this.studentsAndGrades()[0].grades.map((g, i) => i.toString())
-      : []),
+    ...this.taskBlocksNames().map((n, i) => i.toString()),
   ]);
 
-  average(array: (number | null | undefined)[]) {
-    const finalArray = array.filter((e) => !!e);
+  average(array: GradedTaskBlockResponse[]) {
+    const finalArray = array?.filter((e) => !!e.grade) ?? [];
     return finalArray.length === 0
       ? 0
-      : finalArray.reduce((acc, t) => acc + t, 0) / finalArray.length;
+      : finalArray.reduce((acc, t) => acc + t.grade, 0) / finalArray.length;
   }
 
   constructor() {

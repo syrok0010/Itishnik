@@ -13,9 +13,7 @@ import {
   selector: 'app-countdown-timer',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div
-      class="timer-container inline-flex flex-col items-center text-gray-600"
-    >
+    <div class="timer-container inline-flex flex-col items-center text-black">
       <div
         class="timer-display select-none font-mono text-4xl tracking-wider"
         [class.text-red-400]="isExpired() && timeToDisplay() === '00:00:00'"

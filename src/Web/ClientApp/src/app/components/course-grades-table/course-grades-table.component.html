@@ -27,7 +27,7 @@
         let rowIndex = $index;
         track student
       ) {
-        <tr tuiTr class="">
+        <tr tuiTr>
           <td *tuiCell="'student'" tuiTd class="!sticky !left-0 !z-20 bg-white">
             <div class="flex flex-row items-center gap-2">
               <tui-avatar
@@ -79,11 +79,11 @@
               <div
                 class="flex justify-center text-lg font-semibold"
                 [class.text-red-500]="
-                  !!student.grades[index] && student.grades[index] < 4
+                  !!student.grades[index]?.grade && student.grades[index].grade < 4
                 "
               >
-                @if (!!student.grades[index]) {
-                  {{ student.grades[index] }}
+                @if (!!student.grades[index]?.grade) {
+                  {{ student.grades[index].grade }}
                 } @else {
                   <button appearance="flat" tuiButton type="button" size="m">
                     Оценить

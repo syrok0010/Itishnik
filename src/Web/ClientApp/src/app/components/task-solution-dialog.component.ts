@@ -38,7 +38,7 @@ export interface TaskSolutionDialogData {
     <div class="flex min-h-[70dvh] w-[90dvw] flex-col">
       <div class="flex flex-grow gap-6 overflow-auto py-4">
         <div class="flex w-1/2 flex-col">
-          <h3 class="mb-3 text-xl font-semibold text-gray-800">
+          <h3 class="mb-3 text-xl font-semibold">
             Задание "{{ context.data.solution.task.name }}"
           </h3>
           <tui-editor-socket
@@ -47,7 +47,7 @@ export interface TaskSolutionDialogData {
           />
         </div>
         <div class="flex w-1/2 flex-col">
-          <h3 class="mb-3 text-xl font-semibold text-gray-800">Ваше решение</h3>
+          <h3 class="mb-3 text-xl font-semibold">Ваше решение</h3>
           @if (context.data.isEditable) {
             <tui-editor
               class="flex-grow !rounded-xl !border-2 !border-gray-200 !shadow-none"

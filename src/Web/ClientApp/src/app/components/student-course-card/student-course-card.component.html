@@ -10,7 +10,7 @@
 
   <div class="p-6 flex flex-col grow justify-between gap-4">
     <h2
-      class="text-xl font-bold text-gray-800"
+      class="text-xl font-bold"
       style="view-transition-name: course-title-{{ course().id }}"
     >
       {{ course().name }}
@@ -18,10 +18,10 @@
 
     @if (course().grade !== null && course().grade !== undefined) {
       <div
-        class="flex items-center text-green-600"
+        class="flex items-center"
         style="view-transition-name: course-grade-{{ course().id }}"
       >
-        <tui-icon icon="@tui.award" class="mr-2 h-6 w-6"></tui-icon>
+        <tui-icon icon="@tui.award" class="mr-2 h-6 w-6 text-green-600"></tui-icon>
         <p class="text-lg font-semibold">Оценка: {{ course().grade }}</p>
       </div>
     } @else if (

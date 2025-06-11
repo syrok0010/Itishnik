@@ -3040,7 +3040,7 @@ export class StudentGradesResponse implements IStudentGradesResponse {
     courseId?: string;
     fullName?: string;
     email?: string;
-    grades?: (number | undefined)[];
+    grades?: GradedTaskBlockResponse[];
     courseGrade?: number | undefined;
 
     constructor(data?: IStudentGradesResponse) {
@@ -3061,7 +3061,7 @@ export class StudentGradesResponse implements IStudentGradesResponse {
             if (Array.isArray(_data["grades"])) {
                 this.grades = [] as any;
                 for (let item of _data["grades"])
-                    this.grades!.push(item);
+                    this.grades!.push(GradedTaskBlockResponse.fromJS(item));
             }
             this.courseGrade = _data["courseGrade"];
         }
@@ -3083,7 +3083,7 @@ export class StudentGradesResponse implements IStudentGradesResponse {
         if (Array.isArray(this.grades)) {
             data["grades"] = [];
             for (let item of this.grades)
-                data["grades"].push(item);
+                data["grades"].push(item.toJSON());
         }
         data["courseGrade"] = this.courseGrade;
         return data;
@@ -3095,8 +3095,52 @@ export interface IStudentGradesResponse {
     courseId?: string;
     fullName?: string;
     email?: string;
-    grades?: (number | undefined)[];
+    grades?: GradedTaskBlockResponse[];
     courseGrade?: number | undefined;
+}
+
+export class GradedTaskBlockResponse implements IGradedTaskBlockResponse {
+    id?: string;
+    name?: string;
+    grade?: number | undefined;
+
+    constructor(data?: IGradedTaskBlockResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.grade = _data["grade"];
+        }
+    }
+
+    static fromJS(data: any): GradedTaskBlockResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new GradedTaskBlockResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["grade"] = this.grade;
+        return data;
+    }
+}
+
+export interface IGradedTaskBlockResponse {
+    id?: string;
+    name?: string;
+    grade?: number | undefined;
 }
 
 export class ChangeTaskBlockDescriptionCommand implements IChangeTaskBlockDescriptionCommand {

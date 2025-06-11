@@ -8,7 +8,7 @@ public class StudentGradesResponse
     public Guid CourseId { get; set; }
     public string FullName { get; set; } = null!;
     public string Email { get; set; } = null!;
-    public int?[] Grades { get; set; } = null!;
+    public GradedTaskBlockResponse[] Grades { get; set; } = null!;
     public int? CourseGrade { get; set; }
 
     private class Mapping : Profile
@@ -18,10 +18,24 @@ public class StudentGradesResponse
             CreateMap<GradedCourse, StudentGradesResponse>()
                 .ForMember(sgr => sgr.FullName, options => options.MapFrom(gc => gc.Student.FullName))
                 .ForMember(sgr => sgr.Email, options => options.MapFrom(gc => gc.Student.Email))
-                .ForMember(sgr => sgr.Grades,
-                    options => options.MapFrom(gc => gc.GradedTaskBlocks.Select(gtb => gtb.Grade)))
                 .ForMember(sgr => sgr.CourseGrade,
-                    options => options.MapFrom(gc => gc.Grade));
+                    options => options.MapFrom(gc => gc.Grade))
+                .ForMember(sgr => sgr.Grades, options => options.MapFrom(gc => gc.GradedTaskBlocks));
+        }
+    }
+}
+
+public class GradedTaskBlockResponse
+{
+    public Guid Id { get; set; }
+    public string Name { get; set; } = null!;
+    public int? Grade { get; set; }
+    private class Mapping : Profile
+    {
+        public Mapping()
+        {
+            CreateMap<GradedTaskBlock, GradedTaskBlockResponse>()
+                .ForMember(gt => gt.Name, options => options.MapFrom(gt => gt.TaskBlock.Name));
         }
     }
 }

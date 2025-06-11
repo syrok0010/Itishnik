@@ -60,7 +60,7 @@
           />
           <span tuiTitle class="whitespace-normal">
             {{
-              student.fullName === student.email
+              student.fullName === student.email || student.fullName.toLowerCase().includes('не установлено')
                 ? "ФИО не установлено"
                 : student.fullName
             }}

@@ -4,9 +4,7 @@ import {
   inject,
   OnInit,
 } from '@angular/core';
-import UsersComponent, {
-  User,
-} from '../components/course-students/users.component';
+import UsersComponent, { User } from '../components/users/users.component';
 import { UsersFacadeService } from '../users-facade.service';
 import { FullNamePipe } from '../components/full-name-pipe.pipe';
 import { map } from 'rxjs/operators';
