@@ -161,6 +161,7 @@ export default class GradeTaskBlockDialogComponent {
           this.context.data.taskBlock.id,
           this.currentSolution().task.id,
           this.currentSolution().id,
+          this.currentSolution().grade,
           g,
         ),
       );

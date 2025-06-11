@@ -15,6 +15,7 @@ import {
   CreateTaskBlockCommand,
   DeleteTaskFromBlockCommand,
   GradedTaskBlockDto,
+  GradedTaskBlockResponse,
   InviteStudentsToCourseCommand,
   SetStudentCourseGradeCommand,
   StudentGradesResponse,
@@ -603,6 +604,7 @@ export class CoursesFacadeService {
     taskBlockId: string,
     taskId: string,
     solutionId: string,
+    prevGrade: number,
     grade: number,
   ) {
     console.log('new score', grade);
@@ -623,10 +625,24 @@ export class CoursesFacadeService {
             ? gb
             : new GradedTaskBlockDto({
                 ...gb,
-                solutions: [
-                  ...gb.solutions.filter((s) => s.id !== response.id),
-                  response,
-                ],
+                solutions: gb.solutions.map((s) =>
+                  s.id !== response.id ? s : response,
+                ),
+              }),
+        ),
+        currentCourseGrades: _state.currentCourseGrades.map((gs) =>
+          !gs.grades.some((g) => g.id === gradedBlockId)
+            ? gs
+            : new StudentGradesResponse({
+                ...gs,
+                grades: gs.grades.map((g) =>
+                  g.id !== gradedBlockId
+                    ? g
+                    : new GradedTaskBlockResponse({
+                        ...g,
+                        grade: g.grade + grade - prevGrade,
+                      }),
+                ),
               }),
         ),
       }),
