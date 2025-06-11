@@ -1,6 +1,5 @@
 using Itishnik.Application.Common.Models;
 using MailKit.Net.Smtp;
-using MailKit.Security;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -16,7 +15,7 @@ public class EmailSender : IEmailSender
     public EmailSender(ILogger<EmailSender> logger, IConfiguration configuration)
     {
         _logger = logger;
-        _emailSettings = configuration.Get<EmailSettings>()!;
+        _emailSettings = configuration.GetSection("EmailSettings").Get<EmailSettings>()!;
     }
     
     public async Task SendEmailAsync(string email, string subject, string htmlMessage)
@@ -34,20 +33,17 @@ public class EmailSender : IEmailSender
             };
             emailMessage.Body = bodyBuilder.ToMessageBody();
 
-            using (var client = new SmtpClient())
-            {
-                await client.ConnectAsync(_emailSettings.SmtpServer, _emailSettings.Port);
-                await client.AuthenticateAsync(_emailSettings.Username, _emailSettings.Password);
-                await client.SendAsync(emailMessage);
-                await client.DisconnectAsync(true);
-            }
+            using var client = new SmtpClient();
+            await client.ConnectAsync(_emailSettings.SmtpServer, _emailSettings.Port);
+            await client.AuthenticateAsync(_emailSettings.Username, _emailSettings.Password);
+            await client.SendAsync(emailMessage);
+            await client.DisconnectAsync(true);
 
             _logger.LogInformation("Письмо успешно отправлено на {Email}", email);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Ошибка при отправке письма на {Email}", email);
-            throw;
+            _logger.LogError(ex, "Ошибка при отправке письма на {Email}, {Message}", email, htmlMessage);
         }
     }
 }

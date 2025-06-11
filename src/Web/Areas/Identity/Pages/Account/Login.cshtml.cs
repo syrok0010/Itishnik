@@ -63,7 +63,11 @@ namespace Itishnik.Web.Areas.Identity.Pages.Account
             {
                 _logger.LogInformation("User logged in.");
                 var user = await _userManager.FindByEmailAsync(Input.Email);
-                return LocalRedirect(user is Student {GroupNumber: 100} ? "/activate" : returnUrl);
+                return LocalRedirect(
+                    user is Student {GroupNumber: 100} or Teacher {Surname: "Не установлено"} 
+                        ? "/activate" 
+                        : returnUrl
+                );
             }
 
             if (result.RequiresTwoFactor)

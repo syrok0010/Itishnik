@@ -11,12 +11,18 @@ import {
   Validators,
 } from '@angular/forms';
 import { TuiInputModule, TuiInputYearModule } from '@taiga-ui/legacy';
-import { TuiButton, TuiNumberFormat, TuiTextfield } from '@taiga-ui/core';
-import { TuiInputNumber } from '@taiga-ui/kit';
+import {
+  TuiButton,
+  TuiError,
+  TuiNumberFormat,
+  TuiTextfield,
+} from '@taiga-ui/core';
+import { TuiFieldErrorPipe, TuiInputNumber } from '@taiga-ui/kit';
 import { UsersFacadeService } from '../../users-facade.service';
 import { Router } from '@angular/router';
 import { ActivateStudentCommand } from '../../web-api-client';
 import { firstValueFrom } from 'rxjs';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-activate-student-page',
@@ -28,6 +34,9 @@ import { firstValueFrom } from 'rxjs';
     TuiInputYearModule,
     TuiButton,
     TuiNumberFormat,
+    AsyncPipe,
+    TuiError,
+    TuiFieldErrorPipe,
   ],
   templateUrl: './activate-student-page.component.html',
   styles: `

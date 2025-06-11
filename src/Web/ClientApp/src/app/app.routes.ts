@@ -3,6 +3,7 @@ import {
   isAdminGuard,
   isAdminOrTeacherGuard,
   isStudentGuard,
+  isTeacherGuard,
 } from '../api-authorization/auth-guards';
 import { taskResolver } from './teacher/task-resolver';
 import { studentCoursePageResolver } from './student/student-course-page/student-course-page.resolver';
@@ -16,6 +17,11 @@ export const routes: Routes = [
     canMatch: [isStudentGuard],
     loadComponent: () =>
       import('./student/activate-student-page/activate-student-page.component'),
+  },
+  {
+    path: 'activate',
+    canMatch: [isTeacherGuard],
+    loadComponent: () => import('./teacher/activate-teacher-page.component'),
   },
   {
     path: 'teachers',

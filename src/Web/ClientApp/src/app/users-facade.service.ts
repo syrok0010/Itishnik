@@ -1,6 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import {
   ActivateStudentCommand,
+  ActivateTeacherCommand,
   AuthState,
   InviteTeachersCommand,
   UserDto,
@@ -55,6 +56,11 @@ export class UsersFacadeService {
 
   async activateUser(activationInfo: ActivateStudentCommand) {
     await firstValueFrom(this.usersClient.activateStudent(activationInfo));
+    this.refetchSubject.next();
+  }
+
+  async activateTeacher(activationInfo: ActivateTeacherCommand) {
+    await firstValueFrom(this.usersClient.activateTeacher(activationInfo));
     this.refetchSubject.next();
   }
 

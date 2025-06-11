@@ -12,6 +12,11 @@ export const isAdminGuard: CanActivateFn | CanMatchFn = () =>
     map((v) => v.roles.includes(adminRole)),
   );
 
+export const isTeacherGuard: CanActivateFn | CanMatchFn = () =>
+  inject(UsersFacadeService).authInfo$.pipe(
+    map((v) => v.roles.includes(teacherRole)),
+  );
+
 export const isAdminOrTeacherGuard: CanActivateFn | CanMatchFn = () =>
   inject(UsersFacadeService).authInfo$.pipe(
     map((v) => v.roles.includes(adminRole) || v.roles.includes(teacherRole)),

@@ -5,13 +5,34 @@
 >
   <h1 class="text-2xl font-bold">Заполните данные</h1>
 
-  <tui-input formControlName="surname">Фамилия</tui-input>
-  <tui-input formControlName="name">Имя</tui-input>
-  <tui-input formControlName="patronymic">Отчество</tui-input>
+  <tui-textfield
+    ><label tuiLabel>Фамилия</label>
+    <input tuiTextfield formControlName="surname" />
+    <tui-error formControlName="surname" [error]="[] | tuiFieldError | async" />
+  </tui-textfield>
+  <tui-textfield
+    ><label tuiLabel>Имя</label>
+    <input tuiTextfield formControlName="name" />
+    <tui-error formControlName="name" [error]="[] | tuiFieldError | async" />
+  </tui-textfield>
+  <tui-textfield
+    ><label tuiLabel>Отчество</label>
+    <input tuiTextfield formControlName="patronymic" />
+    <tui-error
+      formControlName="patronymic"
+      [error]="[] | tuiFieldError | async"
+    />
+  </tui-textfield>
 
-  <tui-input formControlName="educationalProgram"
-    >Образовательная программа</tui-input
-  >
+  <tui-textfield
+    ><label tuiLabel>Образовательная программа</label>
+    <input tuiTextfield formControlName="educationalProgram" />
+    <tui-error
+      formControlName="educationalProgram"
+      [error]="[] | tuiFieldError | async"
+    />
+  </tui-textfield>
+
   <tui-textfield>
     <label tuiLabel>Номер группы</label>
     <input tuiInputNumber formControlName="groupNumber" />
@@ -27,7 +48,5 @@
     />
   </tui-textfield>
 
-  <button tuiButton type="submit" size="m">
-    Сохранить
-  </button>
+  <button tuiButton type="submit" size="m">Сохранить</button>
 </form>
