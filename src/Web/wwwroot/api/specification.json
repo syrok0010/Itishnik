@@ -1973,12 +1973,28 @@
           "grades": {
             "type": "array",
             "items": {
-              "type": "integer",
-              "format": "int32",
-              "nullable": true
+              "$ref": "#/components/schemas/GradedTaskBlockResponse"
             }
           },
           "courseGrade": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        }
+      },
+      "GradedTaskBlockResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "grade": {
             "type": "integer",
             "format": "int32",
             "nullable": true
