@@ -117,6 +117,7 @@ export default class TaskSolutionDialogComponent {
       this.context.data.taskBlockId,
       this.context.data.solution.task.id,
       this.solutionControl.value,
+      this.context.data.solution.id,
     );
     this.context.completeWith();
   }

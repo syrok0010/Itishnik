@@ -104,6 +104,7 @@ export class StudentCoursesFacadeService {
     taskBlockId: string,
     taskId: string,
     text: string,
+    solutionId: string,
   ) {
     const response = await firstValueFrom(
       this.studentClient.editSolution(
@@ -115,6 +116,7 @@ export class StudentCoursesFacadeService {
           blockId: taskBlockId,
           taskId,
           text,
+          solutionId,
         }),
       ),
     );

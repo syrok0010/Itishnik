@@ -1027,18 +1027,21 @@
               "format": "guid"
             },
             "x-position": 4
-          },
-          {
-            "name": "grade",
-            "in": "query",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int32"
-            },
-            "x-position": 5
           }
         ],
+        "requestBody": {
+          "x-name": "grade",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "integer",
+                "format": "int32"
+              }
+            }
+          },
+          "required": true,
+          "x-position": 5
+        },
         "responses": {
           "200": {
             "description": "",
@@ -2579,6 +2582,10 @@
           },
           "text": {
             "type": "string"
+          },
+          "solutionId": {
+            "type": "string",
+            "format": "guid"
           }
         }
       },

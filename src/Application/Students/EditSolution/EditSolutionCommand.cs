@@ -7,7 +7,7 @@ namespace Itishnik.Application.Students.EditSolution;
 
 [Authorize(Policy = Policies.Owner)]
 [ResourceMetadata(nameof(Id), typeof(GradedCourse))]
-public record EditSolutionCommand(Guid Id, Guid BlockId, Guid TaskId, string Text) 
+public record EditSolutionCommand(Guid Id, Guid BlockId, Guid TaskId, string Text, Guid SolutionId) 
     : IRequest<SolutionDto>;
 
 public class EditSolutionCommandHandler(IApplicationDbContext context, IMapper mapper) 
@@ -20,7 +20,7 @@ public class EditSolutionCommandHandler(IApplicationDbContext context, IMapper m
     {
         var solution = await _context.Solutions
             .Include(x => x.Task)
-            .FirstAsync(s => s.TaskId == request.TaskId, cancellationToken);
+            .FirstAsync(s => s.TaskId == request.TaskId && s.Id == request.SolutionId, cancellationToken);
         solution.Text = request.Text;
         await _context.SaveChangesAsync(cancellationToken);
         return _mapper.Map<SolutionDto>(solution);

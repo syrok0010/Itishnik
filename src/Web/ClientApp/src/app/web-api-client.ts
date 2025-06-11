@@ -1246,7 +1246,7 @@ export class CoursesClient implements ICoursesClient {
     }
 
     evaluateSolution(id: string, blockId: string, taskId: string, solutionId: string, grade: number): Observable<SolutionDto> {
-        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/{taskId}/{solutionId}/grade?";
+        let url_ = this.baseUrl + "/api/Courses/{id}/{blockId}/{taskId}/{solutionId}/grade";
         if (id === undefined || id === null)
             throw new Error("The parameter 'id' must be defined.");
         url_ = url_.replace("{id}", encodeURIComponent("" + id));
@@ -1259,16 +1259,16 @@ export class CoursesClient implements ICoursesClient {
         if (solutionId === undefined || solutionId === null)
             throw new Error("The parameter 'solutionId' must be defined.");
         url_ = url_.replace("{solutionId}", encodeURIComponent("" + solutionId));
-        if (grade === undefined || grade === null)
-            throw new Error("The parameter 'grade' must be defined and cannot be null.");
-        else
-            url_ += "grade=" + encodeURIComponent("" + grade) + "&";
         url_ = url_.replace(/[?&]$/, "");
 
+        const content_ = JSON.stringify(grade);
+
         let options_ : any = {
+            body: content_,
             observe: "response",
             responseType: "blob",
             headers: new HttpHeaders({
+                "Content-Type": "application/json",
                 "Accept": "application/json"
             })
         };
@@ -4108,6 +4108,7 @@ export class EditSolutionCommand implements IEditSolutionCommand {
     blockId?: string;
     taskId?: string;
     text?: string;
+    solutionId?: string;
 
     constructor(data?: IEditSolutionCommand) {
         if (data) {
@@ -4124,6 +4125,7 @@ export class EditSolutionCommand implements IEditSolutionCommand {
             this.blockId = _data["blockId"];
             this.taskId = _data["taskId"];
             this.text = _data["text"];
+            this.solutionId = _data["solutionId"];
         }
     }
 
@@ -4140,6 +4142,7 @@ export class EditSolutionCommand implements IEditSolutionCommand {
         data["blockId"] = this.blockId;
         data["taskId"] = this.taskId;
         data["text"] = this.text;
+        data["solutionId"] = this.solutionId;
         return data;
     }
 }
@@ -4149,6 +4152,7 @@ export interface IEditSolutionCommand {
     blockId?: string;
     taskId?: string;
     text?: string;
+    solutionId?: string;
 }
 
 export class FeedbackDto implements IFeedbackDto {

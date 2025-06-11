@@ -62,7 +62,7 @@ public class Courses : EndpointGroupBase
         Guid blockId, 
         Guid taskId,
         Guid solutionId, 
-        int grade)
+        [FromBody] int grade)
     {
         var response = await sender.Send(new EvaluateSolutionByTeacherCommand(id, blockId, taskId, solutionId, grade));
         return TypedResults.Ok(response);

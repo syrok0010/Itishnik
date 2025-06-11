@@ -63,6 +63,9 @@ public class GradedTaskBlock
             if (_solutions?.Count == 0)
                 throw new InvalidOperationException("Не загружены решения");
 
+            if (Solutions.Any(x => x.Grade == null))
+                return null;
+            
             return Solutions.Where(x => x.Grade != null).Sum(x => x.Grade);
         }
     }

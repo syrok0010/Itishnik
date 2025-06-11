@@ -5,11 +5,7 @@ import {
   effect,
   inject,
 } from '@angular/core';
-import {
-  TuiTable,
-  TuiTableCell,
-  TuiTableDirective,
-} from '@taiga-ui/addon-table';
+import { TuiTable } from '@taiga-ui/addon-table';
 import { CoursesFacadeService } from '../../teacher/courses-facade.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { concatMap, debounceTime, map } from 'rxjs/operators';
@@ -35,8 +31,6 @@ import GradeTaskBlockDialogComponent from '../grade-task-block-dialog.component'
 @Component({
   selector: 'app-course-grades-table',
   imports: [
-    TuiTableCell,
-    TuiTableDirective,
     TuiTable,
     TuiAutoColorPipe,
     TuiAvatar,
@@ -59,7 +53,11 @@ export default class CourseGradesTableComponent {
   private readonly gradeDialog = tuiDialog(GradeTaskBlockDialogComponent, {
     size: 'auto',
   });
-  studentsAndGrades = toSignal(this.coursesFacade.currentCourseGrades$);
+  studentsAndGrades = toSignal(
+    this.coursesFacade.currentCourseGrades$.pipe(
+      map((v) => v.sort((a, b) => a.fullName.localeCompare(b.fullName))),
+    ),
+  );
   taskBlocks = toSignal(
     this.coursesFacade.currentCourse$.pipe(map((c) => c.taskBlocks)),
   );
@@ -120,7 +118,9 @@ export default class CourseGradesTableComponent {
     taskBlockIndex: number,
     studentId: string,
     gradedTaskBlockId: string,
+    hittable = true,
   ) {
+    if (!hittable) return;
     const taskBlock = this.taskBlocks()[taskBlockIndex];
     this.coursesFacade.fetchGradedTaskBlock(
       taskBlock.courseId,

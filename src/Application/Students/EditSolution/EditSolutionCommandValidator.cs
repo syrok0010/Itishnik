@@ -13,6 +13,9 @@ public class EditSolutionCommandValidator : AbstractValidator<EditSolutionComman
             .NotNull()
             .NotEmpty()
             .WithMessage("Текст решения пустой");
+        RuleFor(x => x.SolutionId)
+            .MustAsync((id, token) => context.Solutions.AnyAsync(s => s.Id == id, token))
+            .WithMessage("Решение не существует");
         RuleFor(x => x)
             .MustAsync((command, token) => CanEdit(context, command, token))
             .WithMessage("Нельзя отправить решение после дедлайна");

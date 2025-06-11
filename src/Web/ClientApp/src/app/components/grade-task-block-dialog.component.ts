@@ -25,6 +25,7 @@ import {
 } from '../web-api-client';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
 export interface GradeTaskBlockDialogInput {
   gradedTaskBlockId: string;
@@ -32,6 +33,7 @@ export interface GradeTaskBlockDialogInput {
 }
 const DEFAULT_SOLUTION_TEXT = 'Здесь будет текст вашего решения';
 
+@UntilDestroy()
 @Component({
   selector: 'app-grade-task-block-dialog',
   imports: [
@@ -42,7 +44,7 @@ const DEFAULT_SOLUTION_TEXT = 'Здесь будет текст вашего р�
     TuiInputNumber,
     ReactiveFormsModule,
   ],
-  template: `<div class="flex min-h-[70dvh] w-[90dvw] flex-col justify-center">
+  template: ` <div class="flex min-h-[70dvh] w-[90dvw] flex-col justify-center">
     @let taskBlock = gradedTaskBlock();
     @let solution = currentSolution();
     @if (!!taskBlock) {
@@ -143,10 +145,25 @@ export default class GradeTaskBlockDialogComponent {
   constructor() {
     effect(() => {
       const solutionsCount = this.solutions().length;
-      if (this.currentIndex() >= solutionsCount && solutionsCount > 0) {
+      if (this.currentIndex() >= solutionsCount && solutionsCount > 0)
         this.currentIndex.set(0);
-      }
     });
+    effect(() =>
+      this.gradeControl.setValue(this.currentSolution().grade, {
+        emitEvent: false,
+      }),
+    );
+    this.gradeControl.valueChanges
+      .pipe(untilDestroyed(this))
+      .subscribe((g) =>
+        this.courseFacade.setSolutionGrade(
+          this.gradedTaskBlock().id,
+          this.context.data.taskBlock.id,
+          this.currentSolution().task.id,
+          this.currentSolution().id,
+          g,
+        ),
+      );
   }
 
   public previousSolution(): void {
@@ -172,7 +189,7 @@ export default class GradeTaskBlockDialogComponent {
         ),
       );
 
-      this.gradeControl.setValue(response.score);
+      this.gradeControl.setValue(response.score, { emitEvent: true });
     } finally {
       this.generatingVerdict.set(false);
     }

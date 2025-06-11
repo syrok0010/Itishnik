@@ -597,4 +597,39 @@ export class CoursesFacadeService {
         ),
       );
   }
+
+  async setSolutionGrade(
+    gradedBlockId: string,
+    taskBlockId: string,
+    taskId: string,
+    solutionId: string,
+    grade: number,
+  ) {
+    console.log('new score', grade);
+    const response = await firstValueFrom(
+      this.coursesClient.evaluateSolution(
+        _state.currentCourse.id,
+        taskBlockId,
+        taskId,
+        solutionId,
+        grade,
+      ),
+    );
+    this._store.next(
+      (_state = {
+        ..._state,
+        studentGradedBlocks: _state.studentGradedBlocks.map((gb) =>
+          gb.id !== gradedBlockId
+            ? gb
+            : new GradedTaskBlockDto({
+                ...gb,
+                solutions: [
+                  ...gb.solutions.filter((s) => s.id !== response.id),
+                  response,
+                ],
+              }),
+        ),
+      }),
+    );
+  }
 }

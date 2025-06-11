@@ -76,7 +76,25 @@
           </td>
           @let skippedBlocks = taskBlocksNames().length - student.grades.length;
           @for (col of columns().slice(3); let index = $index; track col) {
-            <td *tuiCell="col" tuiTd>
+            @let hittable =
+              student.grades[index]?.grade !== null &&
+              student.grades[index]?.grade !== undefined &&
+              !student.grades[index].solutionsIsEmpty;
+            <td
+              *tuiCell="col"
+              tuiTd
+              (click)="
+                showGradeDialog(
+                  index,
+                  student.studentId,
+                  student.grades[index].id,
+                  hittable
+                )
+              "
+              class="transition-colors duration-300"
+              [class.cursor-pointer]="hittable"
+              [class.hover:bg-gray-100]="hittable"
+            >
               <div
                 class="relative flex items-center justify-center text-lg font-semibold"
                 [class.text-red-500]="
@@ -90,7 +108,7 @@
                   <tui-icon
                     icon="@tui.info"
                     tuiHint="Добавлен на курс позднее"
-                    class="absolute left-[90%] -top-1/2 -translate-x-1/4 text-amber-500"
+                    class="absolute -top-1/2 left-[90%] -translate-x-1/4 text-amber-500"
                   />
                 } @else if (
                   student.grades[index].grade !== null &&
@@ -105,7 +123,7 @@
                     <tui-icon
                       icon="@tui.info"
                       tuiHint="Студент не начинал решение работы"
-                      class="absolute left-[90%] -top-1/2 -translate-x-1/4 text-red-500"
+                      class="absolute -top-1/2 left-[90%] -translate-x-1/4 text-red-500"
                     />
                   }
                 } @else {
