@@ -60,7 +60,7 @@ public class GradedTaskBlock
             if (StartTime is null)
                 return TaskBlock.EndTime >= DateTime.UtcNow ? null : 0;
 
-            if (_solutions.Count == 0)
+            if (_solutions?.Count == 0)
                 throw new InvalidOperationException("Не загружены решения");
 
             return Solutions.Where(x => x.Grade != null).Sum(x => x.Grade);

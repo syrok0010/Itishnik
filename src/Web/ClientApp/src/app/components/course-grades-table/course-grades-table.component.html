@@ -74,18 +74,59 @@
               {{ averageGrade }}
             </div>
           </td>
+          @let skippedBlocks = taskBlocksNames().length - student.grades.length;
           @for (col of columns().slice(3); let index = $index; track col) {
             <td *tuiCell="col" tuiTd>
               <div
                 class="flex justify-center text-lg font-semibold"
                 [class.text-red-500]="
-                  !!student.grades[index]?.grade && student.grades[index].grade < 4
+                  !!student.grades[index]?.grade &&
+                  student.grades[index].grade < 4
                 "
               >
-                @if (!!student.grades[index]?.grade) {
+                <!-- Был добавлел в курс после блока -->
+                @if (index < skippedBlocks) {
+                  <tui-icon
+                    icon="@tui.info"
+                    tuiHint="Добавлен на курс позднее"
+                    class="text-amber-500"
+                  />
+                } @else if (
+                  student.grades[index].grade !== null &&
+                  student.grades[index].grade !== undefined
+                ) {
+                  <!-- Есть оценка -->
                   {{ student.grades[index].grade }}
+                  @if (student.grades[index].solutionsIsEmpty) {
+                    <!-- Есть оценка и массив решений - пуст -->
+                    <tui-icon
+                      icon="@tui.info"
+                      tuiHint="Студент не начинал решение работы"
+                      class="text-red-500"
+                    />
+                  }
+                } @else if (student.grades[index].solutionsIsEmpty) {
+                  <!-- Нет оценки и пустое решение -->
+                  <tui-icon
+                    icon="@tui.info"
+                    tuiHint="Студент не начинал решение работы"
+                    class="text-green-500"
+                  />
                 } @else {
-                  <button appearance="flat" tuiButton type="button" size="m">
+                  <!-- Нет оценки и не пустое решение -->
+                  <button
+                    appearance="flat"
+                    tuiButton
+                    type="button"
+                    size="m"
+                    (click)="
+                      showGradeDialog(
+                        index,
+                        student.studentId,
+                        student.grades[index].id
+                      )
+                    "
+                  >
                     Оценить
                   </button>
                 }

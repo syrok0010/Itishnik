@@ -18,6 +18,7 @@ public class GetGradesOnCourseQueryHandler(IApplicationDbContext context, IMappe
     public async Task<StudentGradesResponse[]> Handle(GetGradesOnCourseQuery request, CancellationToken cancellationToken)
     {
         return await _context.GradedCourses
+            .Include(gc => gc.GradedTaskBlocks).ThenInclude(gtb => gtb.TaskBlock)
             .Include(gc => gc.GradedTaskBlocks).ThenInclude(gtb => gtb.Solutions)
             .AsNoTracking()
             .Where(gc => gc.CourseId == request.Id)

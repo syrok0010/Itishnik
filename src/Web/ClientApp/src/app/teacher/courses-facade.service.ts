@@ -14,6 +14,7 @@ import {
   CreateCourseCommand,
   CreateTaskBlockCommand,
   DeleteTaskFromBlockCommand,
+  GradedTaskBlockDto,
   InviteStudentsToCourseCommand,
   SetStudentCourseGradeCommand,
   StudentGradesResponse,
@@ -43,6 +44,8 @@ export interface CoursesState {
   currentCourseStudents: CourseStudentListResponse | null;
   currentCourseGrades: StudentGradesResponse[] | null;
   currentCourseFeedbacks: [string, string[]][];
+
+  studentGradedBlocks: GradedTaskBlockDto[];
 }
 
 let _state: CoursesState = {
@@ -56,6 +59,8 @@ let _state: CoursesState = {
   currentCourseGrades: null,
   currentCourseStudents: null,
   currentCourseFeedbacks: [],
+
+  studentGradedBlocks: [],
 };
 
 @UntilDestroy()
@@ -76,6 +81,9 @@ export class CoursesFacadeService {
   );
   currentCourseGrades$ = this._store.pipe(
     map((state) => state.currentCourseGrades),
+  );
+  studentTaskBlocks$ = this._store.pipe(
+    map((state) => state.studentGradedBlocks),
   );
 
   constructor() {
@@ -564,6 +572,27 @@ export class CoursesFacadeService {
           (_state = {
             ..._state,
             currentCourseGrades: grades,
+          }),
+        ),
+      );
+  }
+
+  fetchGradedTaskBlock(
+    courseId: string,
+    taskBlockId: string,
+    studentId: string,
+  ) {
+    this.coursesClient
+      .getGradedTaskBlock(courseId, taskBlockId, studentId)
+      .pipe(untilDestroyed(this))
+      .subscribe((g) =>
+        this._store.next(
+          (_state = {
+            ..._state,
+            studentGradedBlocks: [
+              ..._state.studentGradedBlocks.filter((s) => s.id !== g.id),
+              g,
+            ],
           }),
         ),
       );

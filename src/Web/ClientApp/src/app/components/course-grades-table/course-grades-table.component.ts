@@ -16,6 +16,9 @@ import { concatMap, debounceTime, map } from 'rxjs/operators';
 import {
   TuiAutoColorPipe,
   TuiButton,
+  tuiDialog,
+  TuiHint,
+  TuiIcon,
   TuiInitialsPipe,
   TuiScrollbar,
   TuiTextfield,
@@ -26,6 +29,7 @@ import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { of } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { GradedTaskBlockResponse } from '../../web-api-client';
+import GradeTaskBlockDialogComponent from '../grade-task-block-dialog.component';
 
 @UntilDestroy()
 @Component({
@@ -43,6 +47,8 @@ import { GradedTaskBlockResponse } from '../../web-api-client';
     ReactiveFormsModule,
     TuiTextfield,
     TuiInputNumber,
+    TuiIcon,
+    TuiHint,
   ],
   templateUrl: './course-grades-table.component.html',
   styles: ``,
@@ -50,16 +56,18 @@ import { GradedTaskBlockResponse } from '../../web-api-client';
 })
 export default class CourseGradesTableComponent {
   private readonly coursesFacade = inject(CoursesFacadeService);
+  private readonly gradeDialog = tuiDialog(GradeTaskBlockDialogComponent, {
+    size: 'auto',
+  });
   studentsAndGrades = toSignal(this.coursesFacade.currentCourseGrades$);
-  taskBlocksNames = toSignal(
-    this.coursesFacade.currentCourse$.pipe(
-      map((c) =>
-        c.taskBlocks
-          .filter((tb) => tb.isPublic === true)
-          .sort((a, b) => a.startTime.getTime() - b.startTime.getTime())
-          .map((tb) => tb.name),
-      ),
-    ),
+  taskBlocks = toSignal(
+    this.coursesFacade.currentCourse$.pipe(map((c) => c.taskBlocks)),
+  );
+  taskBlocksNames = computed(() =>
+    this.taskBlocks()
+      .filter((tb) => tb.isPublic === true)
+      .sort((a, b) => a.startTime.getTime() - b.startTime.getTime())
+      .map((tb) => tb.name),
   );
   courseGradeControls = computed(
     () =>
@@ -106,5 +114,23 @@ export default class CourseGradesTableComponent {
         .subscribe();
     });
     this.coursesFacade.refetchGrades();
+  }
+
+  showGradeDialog(
+    taskBlockIndex: number,
+    studentId: string,
+    gradedTaskBlockId: string,
+  ) {
+    const taskBlock = this.taskBlocks()[taskBlockIndex];
+    this.coursesFacade.fetchGradedTaskBlock(
+      taskBlock.courseId,
+      taskBlock.id,
+      studentId,
+    );
+
+    this.gradeDialog({
+      gradedTaskBlockId,
+      taskBlock,
+    }).subscribe();
   }
 }
