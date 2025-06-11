@@ -26,9 +26,6 @@ public class EvaluateSolutionByTeacherCommandHandler(IApplicationDbContext conte
         var solution = await _context.Solutions
             .Include(s => s.Task).ThenInclude(t => t.TaskBlockEntries)
             .FirstAsync(s => s.Id == request.SolutionId, cancellationToken);
-        var taskBlock = await _context.TaskBlocks
-            .Include(t => t.TasksEntries)
-            .FirstAsync(t => t.Id == request.TaskBlockId, cancellationToken);
         solution.Grade = request.Grade;
         await _context.SaveChangesAsync(cancellationToken);
         return _mapper.Map<SolutionDto>(solution);
