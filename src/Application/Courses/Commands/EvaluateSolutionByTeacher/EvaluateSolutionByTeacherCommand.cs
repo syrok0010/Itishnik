@@ -28,6 +28,10 @@ public class EvaluateSolutionByTeacherCommandHandler(IApplicationDbContext conte
             .FirstAsync(s => s.Id == request.SolutionId, cancellationToken);
         solution.Grade = request.Grade;
         await _context.SaveChangesAsync(cancellationToken);
-        return _mapper.Map<SolutionDto>(solution);
+        var mapped = _mapper.Map<SolutionDto>(solution);
+        var entry = solution.Task.TaskBlockEntries.First(tbe => tbe.TaskBlockId == request.TaskBlockId);
+        mapped.Weight = entry.Weight;
+        mapped.Position = entry.Position;
+        return mapped;
     }
 }

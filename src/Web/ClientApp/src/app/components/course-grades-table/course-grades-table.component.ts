@@ -70,7 +70,13 @@ export default class CourseGradesTableComponent {
   courseGradeControls = computed(
     () =>
       new FormArray(
-        this.studentsAndGrades().map((g) => new FormControl(g.courseGrade)),
+        this.studentsAndGrades().map(
+          (g) =>
+            new FormControl({
+              value: g.courseGrade,
+              disabled: g.grades.some((b) => !b.grade),
+            }),
+        ),
       ),
   );
   columns = computed(() => [

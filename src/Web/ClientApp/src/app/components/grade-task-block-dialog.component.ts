@@ -8,6 +8,7 @@ import {
 } from '@angular/core';
 import { injectContext } from '@taiga-ui/polymorpheus';
 import {
+  TuiAlertService,
   TuiButton,
   TuiDialogContext,
   TuiLoader,
@@ -118,6 +119,7 @@ export default class GradeTaskBlockDialogComponent {
   public readonly context =
     injectContext<TuiDialogContext<void, GradeTaskBlockDialogInput>>();
   private readonly coursesClient = inject(CoursesClient);
+  private readonly alerts = inject(TuiAlertService);
 
   private readonly courseFacade = inject(CoursesFacadeService);
   readonly generatingVerdict = signal(false);
@@ -176,24 +178,40 @@ export default class GradeTaskBlockDialogComponent {
   }
 
   async getAiVerdict() {
-    try {
-      this.generatingVerdict.set(true);
-      const response = await firstValueFrom(
-        this.coursesClient.getAiVerdict(
-          this.context.data.taskBlock.courseId,
-          this.context.data.taskBlock.id,
-          new GetAiVerdictCommand({
-            courseId: this.context.data.taskBlock.courseId,
-            taskBlockId: this.context.data.taskBlock.id,
-            solutionId: this.currentSolution().id,
-          }),
-        ),
-      );
+    let success = false;
 
-      this.gradeControl.setValue(response.score, { emitEvent: true });
-    } finally {
-      this.generatingVerdict.set(false);
+    this.generatingVerdict.set(true);
+    for (let i = 0; i < 3; i++) {
+      try {
+        const response = await firstValueFrom(
+          this.coursesClient.getAiVerdict(
+            this.context.data.taskBlock.courseId,
+            this.context.data.taskBlock.id,
+            new GetAiVerdictCommand({
+              courseId: this.context.data.taskBlock.courseId,
+              taskBlockId: this.context.data.taskBlock.id,
+              solutionId: this.currentSolution().id,
+            }),
+          ),
+        );
+
+        this.gradeControl.setValue(response.score, { emitEvent: true });
+        success = true;
+        break;
+      } catch {}
     }
+    if (!success)
+      this.alerts
+        .open(
+          `
+            <p>Ой, что-то пошло не так...</p>
+            <p>Повторите попытку еще раз</p>
+        `,
+          { autoClose: 3000, appearance: 'negative' },
+        )
+        .subscribe();
+
+    this.generatingVerdict.set(false);
   }
 
   protected readonly DEFAULT_SOLUTION_TEXT = DEFAULT_SOLUTION_TEXT;

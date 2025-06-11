@@ -8,8 +8,8 @@ public class SolutionDto
     public string Text { get; init; } = null!;
     public int? Grade { get; init; }
 
-    public int Weight { get; init; }
-    public int Position { get; init; }
+    public int Weight { get; set; }
+    public int Position { get; set; }
     
     public TaskDto Task { get; init; } = null!;
 

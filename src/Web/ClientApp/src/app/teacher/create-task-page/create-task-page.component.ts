@@ -103,32 +103,38 @@ export default class CreateTaskPageComponent {
 
   async showGenerateDialog() {
     const command = await firstValueFrom(this.generateTaskDialog(undefined));
+    let success = false;
 
-    try {
-      this.globalLoadingService.setManualLoading(true, 'Происходит магия...');
-      const generated = await this.taskFacade.generate(command);
+    this.globalLoadingService.setManualLoading(true, 'Происходит магия...');
+    for (let i = 0; i < 3; i++) {
+      try {
+        const generated = await this.taskFacade.generate(command);
 
-      this.form.reset({
-        name: '',
-        text: '',
-        solutionText: '',
-        isPublic: false,
-      });
-      this.textEditorRef()
-        .editorService.getOriginTiptapEditor()
-        .chain()
-        .focus()
-        .insertContent(generated.text)
-        .run();
-      this.solutionEditorRef()
-        .editorService.getOriginTiptapEditor()
-        .chain()
-        .focus()
-        .insertContent(generated.solution)
-        .run();
+        this.form.reset({
+          name: '',
+          text: '',
+          solutionText: '',
+          isPublic: false,
+        });
+        this.textEditorRef()
+          .editorService.getOriginTiptapEditor()
+          .chain()
+          .focus()
+          .insertContent(generated.text)
+          .run();
+        this.solutionEditorRef()
+          .editorService.getOriginTiptapEditor()
+          .chain()
+          .focus()
+          .insertContent(generated.solution)
+          .run();
 
-      this.form.controls.name.setValue(generated.name);
-    } catch {
+        this.form.controls.name.setValue(generated.name);
+        success = true;
+        break;
+      } catch {}
+    }
+    if (!success)
       this.alerts
         .open(
           `
@@ -138,8 +144,7 @@ export default class CreateTaskPageComponent {
           { autoClose: 3000, appearance: 'negative' },
         )
         .subscribe();
-    } finally {
-      this.globalLoadingService.setManualLoading(false);
-    }
+
+    this.globalLoadingService.setManualLoading(false);
   }
 }
