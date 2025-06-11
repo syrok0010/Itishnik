@@ -3029,6 +3029,7 @@ export interface IStudentDto {
 export class StudentGradesResponse implements IStudentGradesResponse {
     studentId?: string;
     courseId?: string;
+    courseName?: string;
     fullName?: string;
     email?: string;
     grades?: GradedTaskBlockResponse[];
@@ -3047,6 +3048,7 @@ export class StudentGradesResponse implements IStudentGradesResponse {
         if (_data) {
             this.studentId = _data["studentId"];
             this.courseId = _data["courseId"];
+            this.courseName = _data["courseName"];
             this.fullName = _data["fullName"];
             this.email = _data["email"];
             if (Array.isArray(_data["grades"])) {
@@ -3069,6 +3071,7 @@ export class StudentGradesResponse implements IStudentGradesResponse {
         data = typeof data === 'object' ? data : {};
         data["studentId"] = this.studentId;
         data["courseId"] = this.courseId;
+        data["courseName"] = this.courseName;
         data["fullName"] = this.fullName;
         data["email"] = this.email;
         if (Array.isArray(this.grades)) {
@@ -3084,6 +3087,7 @@ export class StudentGradesResponse implements IStudentGradesResponse {
 export interface IStudentGradesResponse {
     studentId?: string;
     courseId?: string;
+    courseName?: string;
     fullName?: string;
     email?: string;
     grades?: GradedTaskBlockResponse[];

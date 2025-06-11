@@ -2047,6 +2047,9 @@
             "type": "string",
             "format": "guid"
           },
+          "courseName": {
+            "type": "string"
+          },
           "fullName": {
             "type": "string"
           },

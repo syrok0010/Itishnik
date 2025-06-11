@@ -1,4 +1,5 @@
 ﻿using Itishnik.Domain.Entities;
+using Microsoft.EntityFrameworkCore.Design.Internal;
 
 namespace Itishnik.Application.Courses;
 
@@ -6,6 +7,7 @@ public class StudentGradesResponse
 {
     public Guid StudentId { get; set; }
     public Guid CourseId { get; set; }
+    public string CourseName { get; set; } = null!;
     public string FullName { get; set; } = null!;
     public string Email { get; set; } = null!;
     public GradedTaskBlockResponse[] Grades { get; set; } = null!;
@@ -20,7 +22,8 @@ public class StudentGradesResponse
                 .ForMember(sgr => sgr.Email, options => options.MapFrom(gc => gc.Student.Email))
                 .ForMember(sgr => sgr.CourseGrade,
                     options => options.MapFrom(gc => gc.Grade))
-                .ForMember(sgr => sgr.Grades, options => options.MapFrom(gc => gc.GradedTaskBlocks.OrderBy(gtb => gtb.TaskBlock.StartTime)));
+                .ForMember(sgr => sgr.Grades, options => options.MapFrom(gc => gc.GradedTaskBlocks))
+                .ForMember(sgr => sgr.CourseName, options => options.MapFrom(gc => gc.Course.Name));
         }
     }
 }
@@ -31,7 +34,7 @@ public class GradedTaskBlockResponse
     public string Name { get; set; } = null!;
     public int? Grade { get; set; }
     public bool SolutionsIsEmpty { get; set; }
-    
+
     private class Mapping : Profile
     {
         public Mapping()
