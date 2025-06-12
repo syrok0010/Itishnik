@@ -22,13 +22,127 @@
       }
     </div>
     <a
-      routerLink="/profile"
-      routerLinkActive="text-primary font-semibold"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="flex items-center gap-x-2 text-lg font-medium text-gray-600 transition-colors duration-200 ease-in-out hover:text-primary"
+      (click)="open.set(true)"
+      class="flex cursor-pointer items-center gap-x-2 text-lg font-medium text-gray-600 transition-colors duration-200 ease-in-out hover:text-primary"
     >
       <span>{{ shortenedFullName$ | async }}</span>
       <tui-icon icon="@tui.circle-user-round" />
     </a>
   </nav>
 </header>
+
+<tui-drawer
+  *tuiPopup="open()"
+  direction="right"
+  class="!top-0 !w-96 !rounded-none"
+  [overlay]="true"
+  (click.self)="open.set(false)"
+>
+  <div class="flex h-[calc(100dvh-2.5rem)] flex-col justify-between gap-8">
+    <div class="flex flex-col gap-6">
+      <div class="flex justify-between">
+        <h1 class="text-2xl font-bold">Данные профиля</h1>
+        <button
+          appearance="icon"
+          iconStart="@tui.x"
+          tuiIconButton
+          type="button"
+          (click)="open.set(false)"
+        >
+          Close
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <tui-avatar
+          [src]="fio() | fullName | tuiInitials"
+          [style.background]="fio() | fullName | tuiAutoColor"
+          size="l"
+        />
+        <span tuiTitle class="whitespace-normal text-wrap !text-lg">
+          {{ fio() | fullName }}
+          <span tuiSubtitle class="whitespace-normal text-wrap !text-base">{{
+            user().email
+          }}</span>
+        </span>
+      </div>
+
+      @if (role() === "Student") {
+        <div class="flex flex-col divide-y-2 border-y-2">
+          <div class="px-4 py-2">
+            <p class="text-sm text-gray-600">Образовательныя программа</p>
+            <p class="text-base font-medium">{{ user().educationalProgram }}</p>
+          </div>
+          <div class="px-4 py-2">
+            <p class="text-sm text-gray-600">Номер группы</p>
+            <p class="text-base font-medium">{{ user().groupNumber }}</p>
+          </div>
+          <div class="px-4 py-2">
+            <p class="text-sm text-gray-600">Год начала обучения</p>
+            <p class="text-base font-medium">{{ user().educationStartYear }}</p>
+          </div>
+        </div>
+      }
+
+      <form
+        [formGroup]="passwordForm"
+        class="flex flex-col gap-2"
+        (ngSubmit)="changePassword()"
+      >
+        <h2 class="text-xl font-semibold">Смена пароля</h2>
+
+        <tui-textfield>
+          <label tuiLabel> Старый пароль </label
+          ><input tuiTextfield type="password" formControlName="oldPassword" />
+          <tui-error
+            formControlName="oldPassword"
+            [error]="[] | tuiFieldError | async"
+          />
+          <tui-icon tuiPassword />
+        </tui-textfield>
+        <tui-textfield>
+          <label tuiLabel> Новый пароль </label
+          ><input tuiTextfield type="password" formControlName="newPassword" />
+          <tui-error
+            formControlName="newPassword"
+            [error]="[] | tuiFieldError | async"
+          />
+          <tui-icon tuiPassword />
+        </tui-textfield>
+        <tui-textfield>
+          <label tuiLabel> Подтверждение пароля </label
+          ><input
+            tuiTextfield
+            type="password"
+            formControlName="confirmPassword"
+          />
+          <tui-error
+            formControlName="confirmPassword"
+            [error]="[] | tuiFieldError | async"
+          />
+          <tui-icon tuiPassword />
+        </tui-textfield>
+
+        <button
+          tuiButton
+          appearance="primary"
+          type="submit"
+          size="m"
+          class="mr-auto mt-2"
+        >
+          Изменить
+        </button>
+      </form>
+    </div>
+
+    <button
+      tuiButton
+      appearance="primary"
+      size="l"
+      type="button"
+      (click)="logout()"
+    >
+      Выйти из аккаунта
+    </button>
+  </div>
+</tui-drawer>

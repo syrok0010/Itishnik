@@ -16,6 +16,7 @@ import { TuiInputModule, TuiTextfieldControllerModule } from '@taiga-ui/legacy';
 import {
   TuiAutoColorPipe,
   TuiButton,
+  TuiHint,
   TuiIcon,
   TuiInitialsPipe,
   TuiTextfield,
@@ -29,6 +30,8 @@ export interface User {
   id: string;
   email: string;
   fullName: string;
+
+  group: string | null;
 }
 
 @Component({
@@ -45,6 +48,7 @@ export interface User {
     TuiInitialsPipe,
     TuiTitle,
     TuiIcon,
+    TuiHint,
   ],
   templateUrl: './users.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -61,20 +65,28 @@ export default class UsersComponent {
     this.search.valueChanges.pipe(startWith('')),
     { initialValue: '' },
   );
-  readonly filteredStudents = computed(() => {
-    const students = this.existingUsers();
+  readonly filteredUsers = computed(() => {
+    let students = this.existingUsers();
     const searchTerm = this.searchSignal().toLowerCase();
 
-    if (!searchTerm) {
-      return students;
+    if (searchTerm) {
+      students = students.filter(
+        (s) =>
+          s.fullName.toLowerCase().includes(searchTerm) ||
+          s.email.toLowerCase().includes(searchTerm),
+      );
     }
 
-    return students.filter(
-      (s) =>
-        s.fullName.toLowerCase().includes(searchTerm) ||
-        s.email.toLowerCase().includes(searchTerm),
-    );
+    return [
+      ...students
+        .filter((s) => !s.fullName.includes('Не установлено'))
+        .sort((a, b) => a.fullName.localeCompare(b.fullName)),
+      ...students
+        .filter((s) => s.fullName.includes('Не установлено'))
+        .sort((a, b) => a.email.localeCompare(b.email)),
+    ];
   });
+
   getEmailControl() {
     return new FormControl('', [Validators.required, Validators.email]);
   }

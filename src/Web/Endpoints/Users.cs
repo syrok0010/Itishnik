@@ -28,7 +28,7 @@ public class Users : EndpointGroupBase
             .RequireAuthorization();
 
         groupBuilder
-            .Map("change-password", ChangePassword)
+            .MapPost("change-password", ChangePassword)
             .WithName("ChangePassword")
             .RequireAuthorization();
         

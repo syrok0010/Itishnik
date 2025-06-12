@@ -25,8 +25,8 @@
   </tui-textfield>
 
   <tui-textfield
-    ><label tuiLabel>Образовательная программа</label>
-    <input tuiTextfield formControlName="educationalProgram" />
+    ><label tuiLabel>Образовательная программа (полностью)</label>
+    <input tuiTextfield formControlName="educationalProgram" placeholder="Компьютерные науки и технологии"/>
     <tui-error
       formControlName="educationalProgram"
       [error]="[] | tuiFieldError | async"
