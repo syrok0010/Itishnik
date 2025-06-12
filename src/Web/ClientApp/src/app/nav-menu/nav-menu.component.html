@@ -38,7 +38,7 @@
   [overlay]="true"
   (click.self)="open.set(false)"
 >
-  <div class="flex flex-col justify-between h-[calc(100dvh-2.5rem)] gap-8">
+  <div class="flex h-[calc(100dvh-2.5rem)] flex-col justify-between gap-8">
     <div class="flex flex-col gap-6">
       <div class="flex justify-between">
         <h1 class="text-2xl font-bold">Данные профиля</h1>
@@ -60,11 +60,11 @@
           size="l"
         />
         <span tuiTitle class="whitespace-normal text-wrap !text-lg">
-        {{ fio() | fullName }}
+          {{ fio() | fullName }}
           <span tuiSubtitle class="whitespace-normal text-wrap !text-base">{{
-              user().email
-            }}</span>
-      </span>
+            user().email
+          }}</span>
+        </span>
       </div>
 
       @if (role() === "Student") {
@@ -84,43 +84,63 @@
         </div>
       }
 
-      <form [formGroup]="passwordForm" class="flex flex-col gap-2" (ngSubmit)="changePassword()">
+      <form
+        [formGroup]="passwordForm"
+        class="flex flex-col gap-2"
+        (ngSubmit)="changePassword()"
+      >
         <h2 class="text-xl font-semibold">Смена пароля</h2>
 
         <tui-textfield>
-          <label tuiLabel>
-            Старый пароль
-          </label><input tuiTextfield type="password" formControlName="oldPassword">
-          <tui-error formControlName="oldPassword" [error]="[] | tuiFieldError | async" />
+          <label tuiLabel> Старый пароль </label
+          ><input tuiTextfield type="password" formControlName="oldPassword" />
+          <tui-error
+            formControlName="oldPassword"
+            [error]="[] | tuiFieldError | async"
+          />
           <tui-icon tuiPassword />
         </tui-textfield>
         <tui-textfield>
-          <label tuiLabel>
-            Новый пароль
-          </label><input tuiTextfield type="password" formControlName="newPassword">
-          <tui-error formControlName="newPassword" [error]="[] | tuiFieldError | async" />
+          <label tuiLabel> Новый пароль </label
+          ><input tuiTextfield type="password" formControlName="newPassword" />
+          <tui-error
+            formControlName="newPassword"
+            [error]="[] | tuiFieldError | async"
+          />
           <tui-icon tuiPassword />
         </tui-textfield>
         <tui-textfield>
-          <label tuiLabel>
-            Подтверждение пароля
-          </label><input tuiTextfield type="password" formControlName="confirmPassword">
-          <tui-error formControlName="confirmPassword" [error]="[] | tuiFieldError | async" />
+          <label tuiLabel> Подтверждение пароля </label
+          ><input
+            tuiTextfield
+            type="password"
+            formControlName="confirmPassword"
+          />
+          <tui-error
+            formControlName="confirmPassword"
+            [error]="[] | tuiFieldError | async"
+          />
           <tui-icon tuiPassword />
         </tui-textfield>
 
-        <button tuiButton appearance="primary" type="submit" size="m" class="mr-auto mt-2">
+        <button
+          tuiButton
+          appearance="primary"
+          type="submit"
+          size="m"
+          class="mr-auto mt-2"
+        >
           Изменить
         </button>
       </form>
     </div>
 
     <button
-    tuiButton
-    appearance="primary"
-    size="l"
-    type="button"
-    (click)="logout()"
+      tuiButton
+      appearance="primary"
+      size="l"
+      type="button"
+      (click)="logout()"
     >
       Выйти из аккаунта
     </button>
