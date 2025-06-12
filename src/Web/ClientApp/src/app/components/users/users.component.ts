@@ -77,6 +77,8 @@ export default class UsersComponent {
       );
     }
 
+    if (!students) return [];
+
     return [
       ...students
         .filter((s) => !s.fullName.includes('Не установлено'))

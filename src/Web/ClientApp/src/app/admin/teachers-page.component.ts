@@ -14,7 +14,7 @@ import { AsyncPipe } from '@angular/common';
   selector: 'app-teachers-page',
   imports: [UsersComponent, AsyncPipe],
   template: `
-    <div class="flex h-full w-full flex-col gap-4 rounded-lg bg-white p-4">
+    <div class="flex w-full grow flex-col gap-4 rounded-lg bg-white p-4">
       <app-users
         [existingUsers]="teachers$ | async"
         (addUsers)="inviteTeachers($event)"

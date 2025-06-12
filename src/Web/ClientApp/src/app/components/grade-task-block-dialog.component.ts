@@ -27,6 +27,7 @@ import {
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { RouterLink } from '@angular/router';
 
 export interface GradeTaskBlockDialogInput {
   gradedTaskBlockId: string;
@@ -44,6 +45,7 @@ const DEFAULT_SOLUTION_TEXT = 'Здесь будет текст вашего р�
     TuiTextfield,
     TuiInputNumber,
     ReactiveFormsModule,
+    RouterLink,
   ],
   template: ` <div class="flex min-h-[70dvh] w-[90dvw] flex-col justify-center">
     @let taskBlock = gradedTaskBlock();
@@ -51,7 +53,10 @@ const DEFAULT_SOLUTION_TEXT = 'Здесь будет текст вашего р�
     @if (!!taskBlock) {
       <div class="flex flex-grow gap-6 overflow-auto py-4">
         <div class="flex w-1/2 flex-col">
-          <h3 class="mb-3 text-xl font-semibold">
+          <h3
+            class="mb-3 text-xl font-semibold"
+            [routerLink]="['/tasks', solution.task.id]"
+          >
             Задание "{{ solution.task.name }}"
           </h3>
           <tui-editor-socket
