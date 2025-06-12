@@ -1,71 +1,162 @@
-﻿# Itishnik
+# ITishnik
 
-The project was generated using the [Clean.Architecture.Solution.Template](https://github.com/jasontaylordev/CleanArchitecture) version 9.0.8.
+Образовательная веб-платформа для поддержки изучения дисциплины "Алгоритмы и структуры данных" в НИУ ВШЭ.
 
-## Build
+---
 
-Run `dotnet build -tl` to build the solution.
+## 📜 Содержание
 
-## Run
+- [О проекте](#-о-проекте)
+- [🛠️ Технологический стек](#-технологический-стек)
+- [📂 Структура проекта](#-структура-проекта)
+- [🚀 Начало работы](#-начало-работы)
+  - [Пререквизиты](#-пререквизиты)
+  - [Установка и запуск](#-установка-и-запуск)
+- [👥 Команда проекта](#-команда-проекта)
 
-To run the web application:
+---
 
-```bash
-cd .\src\Web\
-dotnet watch run
+## 🌟 О проекте
+
+Алгоритмы и структуры данных — фундаментальный навык, проверяемый на собеседованиях в любой IT-компании. Однако существующие ресурсы для их изучения часто фрагментированы: есть книги с теорией, и есть тренажеры, сфокусированные исключительно на написании кода с жесткой автоматической проверкой. Это не всегда позволяет развить именно аналитическое мышление.
+
+Платформа **ITishnik** предлагает иной подход. Мы смещаем акцент с безошибочной реализации на конкретном языке программирования на глубокое понимание и анализ. Наш сервис предоставляет студентам и преподавателям НИУ ВШЭ инструменты для эффективного обучения через задачи нестандартных форматов:
+
+- Анализ результата выполнения кода;
+- Рефакторинг и улучшение существующих решений;
+- Поиск логических ошибок в предложенном алгоритме.
+
+Ответы на задачи принимаются в гибком виде — это может быть псевдокод, текстовое пояснение или конечный результат. В связи с этим в проекте отсутствует традиционное автоматическое тестирование. Проверка решений осуществляется непосредственно преподавателем, который выставляет итоговую оценку.
+
+Платформа построена на ролевой модели:
+- **Студент** видит свои задания и дедлайны, решает аналитические задачи и может оставить комментарий-фидбэк по ним.
+- **Преподаватель** управляет курсом, загружает задачи, проверяет решения студентов и может использовать генеративный ИИ как для помощи в составлении новых заданий, так и для содействия в ручной проверке ответов.
+
+## 🛠️ Технологический стек
+
+Проект построен с использованием современных и надежных технологий:
+
+### Frontend
+![Angular](https://img.shields.io/badge/Angular-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![Taiga UI](https://img.shields.io/badge/Taiga%20UI-7756F2?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB2aWV3Qm94PSIwIDAgMjQgMjQiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHBhdGggZmlsbD0id2hpdGUiIGQ9Ik0xMiAyQTEwIDEwIDAgMSAwIDEyIDIyQTEwIDEwIDAgMCAwIDEyIDJtMC0yYTEyIDEyIDAgMSAxIDAgMjRBMTIgMTIgMCAwIDEgMTIgMG01LjU1IDEyLjY0YTQgNCAwIDAgMC0uNDQtMS4zMWMtLjM3LS42OC0uODItMS4xMS0xLjQ3LTEuNTZhMy4zNiAzLjM2IDAgMCAxLTEuNTctLjY3Yy0uMzQtLjE2LS41LS4yOC0uNS0uNDIgMC0uMi4xMy0uMzQuMzgtLjM0YTItMiAwIDAgMSAxLjA3LjM2bC4zNC0xLjM0YTMuMjYgMy4yNiAwIDAgMC0xLjU4LS40NWMtMS4zOSAwLTIuMTkuNzMtMi4xOSAxLjc5IDAgLjUuMjUuODkuNzUgMS4yNi4zNS4yNy44LjUzIDEuMjMuNzZsLjQyLjIzYy41My4yOC44Ni41My44NiAxIDAgLjU3LS40MSAxLTIuMDYgMS0uNjkgMC0xLjM4LS4yMy0xLjg5LS42MWwtLjQzIDEuMzJjLjU4LjQ0IDEuNDIuNzIgMi4zOC43MiAxLjcyIDAgMi44OC0uODggMi44OC0yLjI0IDAtLjQ4LS4xNi0uOS0uNDUtMS4yN20tNy40NS0zLjA4aC0uOTVWOC4yMWgtMS44MXYxLjM1aC0uOTV2MS4xOWg0LjY2di0xLjE5WiIvPjwvc3ZnPg==)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+### Backend
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET_Core-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![Entity Framework Core](https://img.shields.io/badge/EF_Core-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+
+### Database & AI
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![Gemini API](https://img.shields.io/badge/Gemini_API-4285F4?style=for-the-badge&logo=google-gemini&logoColor=white)
+
+---
+
+## 📂 Структура проекта
+
+Проект имеет интегрированную структуру, типичную для ASP.NET Core приложений с SPA-фронтендом.
+
+```
+/
+├── src/                  # Корневая папка с исходным кодом всего решения
+│   └── Web/              # Основной проект ASP.NET Core (Backend)
+│       └── ClientApp/    # Исходный код Frontend на Angular
+└── README.md
 ```
 
-Navigate to https://localhost:5001. The application will automatically reload if you change any of the source files.
+---
 
-## Code Styles & Formatting
+## 🚀 Начало работы
 
-The template includes [EditorConfig](https://editorconfig.org/) support to help maintain consistent coding styles for multiple developers working on the same project across various editors and IDEs. The **.editorconfig** file defines the coding styles applicable to this solution.
+Это руководство поможет вам настроить и запустить проект локально.
 
-## Code Scaffolding
+### ✅ Пререквизиты
 
-The template includes support to scaffold new commands and queries.
+Перед началом убедитесь, что у вас установлено следующее программное обеспечение:
 
-Start in the `.\src\Application\` folder.
+*   [.NET SDK 9.0](https://dotnet.microsoft.com/download/dotnet/9.0)
+*   [Node.js 20.x (включая npm)](https://nodejs.org/en/)
+*   [PostgreSQL](https://www.postgresql.org/download/) (СУБД должна быть установлена и запущена)
+*   **API-ключ для Gemini** (его можно получить в [Google AI Studio](https://aistudio.google.com/))
 
-Create a new command:
+### ⚙️ Установка и запуск
 
-```
-dotnet new ca-usecase --name CreateTodoList --feature-name TodoLists --usecase-type command --return-type int
-```
+#### 1. Настройка Backend и User Secrets
 
-Create a new query:
+Для безопасного хранения чувствительных данных (ключи API, пароли, строки подключения) мы используем механизм **User Secrets**. Это предотвращает попадание секретов в систему контроля версий.
 
-```
-dotnet new ca-usecase -n GetTodos -fn TodoLists -ut query -rt TodosVm
-```
+1.  Перейдите в директорию веб-проекта:
+    ```bash
+    cd src/Web
+    ```
 
-If you encounter the error *"No templates or subcommands found matching: 'ca-usecase'."*, install the template and try again:
+2.  Измените файл `appsettings.Development.json` и скопируйте в него следующую конфигурацию. Она содержит нечувствительные параметры для окружения разработки.
+    ```json
+    {
+      "Logging": {
+        "LogLevel": {
+          "Default": "Information",
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information",
+          "Microsoft.EntityFrameworkCore.Database.Command": "Information"
+        }
+      },
+      "AllowedHosts": "*",
+      "GeminiProxyAddress": "http://127.0.0.1:1080",
+      "EmailSettings": {
+        "SmtpServer": "smtp.yandex.ru",
+        "Port": 465,
+        "FromName": "Твой портал \"Айтишник\"",
+        "FromEmail": "tvoy.itishnik@yandex.ru",
+        "Username": "tvoy.itishnik"
+      }
+    }
+    ```
+    > **Примечание:** Если вы не используете прокси для доступа к Gemini API, удалите строку `GeminiProxyAddress`.
+    > Измените `EmailSettings` по необходимости
 
-```bash
-dotnet new install Clean.Architecture.Solution.Template::9.0.8
-```
+3.  Инициализируйте user-secrets и установите ваши секретные значения. **Выполняйте эти команды, находясь в папке `src/Web`**.
+    ```bash
+    # Строка подключения к вашей локальной базе данных PostgreSQL
+    dotnet user-secrets set "ConnectionStrings:ItishnikDb" "Host=localhost;Port=5432;Database=itishnik_db;Username=postgres;Password=your_password"
 
-## Test
+    # Ваш API-ключ от Google Gemini
+    dotnet user-secrets set "GoogleAi:ApiKey" "YOUR_GEMINI_API_KEY_HERE"
 
-The solution contains unit, integration, functional, and acceptance tests.
+    # Пароль от почтового ящика, указанного в EmailSettings
+    dotnet user-secrets set "EmailSettings:Password" "YOUR_EMAIL_APP_PASSWORD_HERE"
+    ```
 
-To run the unit, integration, and functional tests (excluding acceptance tests):
-```bash
-dotnet test --filter "FullyQualifiedName!~AcceptanceTests"
-```
+4.  Примените миграции к базе данных. Эта команда создаст все необходимые таблицы.
+    ```bash
+    dotnet ef database update
+    ```
 
-To run the acceptance tests, first start the application:
+#### 2. Запуск Frontend
 
-```bash
-cd .\src\Web\
-dotnet run
-```
+1.  Откройте **новый терминал** и перейдите в директорию клиентского приложения:
+    ```bash
+    cd src/Web/ClientApp
+    ```
+2.  Установите все необходимые зависимости:
+    ```bash
+    npm install
+    ```
 
-Then, in a new console, run the tests:
-```bash
-cd .\src\Web\
-dotnet test
-```
+#### 3. Запуск Backend
 
-## Help
-To learn more about the template go to the [project website](https://github.com/jasontaylordev/CleanArchitecture). Here you can find additional guidance, request new features, report a bug, and discuss the template with other users.
+1.  Вернитесь в **первый терминал** (где вы находитесь в `src/Web`).
+2.  Запустите серверную часть:
+    ```bash
+    dotnet run
+    ```
+    Будет запущен Backend и Frontend на `https://localhost:44447`.
+
+Теперь у вас полностью развернута локальная среда для работы над проектом!
+
+---
+
+## 👥 Команда проекта
+
+*   **Вадим Сыров** - Team Lead, Full-stack Developer - [GitHub](https://github.com/syrok0010)
+*   **Владислав Баранов** - Backend Developer - [GitHub](https://github.com/VladZF)
+*   **Валерия Лапшина** - Frontend Developer - [GitHub](https://github.com/valeriii25)
