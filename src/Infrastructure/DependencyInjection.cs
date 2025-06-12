@@ -2,6 +2,7 @@
 using Itishnik.Application.Common.Interfaces;
 using Itishnik.Domain.Constants;
 using Itishnik.Domain.Entities;
+using Itishnik.Infrastructure;
 using Itishnik.Infrastructure.Data;
 using Itishnik.Infrastructure.Data.Interceptors;
 using Itishnik.Infrastructure.Identity;
@@ -66,7 +67,8 @@ public static class DependencyInjection
                 options.User.RequireUniqueEmail = true;
             })
             .AddEntityFrameworkStores<ApplicationDbContext>()
-            .AddDefaultTokenProviders();
+            .AddDefaultTokenProviders()
+            .AddErrorDescriber<RuErrorDescriber>();
 
         builder.Services.AddSingleton(TimeProvider.System);
         builder.Services.AddTransient<IIdentityService, IdentityService>();

@@ -20,6 +20,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
                   errorMessage = Object.values(parsedError.errors).join('\n');
                 } else if (parsedError && parsedError.title) {
                   errorMessage = parsedError.title;
+                } else if (parsedError && parsedError[0]) {
+                  errorMessage = (parsedError as string[]).join('\n');
                 } else {
                   errorMessage = 'Некорректный запрос.';
                 }
