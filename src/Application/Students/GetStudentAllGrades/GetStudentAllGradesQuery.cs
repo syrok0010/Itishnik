@@ -18,6 +18,7 @@ public class GetStudentAllGradesQueryHandler(IApplicationDbContext context, IMap
     {
         return await _context.GradedCourses
             .Include(gc => gc.GradedTaskBlocks.OrderBy(gtb => gtb.TaskBlock.StartTime)).ThenInclude(x => x.Solutions)
+            .Include(gc => gc.GradedTaskBlocks.OrderBy(gtb => gtb.TaskBlock.StartTime)).ThenInclude(x => x.TaskBlock)
             .AsNoTracking()
             .Where(gc => gc.StudentId == _user.Id)
             .ProjectTo<StudentGradesResponse>(_mapper.ConfigurationProvider)

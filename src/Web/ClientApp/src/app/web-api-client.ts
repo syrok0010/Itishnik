@@ -3228,6 +3228,7 @@ export interface IStudentGradesResponse {
 
 export class GradedTaskBlockResponse implements IGradedTaskBlockResponse {
     id?: string;
+    taskBlockId?: string;
     name?: string;
     grade?: number | undefined;
     solutionsIsEmpty?: boolean;
@@ -3244,6 +3245,7 @@ export class GradedTaskBlockResponse implements IGradedTaskBlockResponse {
     init(_data?: any) {
         if (_data) {
             this.id = _data["id"];
+            this.taskBlockId = _data["taskBlockId"];
             this.name = _data["name"];
             this.grade = _data["grade"];
             this.solutionsIsEmpty = _data["solutionsIsEmpty"];
@@ -3260,6 +3262,7 @@ export class GradedTaskBlockResponse implements IGradedTaskBlockResponse {
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
         data["id"] = this.id;
+        data["taskBlockId"] = this.taskBlockId;
         data["name"] = this.name;
         data["grade"] = this.grade;
         data["solutionsIsEmpty"] = this.solutionsIsEmpty;
@@ -3269,6 +3272,7 @@ export class GradedTaskBlockResponse implements IGradedTaskBlockResponse {
 
 export interface IGradedTaskBlockResponse {
     id?: string;
+    taskBlockId?: string;
     name?: string;
     grade?: number | undefined;
     solutionsIsEmpty?: boolean;

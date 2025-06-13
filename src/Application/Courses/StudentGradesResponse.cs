@@ -31,6 +31,7 @@ public class StudentGradesResponse
 public class GradedTaskBlockResponse
 {
     public Guid Id { get; set; }
+    public Guid TaskBlockId { get; set; }
     public string Name { get; set; } = null!;
     public int? Grade { get; set; }
     public bool SolutionsIsEmpty { get; set; }

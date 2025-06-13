@@ -27,10 +27,12 @@ import {
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { RouterLink } from '@angular/router';
 
 export interface GradeTaskBlockDialogInput {
   gradedTaskBlockId: string;
-  taskBlock: TaskBlockResponse;
+  taskBlockId: string;
+  courseId: string;
 }
 const DEFAULT_SOLUTION_TEXT = 'Здесь будет текст вашего решения';
 
@@ -44,6 +46,7 @@ const DEFAULT_SOLUTION_TEXT = 'Здесь будет текст вашего р�
     TuiTextfield,
     TuiInputNumber,
     ReactiveFormsModule,
+    RouterLink,
   ],
   template: ` <div class="flex min-h-[70dvh] w-[90dvw] flex-col justify-center">
     @let taskBlock = gradedTaskBlock();
@@ -51,7 +54,10 @@ const DEFAULT_SOLUTION_TEXT = 'Здесь будет текст вашего р�
     @if (!!taskBlock) {
       <div class="flex flex-grow gap-6 overflow-auto py-4">
         <div class="flex w-1/2 flex-col">
-          <h3 class="mb-3 text-xl font-semibold">
+          <h3
+            class="mb-3 text-xl font-semibold"
+            [routerLink]="['/tasks', solution.task.id]"
+          >
             Задание "{{ solution.task.name }}"
           </h3>
           <tui-editor-socket
@@ -129,11 +135,10 @@ export default class GradeTaskBlockDialogComponent {
 
   private readonly courseFacade = inject(CoursesFacadeService);
   readonly generatingVerdict = signal(false);
-  readonly gradedTaskBlock = toSignal(
-    this.courseFacade.studentTaskBlocks$.pipe(
-      map((blocks) =>
-        blocks.find((gtb) => gtb.id == this.context.data.gradedTaskBlockId),
-      ),
+  readonly gradedTaskBlocks = toSignal(this.courseFacade.studentTaskBlocks$);
+  readonly gradedTaskBlock = computed(() =>
+    this.gradedTaskBlocks().find(
+      (gtb) => gtb.id == this.context.data.gradedTaskBlockId,
     ),
   );
   readonly currentIndex = signal(0);
@@ -148,7 +153,7 @@ export default class GradeTaskBlockDialogComponent {
     () => this.currentIndex() < this.solutions().length - 1,
   );
 
-  gradeControl = new FormControl(0);
+  gradeControl = new FormControl<number | null>(null);
 
   constructor() {
     effect(() => {
@@ -157,7 +162,7 @@ export default class GradeTaskBlockDialogComponent {
         this.currentIndex.set(0);
     });
     effect(() =>
-      this.gradeControl.setValue(this.currentSolution().grade, {
+      this.gradeControl.setValue(this.currentSolution()?.grade, {
         emitEvent: false,
       }),
     );
@@ -166,7 +171,7 @@ export default class GradeTaskBlockDialogComponent {
       .subscribe((g) =>
         this.courseFacade.setSolutionGrade(
           this.gradedTaskBlock().id,
-          this.context.data.taskBlock.id,
+          this.context.data.taskBlockId,
           this.currentSolution().task.id,
           this.currentSolution().id,
           this.currentSolution().grade,
@@ -191,11 +196,11 @@ export default class GradeTaskBlockDialogComponent {
       try {
         const response = await firstValueFrom(
           this.coursesClient.getAiVerdict(
-            this.context.data.taskBlock.courseId,
-            this.context.data.taskBlock.id,
+            this.context.data.courseId,
+            this.context.data.taskBlockId,
             new GetAiVerdictCommand({
-              courseId: this.context.data.taskBlock.courseId,
-              taskBlockId: this.context.data.taskBlock.id,
+              courseId: this.context.data.courseId,
+              taskBlockId: this.context.data.taskBlockId,
               solutionId: this.currentSolution().id,
             }),
           ),

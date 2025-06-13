@@ -108,7 +108,7 @@ import { map } from 'rxjs/operators';
       </tui-textfield>
 
       <tui-textfield>
-        <label tuiLabel>Суть задания</label>
+        <label tuiLabel>Пожелания</label>
         <input tuiTextfield formControlName="idea" />
       </tui-textfield>
 

@@ -1,6 +1,6 @@
 <div class="flex w-full flex-col gap-4 rounded-lg bg-white p-4">
   @if (currentCourse()) {
-    <h1 class="mb-2 text-2xl font-bold">{{ currentCourse().name }}</h1>
+    <h1 class="mb-2 text-2xl text-wrap font-bold">{{ currentCourse().name }}</h1>
 
     <div class="flex flex-row items-center gap-2">
       @if (!editTeacherMode()) {

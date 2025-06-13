@@ -38,7 +38,7 @@ export interface TaskSolutionDialogData {
     <div class="flex min-h-[70dvh] w-[90dvw] flex-col">
       <div class="flex flex-grow gap-6 overflow-auto py-4">
         <div class="flex w-1/2 flex-col">
-          <h3 class="mb-3 text-xl font-semibold">
+          <h3 class="mb-3 text-wrap text-xl font-semibold">
             Задание "{{ context.data.solution.task.name }}"
           </h3>
           <tui-editor-socket

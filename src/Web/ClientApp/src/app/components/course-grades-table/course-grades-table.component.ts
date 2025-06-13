@@ -60,16 +60,8 @@ export default class CourseGradesTableComponent {
       map((v) => v.sort((a, b) => a.fullName.localeCompare(b.fullName))),
     ),
   );
+  course = toSignal(this.coursesFacade.currentCourse$);
   studentList = toSignal(this.coursesFacade.currentCourseStudents$);
-  taskBlocks = toSignal(
-    this.coursesFacade.currentCourse$.pipe(map((c) => c.taskBlocks)),
-  );
-  taskBlocksNames = computed(() =>
-    this.taskBlocks()
-      .filter((tb) => tb.isPublic === true)
-      .sort((a, b) => a.startTime.getTime() - b.startTime.getTime())
-      .map((tb) => tb.name),
-  );
   courseGradeControls = computed(
     () =>
       new FormArray(
@@ -82,12 +74,28 @@ export default class CourseGradesTableComponent {
         ),
       ),
   );
+  taskBlocks = computed(() => {
+    const maxBlocksLength = Math.max(
+      0,
+      ...this.studentsAndGrades().map((s) => s.grades.length),
+    );
+    return this.studentsAndGrades()
+      .find((s) => s.grades.length === maxBlocksLength)
+      .grades.map((g) => ({
+        id: g.taskBlockId,
+        name: g.name,
+      }));
+  });
   columns = computed(() => [
     'student',
     'courseGrade',
     'averageGrade',
-    ...this.taskBlocksNames().map((n, i) => i.toString()),
+    ...this.taskBlocks().map((g) => g.id),
   ]);
+
+  find(array: GradedTaskBlockResponse[], taskBlockId: string) {
+    return array.find((gtb) => gtb.taskBlockId === taskBlockId);
+  }
 
   average(array: GradedTaskBlockResponse[]) {
     const finalArray = array?.filter((e) => !!e.grade) ?? [];
@@ -124,26 +132,29 @@ export default class CourseGradesTableComponent {
   }
 
   showGradeDialog(
-    taskBlockIndex: number,
+    taskBlockId: string,
     studentId: string,
     gradedTaskBlockId: string,
     hittable = true,
   ) {
     if (!hittable) return;
-    const taskBlock = this.taskBlocks()[taskBlockIndex];
     this.coursesFacade.fetchGradedTaskBlock(
-      taskBlock.courseId,
-      taskBlock.id,
+      this.course().id,
+      taskBlockId,
       studentId,
     );
 
     this.gradeDialog({
       gradedTaskBlockId,
-      taskBlock,
+      courseId: this.course().id,
+      taskBlockId: taskBlockId,
     }).subscribe();
   }
 
-  inFuture(date: Date) {
+  inFuture(taskBlockId: string) {
+    const date = this.course().taskBlocks.find(
+      (tb) => tb.id === taskBlockId,
+    )?.endTime;
     return Date.now() > date.getTime();
   }
 
