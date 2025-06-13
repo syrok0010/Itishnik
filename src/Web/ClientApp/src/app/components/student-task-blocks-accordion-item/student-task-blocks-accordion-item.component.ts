@@ -16,7 +16,7 @@ import {
   TuiIcon,
   TuiTextfield,
 } from '@taiga-ui/core';
-import { TUI_CONFIRM, TuiConfirmData, TuiTextarea } from '@taiga-ui/kit';
+import { TUI_CONFIRM, TuiTextarea } from '@taiga-ui/kit';
 import { firstValueFrom } from 'rxjs';
 import { StudentCoursesFacadeService } from '../../student/student-courses-facade.service';
 import { CountdownTimerComponent } from '../countdown-timer.component';
@@ -24,7 +24,12 @@ import { TuiTime } from '@taiga-ui/cdk';
 import TaskSolutionDialogComponent from '../task-solution-dialog.component';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-type TaskBlockStatus = 'BeforeStart' | 'CanStart' | 'Solving' | 'Finished';
+type TaskBlockStatus =
+  | 'BeforeStart'
+  | 'CanStart'
+  | 'Missed'
+  | 'Solving'
+  | 'Finished';
 const DEFAULT_SOLUTION_TEXT = 'Здесь будет текст вашего решения';
 
 @Component({
@@ -61,7 +66,7 @@ export default class StudentTaskBlocksAccordionItemComponent {
     const userStarted = !!block.studentStartTime;
 
     if (!blockStarted) return 'BeforeStart';
-    if (!userStarted) return 'CanStart';
+    if (!userStarted) return blockFinished ? 'Missed' : 'CanStart';
     if (!blockFinished) return 'Solving';
     return 'Finished';
   });
@@ -99,23 +104,21 @@ export default class StudentTaskBlocksAccordionItemComponent {
   );
 
   async confirmStart() {
-    const data: TuiConfirmData = {
-      content: `Вы не сможете прервать решение. У вас будет ровно ${this.timeAllowed()} на решение всех задач.`,
-      yes: 'Начать',
-      no: 'Отменить',
-    };
-
-    const shouldStartSolution = await firstValueFrom(
-      this.dialogs.open<boolean>(TUI_CONFIRM, {
-        label: 'Начать решение?',
-        size: 's',
-        data,
-      }),
-    );
-
-    if (!shouldStartSolution) {
+    if (
+      this.timeAllowed() &&
+      !(await firstValueFrom(
+        this.dialogs.open<boolean>(TUI_CONFIRM, {
+          label: 'Начать решение?',
+          size: 's',
+          data: {
+            content: `Вы не сможете прервать решение. У вас будет ровно ${this.timeAllowed()} на решение всех задач.`,
+            yes: 'Начать',
+            no: 'Отменить',
+          },
+        }),
+      ))
+    )
       return;
-    }
 
     await this.courseFacade.startSolution(this.courseId(), this.taskBlock().id);
   }
