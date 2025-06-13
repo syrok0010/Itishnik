@@ -2198,6 +2198,10 @@
             "type": "string",
             "format": "guid"
           },
+          "taskBlockId": {
+            "type": "string",
+            "format": "guid"
+          },
           "name": {
             "type": "string"
           },

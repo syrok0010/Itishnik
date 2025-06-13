@@ -31,10 +31,11 @@
   }
 </div>
 
-<div class="mt-4 flex w-full flex-col gap-4 rounded-lg bg-white p-4">
+@let blocks = sortedTaskBlocks$ | async;
+<div class="mt-4 flex grow w-full flex-col gap-4 rounded-lg bg-white p-4">
   <h1 class="text-2xl font-bold">Работы</h1>
   <tui-accordion>
-    @for (block of sortedTaskBlocks$ | async; track block.id) {
+    @for (block of blocks; track block.id) {
       <button
         [tuiAccordion]="!!block.studentStartTime && inFuture(block.endTime)"
       >
@@ -46,8 +47,11 @@
           [courseId]="course.id"
         />
       </tui-expand>
-    } @empty {
-      <h3 class="text-center text-lg italic text-gray-600">Работ пока нет</h3>
     }
   </tui-accordion>
+  @if(!blocks || blocks.length === 0) {
+    <div class="flex grow flex-col justify-center items-center">
+      <h3 class=" text-center text-2xl italic text-gray-600">Работ пока нет</h3>
+    </div>
+  }
 </div>
